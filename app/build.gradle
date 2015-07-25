@@ -24,6 +24,15 @@ android {
         buildConfigField "String", "BUILD_TIME", "\"${buildTime}\""
         System.out.println(new File("./app/nobug.txt").getText("UTF-8"))
         endpoint = "http://${host}/api"
+
+        manifestPlaceholders = [JPUSH_CHANNEL: "default"]
+
+        File propFile = file('app.properties');
+        if (propFile.exists()) {
+            def Properties props = new Properties()
+            props.load(new FileInputStream(propFile))
+            manifestPlaceholders.putAll([JPUSH_APPKEY: props['JPUSH_APPKEY']])
+        }
     }
     signingConfigs {
         debug {
@@ -48,7 +57,7 @@ android {
             resValue "string", "host_url", "http://${host}.${hostIp}.xip.io"
             resValue "string", "host", "${host}.${hostIp}.xip.io"
 
-            System.out.println("host_url: "+"http://${host}.${hostIp}.xip.io")
+            System.out.println("host_url: " + "http://${host}.${hostIp}.xip.io")
         }
         release {
             signingConfig signingConfigs.release

@@ -2,6 +2,7 @@
   <dictionary name="linroid">
     <words>
       <w>gson</w>
+      <w>jpush</w>
       <w>pushapp</w>
       <w>qrcode</w>
     </words>

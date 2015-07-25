@@ -13,6 +13,7 @@ import com.linroid.pushapp.module.NetworkModule;
 
 import javax.inject.Inject;
 
+import cn.jpush.android.api.JPushInterface;
 import timber.log.Timber;
 
 /**
@@ -20,6 +21,7 @@ import timber.log.Timber;
  */
 public class App extends Application{
     AppComponent component;
+
     @Override
     public void onCreate() {
         super.onCreate();
@@ -37,9 +39,12 @@ public class App extends Application{
                 .fileModule(new FileModule())
                 .build();
 
-        Timber.plant(new Timber.DebugTree());
-
-
+        component.inject(this);
+        JPushInterface.setDebugMode(BuildConfig.DEBUG);
+        JPushInterface.init(this);
+        if(BuildConfig.DEBUG) {
+            Timber.plant(new Timber.DebugTree());
+        }
     }
     public AppComponent component() {
         return component;

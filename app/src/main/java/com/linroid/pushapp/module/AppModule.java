@@ -13,7 +13,6 @@ import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;
-import hugo.weaving.DebugLog;
 
 /**
  * Created by linroid on 7/24/15.
