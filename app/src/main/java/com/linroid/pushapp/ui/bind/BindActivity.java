@@ -20,7 +20,9 @@ import com.linroid.pushapp.App;
 import com.linroid.pushapp.Constants;
 import com.linroid.pushapp.R;
 import com.linroid.pushapp.api.DeviceService;
+import com.linroid.pushapp.model.Authorization;
 import com.linroid.pushapp.model.Device;
+import com.linroid.pushapp.model.User;
 import com.linroid.pushapp.ui.base.BaseActivity;
 import com.linroid.pushapp.ui.home.HomeActivity;
 import com.linroid.pushapp.util.DeviceUtil;
@@ -128,14 +130,16 @@ public class BindActivity extends BaseActivity {
         dialog.setMessage(getString(R.string.msg_diaolog_bind));
         dialog.setCancelable(false);
         dialog.show();
-        deviceApi.bindDevice(queryAndBuildDeviceInfo(), new Callback<Device>() {
+        deviceApi.bindDevice(queryAndBuildDeviceInfo(), new Callback<Authorization>() {
             @Override
             @DebugLog
-            public void success(Device device, Response response) {
+            public void success(Authorization authorization, Response response) {
+                Device device = authorization.getDevice();
+                User user = authorization.getUser();
                 token.setValue(device.getToken());
-                device.getUser().saveToFile(BindActivity.this);
-                redirectToHome();
+                user.saveToFile(BindActivity.this);
                 dialog.dismiss();
+                redirectToHome();
             }
 
             @Override
