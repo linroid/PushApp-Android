@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.linroid.pushapp" >
+
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+
+    <application
+        android:name=".App"
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:theme="@style/AppTheme" >
+        <activity
+            android:name=".ui.home.HomeActivity"
+            android:theme="@style/AppTheme.Home"
+            android:label="@string/app_name" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".ui.bind.QrcodeActivity"
+            android:label="@string/title_activity_qrcode"
+            android:parentActivityName=".ui.home.HomeActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.linroid.pushapp.ui.home.HomeActivity" />
+        </activity>
+
+        <service
+            android:name=".service.DownloadService"
+            android:enabled="true"
+            android:exported="false" />
+
+        <activity
+            android:name=".ui.device.SelectDeviceActivity"
+            android:label="@string/title_activity_select_device"
+            android:parentActivityName=".ui.home.HomeActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.linroid.pushapp.ui.home.HomeActivity" />
+        </activity>
+        <activity
+            android:name=".ui.bind.BindActivity"
+            android:label="@string/title_activity_bind"
+            android:parentActivityName=".ui.home.HomeActivity"
+            android:theme="@style/AppTheme"
+            android:exported="true">
+            <intent-filter>
+                <category android:name="android.intent.category.APP_BROWSER"/>
+                <data android:scheme="http" android:host="@string/host"/>
+            </intent-filter>
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.linroid.pushapp.ui.home.HomeActivity" />
+        </activity>
+    </application>
+
+</manifest>

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="AppTheme." parent="AppTheme.Base">
+        <item name="android:windowDrawsSystemBarBackgrounds">true</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:textColorPrimary">#FFFFFF</item>
+        <item name="android:tabWidgetStyle">@style/Widget.TabWidget</item>
+    </style>
+    <style name="Widget.TabWidget" parent="android:Widget.TabWidget">
+        <item name="android:textAppearance">@style/TextAppearance.AppCompat.Light.Widget.PopupMenu.Large</item>
+        <item name="android:ellipsize">marquee</item>
+        <item name="android:singleLine">true</item>
+    </style>
+    <style name="TextAppearance.Widget.TabWidget" parent="android:TextAppearance.Widget.TabWidget">
+        <item name="android:textColor">@color/tab_indicator_color</item>
+    </style>
+</resources>

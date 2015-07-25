@@ -1,0 +1,19 @@
+<resources>
+    <string name="app_name">PushApp</string>
+    <string name="action_settings">设置</string>
+    <string name="title_activity_first">@string/app_name</string>
+    <string name="btn_scan">扫描二维码</string>
+    <string name="title_activity_qrcode">扫描二维码</string>
+    <string name="action_torch_off">打开闪光灯</string>
+    <string name="action_torch_on">关闭闪光灯</string>
+    <string name="title_choose_app">选择一个App打开</string>
+    <string name="title_activity_select_device">选择设备</string>
+    <string name="msg_scanner">请在电脑上打开 %s</string>
+    <string name="title_activity_bind">绑定设备</string>
+
+    <string name="hello_world">Hello world!</string>
+    <string name="label_set_device_alias">设置设备别名:</string>
+    <string name="btn_bind">绑定</string>
+    <string name="tpl_alias_default" formatted="false" >%s(%s)</string>
+    <string name="msg_diaolog_bind">绑定中...</string>
+</resources>
