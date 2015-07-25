@@ -13,10 +13,8 @@ import com.journeyapps.barcodescanner.BarcodeCallback;
 import com.journeyapps.barcodescanner.BarcodeResult;
 import com.journeyapps.barcodescanner.CaptureManager;
 import com.journeyapps.barcodescanner.CompoundBarcodeView;
-import com.linroid.pushapp.BuildConfig;
 import com.linroid.pushapp.R;
 import com.linroid.pushapp.ui.base.BaseActivity;
-import com.linroid.pushapp.ui.bind.BindActivity;
 
 import java.util.List;
 
@@ -65,7 +63,7 @@ public class QrcodeActivity extends BaseActivity {
     }
     private void onScanSuccess(String token) {
         Intent intent = getIntent();
-        intent.putExtra(BindActivity.ARG_TOKEN, token);
+        intent.putExtra(BindActivity.ARG_BIND_TOKEN, token);
         setResult(RESULT_OK, intent);
         finish();
     }

@@ -3,27 +3,31 @@ package com.linroid.pushapp.ui.bind;
 import android.app.ActivityManager;
 import android.app.ProgressDialog;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
-import android.preference.Preference;
-import android.provider.Settings;
 import android.support.design.widget.Snackbar;
+import android.support.v4.view.MenuItemCompat;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 import android.widget.ViewSwitcher;
 
 import com.linroid.pushapp.App;
+import com.linroid.pushapp.Constants;
 import com.linroid.pushapp.R;
 import com.linroid.pushapp.api.DeviceService;
 import com.linroid.pushapp.model.Device;
 import com.linroid.pushapp.ui.base.BaseActivity;
 import com.linroid.pushapp.ui.home.HomeActivity;
 import com.linroid.pushapp.util.DeviceUtil;
+import com.linroid.pushapp.util.StringPreference;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 
 import butterknife.Bind;
 import butterknife.OnClick;
@@ -33,7 +37,7 @@ import retrofit.RetrofitError;
 import retrofit.client.Response;
 
 public class BindActivity extends BaseActivity {
-    public static final String ARG_TOKEN = "token";
+    public static final String ARG_BIND_TOKEN = "bind_token";
     public static final int REQ_SCAN_QRCODE = 0x1111;
     @Bind(R.id.open_qrcode)
     Button openQrcodeBtn;
@@ -41,11 +45,15 @@ public class BindActivity extends BaseActivity {
     EditText aliasET;
     @Bind(R.id.switcher)
     ViewSwitcher switcher;
+    @Named(Constants.SP_TOKEN)
+    @Inject
+    StringPreference token;
 
     @Inject
     DeviceService deviceApi;
 
-    private String token;
+    private String bindToken;
+    private boolean showProgress = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,13 +75,6 @@ public class BindActivity extends BaseActivity {
         return R.layout.activity_bind;
     }
 
-    private void showBindProgress() {
-        ProgressDialog dialog = new ProgressDialog(this, R.style.Theme_AppCompat_Light_Dialog);
-        dialog.setIndeterminate(true);
-        dialog.setMessage("绑定中...");
-        dialog.show();
-    }
-
     @OnClick(R.id.open_qrcode)
     public void onOpenQrcodeBtnClick(Button btn) {
         Intent intent = new Intent(this, QrcodeActivity.class);
@@ -81,14 +82,42 @@ public class BindActivity extends BaseActivity {
     }
 
     private void handleIntent(Intent intent) {
-        if (intent.hasExtra(ARG_TOKEN)) {
-            token = intent.getStringExtra(ARG_TOKEN);
+        if (intent.hasExtra(ARG_BIND_TOKEN)) {
+            bindToken = intent.getStringExtra(ARG_BIND_TOKEN);
         } else if (intent.getData() != null) {
-            token = intent.getData().getQueryParameter(ARG_TOKEN);
+            bindToken = intent.getData().getQueryParameter(ARG_BIND_TOKEN);
         }
-        if (!TextUtils.isEmpty(token)) {
+        if (!TextUtils.isEmpty(bindToken)) {
             switcher.showNext();
-            Snackbar.make(switcher, "扫描成功", Snackbar.LENGTH_SHORT).show();
+            Snackbar.make(switcher, R.string.msg_scan_qrcode_success, Snackbar.LENGTH_SHORT).show();
+            checkToken();
+        }
+    }
+
+    private void checkToken() {
+        setProgressVisible(true);
+        invalidateOptionsMenu();
+        deviceApi.checkToken(bindToken, DeviceUtil.id(this), new Callback<Device>() {
+            @Override
+            @DebugLog
+            public void success(Device device, Response response) {
+                if (device != null && !TextUtils.isEmpty(device.getAlias())) {
+                    aliasET.setText(device.getAlias());
+                }
+                setProgressVisible(false);
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+                setProgressVisible(false);
+            }
+        });
+    }
+
+    private void setProgressVisible(boolean show) {
+        if (show != showProgress) {
+            showProgress = false;
+            invalidateOptionsMenu();
         }
     }
 
@@ -103,11 +132,8 @@ public class BindActivity extends BaseActivity {
             @Override
             @DebugLog
             public void success(Device device, Response response) {
-                SharedPreferences sp = getSharedPreferences("pushapp", MODE_PRIVATE);
-                SharedPreferences.Editor editor = sp.edit();
-                editor.putString("token", device.getToken());
+                token.setValue(device.getToken());
                 device.getUser().saveToFile(BindActivity.this);
-                editor.apply();
                 redirectToHome();
                 dialog.dismiss();
             }
@@ -115,7 +141,7 @@ public class BindActivity extends BaseActivity {
             @Override
             @DebugLog
             public void failure(RetrofitError error) {
-
+                Toast.makeText(BindActivity.this, error.getMessage(), Toast.LENGTH_SHORT).show();
                 dialog.dismiss();
             }
         });
@@ -123,7 +149,7 @@ public class BindActivity extends BaseActivity {
 
     private void redirectToHome() {
         Intent intent = new Intent(this, HomeActivity.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
     }
 
@@ -136,7 +162,8 @@ public class BindActivity extends BaseActivity {
             switcher.reset();
         }
     }
-    private Device queryAndBuildDeviceInfo(){
+
+    private Device queryAndBuildDeviceInfo() {
         DisplayMetrics metrics = getResources().getDisplayMetrics();
         ActivityManager manager = (ActivityManager) getSystemService(ACTIVITY_SERVICE);
 
@@ -151,8 +178,18 @@ public class BindActivity extends BaseActivity {
                 .withHeight(metrics.heightPixels)
                 .withWidth(metrics.widthPixels)
                 .withMemorySize(manager.getMemoryClass())
-                .withToken(token)
+                .withToken(bindToken)
                 .withDeviceId(DeviceUtil.id(this))
-                        .build();
+                .build();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        super.onCreateOptionsMenu(menu);
+        getMenuInflater().inflate(R.menu.bind, menu);
+        MenuItem item = menu.findItem(R.id.progressbar);
+        MenuItemCompat.setActionView(item, R.layout.progressbar);
+        item.setVisible(showProgress);
+        return true;
     }
 }

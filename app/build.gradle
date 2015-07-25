@@ -31,7 +31,7 @@ android {
         if (propFile.exists()) {
             def Properties props = new Properties()
             props.load(new FileInputStream(propFile))
-            manifestPlaceholders.putAll([JPUSH_APPKEY: props['JPUSH_APPKEY']])
+            manifestPlaceholders.put("JPUSH_APPKEY", props['JPUSH_APPKEY'] as String)
         }
     }
     signingConfigs {

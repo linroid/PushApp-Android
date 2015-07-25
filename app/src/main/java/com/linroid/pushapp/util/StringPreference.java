@@ -9,25 +9,14 @@ import timber.log.Timber;
  * Created by linroid on 7/25/15.
  */
 public class StringPreference {
-    SharedPreferences sp;
-    String key;
-    String value;
-    SharedPreferences.OnSharedPreferenceChangeListener listener;
+    private SharedPreferences sp;
+    private String key;
+    private String value;
 
     public StringPreference(SharedPreferences sp, String key) {
         this.sp = sp;
         this.key = key;
-        fetch();
-        listener = new SharedPreferences.OnSharedPreferenceChangeListener() {
-            @DebugLog
-            @Override
-            public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-                if (StringPreference.this.key.equals(key)) {
-                    fetch();
-                }
-            }
-        };
-        sp.registerOnSharedPreferenceChangeListener(listener);
+        this.value = sp.getString(key, null);
     }
 
 
@@ -36,11 +25,8 @@ public class StringPreference {
     }
 
     public void setValue(String value) {
+        Timber.d("new value: %s => %s ", key, value);
         this.value = value;
-    }
-
-    public void fetch() {
-        value = sp.getString(key, null);
-        Timber.d("new value %s", value);
+        sp.edit().putString(key, value).apply();
     }
 }

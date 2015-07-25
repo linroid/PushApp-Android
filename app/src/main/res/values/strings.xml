@@ -16,4 +16,5 @@
     <string name="btn_bind">绑定</string>
     <string name="tpl_alias_default" formatted="false" >%s(%s)</string>
     <string name="msg_diaolog_bind">绑定中...</string>
+    <string name="msg_scan_qrcode_success">扫描成功</string>
 </resources>

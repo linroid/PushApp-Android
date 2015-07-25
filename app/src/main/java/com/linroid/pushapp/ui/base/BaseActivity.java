@@ -12,6 +12,7 @@ import com.linroid.pushapp.R;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import cn.jpush.android.api.JPushInterface;
 import timber.log.Timber;
 
 /**
@@ -53,12 +54,14 @@ public abstract class BaseActivity extends AppCompatActivity {
     @Override
     public void onPause() {
         super.onPause();
+        JPushInterface.onPause(this);
         Timber.i("onPause");
     }
 
     @Override
     protected void onResume() {
         super.onResume();
+        JPushInterface.onResume(this);
         Timber.i("onResume");
     }
 

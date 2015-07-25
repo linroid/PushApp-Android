@@ -1,4 +1,9 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
+    <item android:id="@+id/progressbar"
+        android:title="@android:string/untitled"
+        android:actionLayout="@layout/progressbar"
+        android:actionViewClass="android.widget.ProgressBar"
+        app:showAsAction="always"/>
 </menu>
