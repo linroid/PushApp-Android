@@ -65,16 +65,12 @@
         <activity
             android:name=".ui.bind.BindActivity"
             android:label="@string/title_activity_bind"
-            android:parentActivityName=".ui.home.HomeActivity"
             android:theme="@style/AppTheme"
             android:exported="true">
             <intent-filter>
                 <category android:name="android.intent.category.APP_BROWSER"/>
                 <data android:scheme="http" android:host="@string/host"/>
             </intent-filter>
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.linroid.pushapp.ui.home.HomeActivity" />
         </activity>
 
 

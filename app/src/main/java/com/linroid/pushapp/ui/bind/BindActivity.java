@@ -1,5 +1,6 @@
 package com.linroid.pushapp.ui.bind;
 
+import android.app.ActionBar;
 import android.app.ActivityManager;
 import android.app.ProgressDialog;
 import android.content.Intent;
@@ -13,10 +14,12 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ViewSwitcher;
 
 import com.linroid.pushapp.App;
+import com.linroid.pushapp.BuildConfig;
 import com.linroid.pushapp.Constants;
 import com.linroid.pushapp.R;
 import com.linroid.pushapp.api.DeviceService;
@@ -41,12 +44,15 @@ import retrofit.client.Response;
 public class BindActivity extends BaseActivity {
     public static final String ARG_BIND_TOKEN = "bind_token";
     public static final int REQ_SCAN_QRCODE = 0x1111;
-    @Bind(R.id.open_qrcode)
+    @Bind(R.id.btn_open_qrcode)
     Button openQrcodeBtn;
     @Bind(R.id.et_alias)
     EditText aliasET;
     @Bind(R.id.switcher)
     ViewSwitcher switcher;
+    @Bind(R.id.tv_first_content)
+    TextView firstContentTV;
+
     @Named(Constants.SP_TOKEN)
     @Inject
     StringPreference token;
@@ -62,7 +68,9 @@ public class BindActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         handleIntent(getIntent());
         aliasET.setText(getString(R.string.tpl_alias_default, Build.MODEL, Build.VERSION.RELEASE));
+        firstContentTV.setText(getString(R.string.bind_fist_content, getString(R.string.host_url)));
         App.from(this).component().inject(this);
+
     }
 //
 //    @Override
@@ -77,7 +85,7 @@ public class BindActivity extends BaseActivity {
         return R.layout.activity_bind;
     }
 
-    @OnClick(R.id.open_qrcode)
+    @OnClick(R.id.btn_open_qrcode)
     public void onOpenQrcodeBtnClick(Button btn) {
         Intent intent = new Intent(this, QrcodeActivity.class);
         startActivityForResult(intent, REQ_SCAN_QRCODE);
@@ -90,9 +98,23 @@ public class BindActivity extends BaseActivity {
             bindToken = intent.getData().getQueryParameter(ARG_BIND_TOKEN);
         }
         if (!TextUtils.isEmpty(bindToken)) {
-            switcher.showNext();
+            showSecond();
             Snackbar.make(switcher, R.string.msg_scan_qrcode_success, Snackbar.LENGTH_SHORT).show();
             checkToken();
+        }
+    }
+
+    private void showSecond() {
+        if (switcher.getDisplayedChild() == 0) {
+            switcher.showNext();
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
+    }
+
+    private void showFirst() {
+        if (switcher.getDisplayedChild() == 1) {
+            switcher.showNext();
+            getSupportActionBar().setDisplayHomeAsUpEnabled(false);
         }
     }
 
@@ -127,7 +149,7 @@ public class BindActivity extends BaseActivity {
     public void onBindBtnClicked(Button btn) {
         final ProgressDialog dialog = new ProgressDialog(this, R.style.Theme_AppCompat_Light_Dialog);
         dialog.setIndeterminate(true);
-        dialog.setMessage(getString(R.string.msg_diaolog_bind));
+        dialog.setMessage(getString(R.string.msg_dialog_bind));
         dialog.setCancelable(false);
         dialog.show();
         deviceApi.bindDevice(queryAndBuildDeviceInfo(), new Callback<Authorization>() {
@@ -163,8 +185,19 @@ public class BindActivity extends BaseActivity {
         if (resultCode == RESULT_OK) {
             handleIntent(data);
         } else {
-            switcher.reset();
+            showFirst();
         }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            if (switcher.getDisplayedChild() == 1) {
+                showFirst();
+                return true;
+            }
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     private Device queryAndBuildDeviceInfo() {
