@@ -7,23 +7,24 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
 
-    <!--JPush begin -->
+    <!--JPush permission begin -->
 
-    <!-- Required -->
-    <permission android:name="com.linroid.pushapp.permission.JPUSH_MESSAGE" android:protectionLevel="signature" />
+    <permission
+        android:name="${PACKAGE}.permission.JPUSH_MESSAGE"
+        android:protectionLevel="signature" />
 
-    <!-- Required -->
-    <uses-permission android:name="com.linroid.pushapp.permission.JPUSH_MESSAGE" />
+    <!-- Required  一些系统要求的权限，如访问网络等-->
+    <uses-permission android:name="${PACKAGE}.permission.JPUSH_MESSAGE" />
     <uses-permission android:name="android.permission.RECEIVE_USER_PRESENT" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_SETTINGS" />
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS" />
-    <uses-permission android:name="android.permission.WRITE_SETTINGS" /> <!--since 1.6.0 -->
-
-    <!--JPush end-->
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW"/>
+    <!--JPush permission end-->
     <application
         android:name=".App"
         android:allowBackup="true"
@@ -46,7 +47,7 @@
             android:parentActivityName=".ui.home.HomeActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.linroid.pushapp.ui.home.HomeActivity" />
+                android:value=".ui.home.HomeActivity" />
         </activity>
 
         <service
@@ -60,7 +61,7 @@
             android:parentActivityName=".ui.home.HomeActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.linroid.pushapp.ui.home.HomeActivity" />
+                android:value=".ui.home.HomeActivity" />
         </activity>
         <activity
             android:name=".ui.bind.BindActivity"
@@ -74,28 +75,49 @@
         </activity>
 
 
-        <!-- JPush begin -->
+        <!-- JPush component begin -->
 
-        <!-- Required -->
+        <!-- Required SDK核心功能-->
+        <activity
+            android:name="cn.jpush.android.ui.PushActivity"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar"
+            android:configChanges="orientation|keyboardHidden" >
+            <intent-filter>
+                <action android:name="cn.jpush.android.ui.PushActivity" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="${PACKAGE}" />
+            </intent-filter>
+        </activity>
+        <!-- Required  SDK核心功能-->
+        <service
+            android:name="cn.jpush.android.service.DownloadService"
+            android:enabled="true"
+            android:exported="false" >
+        </service>
+
+
+        <!-- Required SDK 核心功能-->
         <service
             android:name="cn.jpush.android.service.PushService"
             android:enabled="true"
-            android:exported="false" >
+            android:exported="false">
             <intent-filter>
                 <action android:name="cn.jpush.android.intent.REGISTER" />
                 <action android:name="cn.jpush.android.intent.REPORT" />
                 <action android:name="cn.jpush.android.intent.PushService" />
                 <action android:name="cn.jpush.android.intent.PUSH_TIME" />
+
             </intent-filter>
         </service>
 
-        <!-- Required -->
+        <!-- Required SDK核心功能-->
         <receiver
             android:name="cn.jpush.android.service.PushReceiver"
+            android:permission="${PACKAGE}.permission.JPUSH_MESSAGE"
             android:enabled="true" >
             <intent-filter android:priority="1000">
-                <action android:name="cn.jpush.android.intent.NOTIFICATION_RECEIVED_PROXY" />
-                <category android:name="com.linroid.pushapp"/>
+                <action android:name="cn.jpush.android.intent.NOTIFICATION_RECEIVED_PROXY" />   <!--Required  显示通知栏 -->
+                <category android:name="${PACKAGE}" />
             </intent-filter>
             <intent-filter>
                 <action android:name="android.intent.action.USER_PRESENT" />
@@ -107,24 +129,9 @@
                 <action android:name="android.intent.action.PACKAGE_REMOVED" />
                 <data android:scheme="package" />
             </intent-filter>
+
         </receiver>
-        <!-- Required SDK核心功能-->
-        <activity
-            android:name="cn.jpush.android.ui.PushActivity"
-            android:theme="@android:style/Theme.Translucent.NoTitleBar"
-            android:configChanges="orientation|keyboardHidden" >
-            <intent-filter>
-                <action android:name="cn.jpush.android.ui.PushActivity" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="com.linroid.pushapp" />
-            </intent-filter>
-        </activity>
-        <!-- Required SDK核心功能-->
-        <service
-            android:name="cn.jpush.android.service.DownloadService"
-            android:enabled="true"
-            android:exported="false" >
-        </service>
+
         <!-- Required SDK核心功能-->
         <receiver android:name="cn.jpush.android.service.AlarmReceiver" />
         <!--JPUSH End-->
@@ -132,7 +139,7 @@
         <!-- Required. AppKey copied from Portal -->
         <meta-data android:name="JPUSH_APPKEY" android:value="${JPUSH_APPKEY}"/>
 
-        <!--JPush end-->
+        <!--JPush component end-->
     </application>
 
 </manifest>

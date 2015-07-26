@@ -32,6 +32,9 @@ public class Device implements Parcelable {
     @SerializedName("device_id")
     @Expose
     private String deviceId;
+    @SerializedName("push_id")
+    @Expose
+    private String pushId;
     @SerializedName("memory_size")
     @Expose
     private int memorySize;
@@ -182,6 +185,20 @@ public class Device implements Parcelable {
     }
 
     /**
+     * @param pushId The push_id
+     */
+    public void setPushId(String pushId) {
+        this.pushId = pushId;
+    }
+
+    /**
+     * @return The pushId
+     */
+    public String getPushId() {
+        return pushId;
+    }
+
+    /**
      * @return The memorySize
      */
     public int getMemorySize() {
@@ -250,6 +267,7 @@ public class Device implements Parcelable {
     public void setUserId(int userId) {
         this.userId = userId;
     }
+
     /**
      * @return The user
      */
@@ -298,17 +316,19 @@ public class Device implements Parcelable {
                 "id='" + id + '\'' +
                 ", model='" + model + '\'' +
                 ", alias='" + alias + '\'' +
-                ", sdkLevel='" + sdkLevel + '\'' +
+                ", sdkLevel=" + sdkLevel +
                 ", osName='" + osName + '\'' +
                 ", height=" + height +
                 ", width=" + width +
                 ", dpi=" + dpi +
                 ", deviceId='" + deviceId + '\'' +
-                ", memorySize='" + memorySize + '\'' +
+                ", pushId='" + pushId + '\'' +
+                ", memorySize=" + memorySize +
                 ", cpuType='" + cpuType + '\'' +
                 ", token='" + token + '\'' +
                 ", networkType='" + networkType + '\'' +
-                ", userId='" + userId + '\'' +
+                ", userId=" + userId +
+                ", user=" + user +
                 ", createdAt='" + createdAt + '\'' +
                 ", updatedAt='" + updatedAt + '\'' +
                 '}';
@@ -316,62 +336,6 @@ public class Device implements Parcelable {
 
     public Device() {
     }
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(this.id);
-        dest.writeString(this.model);
-        dest.writeString(this.alias);
-        dest.writeInt(this.sdkLevel);
-        dest.writeString(this.osName);
-        dest.writeInt(this.height);
-        dest.writeInt(this.width);
-        dest.writeInt(this.dpi);
-        dest.writeString(this.deviceId);
-        dest.writeInt(this.memorySize);
-        dest.writeString(this.cpuType);
-        dest.writeString(this.token);
-        dest.writeString(this.networkType);
-        dest.writeInt(this.userId);
-        dest.writeParcelable(this.user, 0);
-        dest.writeString(this.createdAt);
-        dest.writeString(this.updatedAt);
-    }
-
-    protected Device(Parcel in) {
-        this.id = in.readString();
-        this.model = in.readString();
-        this.alias = in.readString();
-        this.sdkLevel = in.readInt();
-        this.osName = in.readString();
-        this.height = in.readInt();
-        this.width = in.readInt();
-        this.dpi = in.readInt();
-        this.deviceId = in.readString();
-        this.memorySize = in.readInt();
-        this.cpuType = in.readString();
-        this.token = in.readString();
-        this.networkType = in.readString();
-        this.userId = in.readInt();
-        this.user = in.readParcelable(User.class.getClassLoader());
-        this.createdAt = in.readString();
-        this.updatedAt = in.readString();
-    }
-
-    public static final Creator<Device> CREATOR = new Creator<Device>() {
-        public Device createFromParcel(Parcel source) {
-            return new Device(source);
-        }
-
-        public Device[] newArray(int size) {
-            return new Device[size];
-        }
-    };
 
     public static class DeviceBuilder {
         private String id;
@@ -383,6 +347,7 @@ public class Device implements Parcelable {
         private int width;
         private int dpi;
         private String deviceId;
+        private String pushId;
         private int memorySize;
         private String cpuType;
         private String token;
@@ -443,6 +408,11 @@ public class Device implements Parcelable {
             return this;
         }
 
+        public DeviceBuilder withPushId(String pushId) {
+            this.pushId = pushId;
+            return this;
+        }
+
         public DeviceBuilder withMemorySize(int memorySize) {
             this.memorySize = memorySize;
             return this;
@@ -493,6 +463,7 @@ public class Device implements Parcelable {
             device.setWidth(width);
             device.setDpi(dpi);
             device.setDeviceId(deviceId);
+            device.setPushId(pushId);
             device.setMemorySize(memorySize);
             device.setCpuType(cpuType);
             device.setToken(token);
@@ -503,4 +474,62 @@ public class Device implements Parcelable {
             return device;
         }
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(this.id);
+        dest.writeString(this.model);
+        dest.writeString(this.alias);
+        dest.writeInt(this.sdkLevel);
+        dest.writeString(this.osName);
+        dest.writeInt(this.height);
+        dest.writeInt(this.width);
+        dest.writeInt(this.dpi);
+        dest.writeString(this.deviceId);
+        dest.writeString(this.pushId);
+        dest.writeInt(this.memorySize);
+        dest.writeString(this.cpuType);
+        dest.writeString(this.token);
+        dest.writeString(this.networkType);
+        dest.writeInt(this.userId);
+        dest.writeParcelable(this.user, 0);
+        dest.writeString(this.createdAt);
+        dest.writeString(this.updatedAt);
+    }
+
+    protected Device(Parcel in) {
+        this.id = in.readString();
+        this.model = in.readString();
+        this.alias = in.readString();
+        this.sdkLevel = in.readInt();
+        this.osName = in.readString();
+        this.height = in.readInt();
+        this.width = in.readInt();
+        this.dpi = in.readInt();
+        this.deviceId = in.readString();
+        this.pushId = in.readString();
+        this.memorySize = in.readInt();
+        this.cpuType = in.readString();
+        this.token = in.readString();
+        this.networkType = in.readString();
+        this.userId = in.readInt();
+        this.user = in.readParcelable(User.class.getClassLoader());
+        this.createdAt = in.readString();
+        this.updatedAt = in.readString();
+    }
+
+    public static final Creator<Device> CREATOR = new Creator<Device>() {
+        public Device createFromParcel(Parcel source) {
+            return new Device(source);
+        }
+
+        public Device[] newArray(int size) {
+            return new Device[size];
+        }
+    };
 }

@@ -1,8 +1,11 @@
 package com.linroid.pushapp.ui.bind;
 
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.Menu;
@@ -13,6 +16,7 @@ import com.journeyapps.barcodescanner.BarcodeCallback;
 import com.journeyapps.barcodescanner.BarcodeResult;
 import com.journeyapps.barcodescanner.CaptureManager;
 import com.journeyapps.barcodescanner.CompoundBarcodeView;
+import com.linroid.pushapp.BuildConfig;
 import com.linroid.pushapp.R;
 import com.linroid.pushapp.ui.base.BaseActivity;
 
@@ -35,7 +39,7 @@ public class QrcodeActivity extends BaseActivity {
         if (state != null) {
             isTorchOn = state.getBoolean(STATE_TORCH);
         }
-        scannerView.setStatusText(getString(R.string.msg_scanner, getString(R.string.host_url)));
+        scannerView.setStatusText(getString(R.string.msg_scanner, BuildConfig.HOST_URL));
         capture = new CaptureManager(this, this.scannerView);
         capture.initializeFromIntent(getIntent(), state);
         capture.decode();
@@ -45,7 +49,7 @@ public class QrcodeActivity extends BaseActivity {
             public void barcodeResult(BarcodeResult barcodeResult) {
                 Uri uri = Uri.parse(barcodeResult.getText());
                 String token = uri.getQueryParameter("token");
-                if(!TextUtils.isEmpty(token) && token.length()==64) {
+                if (!TextUtils.isEmpty(token) && token.length() == 64) {
                     onScanSuccess(token);
                 } else {
                     handleUnknownBarcode(barcodeResult.getText());
@@ -58,9 +62,23 @@ public class QrcodeActivity extends BaseActivity {
             }
         });
     }
+
     private void handleUnknownBarcode(String text) {
         Timber.e("Unknown barcode content: %s", text);
+        Uri uri = Uri.parse(text);
+        if (!TextUtils.isEmpty(uri.getScheme())) {
+            Intent intent = new Intent(Intent.ACTION_VIEW);
+            intent.setData(uri);
+            PackageManager pm = getPackageManager();
+            List<ResolveInfo> activities = pm.queryIntentActivities(intent, 0);
+            if (activities.size() > 0) {
+                startActivity(Intent.createChooser(intent, getString(R.string.title_choose_app)));
+            } else {
+                Snackbar.make(scannerView, R.string.error_unknown_barcode, Snackbar.LENGTH_LONG).show();
+            }
+        }
     }
+
     private void onScanSuccess(String token) {
         Intent intent = getIntent();
         intent.putExtra(BindActivity.ARG_BIND_TOKEN, token);
@@ -124,7 +142,7 @@ public class QrcodeActivity extends BaseActivity {
                     scannerView.setTorchOff();
                 }
                 isTorchOn = !isTorchOn;
-                item.setTitle( isTorchOn ? R.string.action_torch_on : R.string.action_torch_off);
+                item.setTitle(isTorchOn ? R.string.action_torch_on : R.string.action_torch_off);
                 return true;
         }
         return super.onOptionsItemSelected(item);

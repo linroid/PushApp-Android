@@ -36,6 +36,7 @@ import javax.inject.Named;
 
 import butterknife.Bind;
 import butterknife.OnClick;
+import cn.jpush.android.api.JPushInterface;
 import hugo.weaving.DebugLog;
 import retrofit.Callback;
 import retrofit.RetrofitError;
@@ -68,7 +69,7 @@ public class BindActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         handleIntent(getIntent());
         aliasET.setText(getString(R.string.tpl_alias_default, Build.MODEL, Build.VERSION.RELEASE));
-        firstContentTV.setText(getString(R.string.bind_fist_content, getString(R.string.host_url)));
+        firstContentTV.setText(getString(R.string.bind_fist_content, BuildConfig.HOST_URL));
         App.from(this).component().inject(this);
 
     }
@@ -217,6 +218,7 @@ public class BindActivity extends BaseActivity {
                 .withMemorySize(manager.getMemoryClass())
                 .withToken(bindToken)
                 .withDeviceId(DeviceUtil.id(this))
+                .withPushId(JPushInterface.getRegistrationID(this))
                 .build();
     }
 

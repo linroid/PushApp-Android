@@ -18,4 +18,5 @@
     <string name="msg_dialog_bind">绑定中…</string>
     <string name="msg_scan_qrcode_success">扫描成功</string>
     <string name="bind_fist_content">请在电脑上打开:\n\n%s\n</string>
+    <string name="error_unknown_barcode">无法识别二维码信息:(</string>
 </resources>

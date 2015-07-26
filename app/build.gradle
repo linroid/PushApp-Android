@@ -9,8 +9,13 @@ def versionPatch = 0
 def versionBuild = 0 // bump for dogfood builds, public betas, etc.
 def buildTime = new Date().format("yyyy-MM-dd HH:mm", TimeZone.getTimeZone("GMT+8:00"))
 
-def endpoint
-def host = "pushapp"
+def Properties props
+File appPropFile = file('app.properties');
+if (appPropFile.exists()) {
+    props = new Properties()
+    props.load(new FileInputStream(appPropFile))
+}
+
 android {
     compileSdkVersion 22
     buildToolsVersion "23.0.0 rc2"
@@ -21,18 +26,10 @@ android {
         targetSdkVersion 22
         versionCode versionMajor * 10000 + versionMinor * 1000 + versionPatch * 100 + versionBuild
         versionName "${versionMajor}.${versionMinor}.${versionPatch}"
+
         buildConfigField "String", "BUILD_TIME", "\"${buildTime}\""
-        System.out.println(new File("./app/nobug.txt").getText("UTF-8"))
-        endpoint = "http://${host}/api"
-
-        manifestPlaceholders = [JPUSH_CHANNEL: "default"]
-
-        File propFile = file('app.properties');
-        if (propFile.exists()) {
-            def Properties props = new Properties()
-            props.load(new FileInputStream(propFile))
-            manifestPlaceholders.put("JPUSH_APPKEY", props['JPUSH_APPKEY'] as String)
-        }
+        println(new File("./app/nobug.txt").getText("UTF-8"))
+        manifestPlaceholders = [JPUSH_CHANNEL: "default", PACKAGE: applicationId]
     }
     signingConfigs {
         debug {
@@ -43,6 +40,11 @@ android {
         }
     }
     buildTypes {
+        allprojects {
+            if (props) {
+                manifestPlaceholders.put("JPUSH_APPKEY", props['JPUSH_APPKEY'] as String)
+            }
+        }
         debug {
             applicationIdSuffix ".dev"
             versionNameSuffix '-dev'
@@ -50,34 +52,48 @@ android {
             minifyEnabled false
             zipAlignEnabled false
             signingConfig signingConfigs.debug
-
-            def hostIp = InetAddress.getLocalHost().getHostAddress()
-            endpoint = "http://${host}.${hostIp}.xip.io"
-            buildConfigField "String", "ENDPOINT", "\"http://${host}.${hostIp}.xip.io/api\""
-            resValue "string", "host_url", "http://${host}.${hostIp}.xip.io"
-            resValue "string", "host", "${host}.${hostIp}.xip.io"
-
-            System.out.println("host_url: " + "http://${host}.${hostIp}.xip.io")
+            manifestPlaceholders = [JPUSH_CHANNEL: "default", PACKAGE: defaultConfig.applicationId+applicationIdSuffix]
+            if (props) {
+                manifestPlaceholders.put("JPUSH_APPKEY", props['DEBUG_JPUSH_APPKEY'] as String)
+            }
         }
         release {
             signingConfig signingConfigs.release
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-            buildConfigField "String", "ENDPOINT", "\"{$endpoint}\""
-            resValue "string", "host_url", "http://${host}"
-            resValue "string", "host", "${host}"
         }
+        all { type ->
+            def host
+            if (type == debug) {
+                def hostIp = InetAddress.getLocalHost().getHostAddress()
+                host = "pushapp.${hostIp}.xip.io"
+                println("You can open the homepage: http://${host}")
+            } else if (type == release) {
+                host = "pushapp.io"
+            } else {
+                return
+            }
+            type.buildConfigField "String", "ENDPOINT",     "\"http://${host}/api\""
+            type.buildConfigField "String", "HOST",         "\"${host}\""
+            type.buildConfigField "String", "HOST_URL",     "\"http://${host}\""
 
+            type.resValue "string", "endpoint",     "http://${host}/api"
+            type.resValue "string", "host",         "${host}"
+            type.resValue "string", "host_url",     "http://${host}"
+        }
     }
 
     lintOptions {
         disable 'InvalidPackage'
+        abortOnError false
     }
     packagingOptions {
         exclude 'META-INF/services/javax.annotation.processing.Processor'
         exclude 'META-INF/LICENSE.txt'
         exclude 'META-INF/NOTICE.txt'
     }
+
+
 }
 
 dependencies {
@@ -104,17 +120,18 @@ dependencies {
     provided 'javax.annotation:jsr250-api:1.0'
 }
 
-File propFile = file('signing.properties');
-if (propFile.exists()) {
-    def Properties props = new Properties()
-    props.load(new FileInputStream(propFile))
 
-    if (props.containsKey('STORE_FILE') && props.containsKey('STORE_PASSWORD') &&
-            props.containsKey('KEY_ALIAS') && props.containsKey('KEY_PASSWORD')) {
-        android.signingConfigs.release.storeFile = file(props['STORE_FILE'])
-        android.signingConfigs.release.storePassword = props['STORE_PASSWORD']
-        android.signingConfigs.release.keyAlias = props['KEY_ALIAS']
-        android.signingConfigs.release.keyPassword = props['KEY_PASSWORD']
+File signPropFile = file('signing.properties');
+if (signPropFile.exists()) {
+    def Properties signProps = new Properties()
+    signProps.load(new FileInputStream(signPropFile))
+
+    if (signProps.containsKey('STORE_FILE') && signProps.containsKey('STORE_PASSWORD') &&
+            signProps.containsKey('KEY_ALIAS') && signProps.containsKey('KEY_PASSWORD')) {
+        android.signingConfigs.release.storeFile = file(signProps['STORE_FILE'])
+        android.signingConfigs.release.storePassword = signProps['STORE_PASSWORD']
+        android.signingConfigs.release.keyAlias = signProps['KEY_ALIAS']
+        android.signingConfigs.release.keyPassword = signProps['KEY_PASSWORD']
     } else {
         android.buildTypes.release.signingConfig = null
     }
