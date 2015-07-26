@@ -12,7 +12,7 @@ import com.google.gson.annotations.SerializedName;
 public class Device implements Parcelable {
 
     @Expose
-    private String id;
+    private Integer id;
     @Expose
     private String model;
     @Expose
@@ -48,7 +48,7 @@ public class Device implements Parcelable {
     private String networkType;
     @SerializedName("user_id")
     @Expose
-    private int userId;
+    private Integer userId;
     @Expose
     private User user;
     @SerializedName("created_at")
@@ -61,14 +61,14 @@ public class Device implements Parcelable {
     /**
      * @return The id
      */
-    public String getId() {
+    public Integer getId() {
         return id;
     }
 
     /**
      * @param id The id
      */
-    public void setId(String id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
@@ -257,14 +257,14 @@ public class Device implements Parcelable {
     /**
      * @return The userId
      */
-    public int getUserId() {
+    public Integer getUserId() {
         return userId;
     }
 
     /**
      * @param userId The user_id
      */
-    public void setUserId(int userId) {
+    public void setUserId(Integer userId) {
         this.userId = userId;
     }
 
@@ -338,7 +338,7 @@ public class Device implements Parcelable {
     }
 
     public static class DeviceBuilder {
-        private String id;
+        private Integer id;
         private String model;
         private String alias;
         private int sdkLevel;
@@ -352,7 +352,7 @@ public class Device implements Parcelable {
         private String cpuType;
         private String token;
         private String networkType;
-        private int userId;
+        private Integer userId;
         private String createdAt;
         private String updatedAt;
 
@@ -363,7 +363,7 @@ public class Device implements Parcelable {
             return new DeviceBuilder();
         }
 
-        public DeviceBuilder withId(String id) {
+        public DeviceBuilder withId(Integer id) {
             this.id = id;
             return this;
         }
@@ -482,7 +482,7 @@ public class Device implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(this.id);
+        dest.writeInt(this.id);
         dest.writeString(this.model);
         dest.writeString(this.alias);
         dest.writeInt(this.sdkLevel);
@@ -503,7 +503,7 @@ public class Device implements Parcelable {
     }
 
     protected Device(Parcel in) {
-        this.id = in.readString();
+        this.id = in.readInt();
         this.model = in.readString();
         this.alias = in.readString();
         this.sdkLevel = in.readInt();

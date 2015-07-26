@@ -9,4 +9,5 @@ public class Constants {
     public static final String SP_FILE_NAME = "pushapp";
 
     public static final String SP_TOKEN = "token";
+    public static final String PUSH_TYPE_PACKAGE = "package";
 }

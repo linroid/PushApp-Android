@@ -8,6 +8,8 @@ import com.google.gson.Gson;
 import com.linroid.pushapp.BuildConfig;
 import com.linroid.pushapp.Constants;
 import com.linroid.pushapp.R;
+import com.linroid.pushapp.module.identifier.DataCacheDir;
+import com.linroid.pushapp.module.identifier.HttpCacheDir;
 import com.linroid.pushapp.util.StringPreference;
 import com.squareup.okhttp.Cache;
 import com.squareup.okhttp.OkHttpClient;
@@ -50,7 +52,7 @@ public class NetworkModule {
 
     @Provides
     @Singleton
-    Cache provideHttpCache(@Named("HttpCache") File httpCacheDir) {
+    Cache provideHttpCache(@HttpCacheDir File httpCacheDir) {
         //100M;
         int cacheSize = 1024 * 1024 * 100;
         try {
@@ -70,7 +72,7 @@ public class NetworkModule {
 
     @Provides
     @Singleton
-    DiskLruCache provideDataCache(@Named("DataCache") File cacheDir) {
+    DiskLruCache provideDataCache(@DataCacheDir File cacheDir) {
         //10M
         return DiskLruCache.create(FileSystem.SYSTEM,
                 cacheDir,

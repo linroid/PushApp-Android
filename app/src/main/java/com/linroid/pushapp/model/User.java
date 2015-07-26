@@ -26,7 +26,7 @@ import timber.log.Timber;
 public class User implements Parcelable {
 
     @Expose
-    private int id;
+    private Integer id;
     @Expose
     private String nickname;
     @Expose
@@ -41,14 +41,14 @@ public class User implements Parcelable {
     /**
      * @return The id
      */
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
     /**
      * @param id The id
      */
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 

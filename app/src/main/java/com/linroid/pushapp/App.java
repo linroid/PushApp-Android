@@ -2,14 +2,18 @@ package com.linroid.pushapp;
 
 import android.app.Activity;
 import android.app.Application;
+import android.app.Service;
 import android.content.Context;
-import android.content.SharedPreferences;
 
+import com.facebook.drawee.backends.pipeline.Fresco;
+import com.facebook.imagepipeline.backends.okhttp.OkHttpImagePipelineConfigFactory;
+import com.facebook.imagepipeline.core.ImagePipelineConfig;
 import com.facebook.stetho.Stetho;
 import com.linroid.pushapp.module.ApiModule;
 import com.linroid.pushapp.module.AppModule;
 import com.linroid.pushapp.module.FileModule;
 import com.linroid.pushapp.module.NetworkModule;
+import com.squareup.okhttp.OkHttpClient;
 
 import javax.inject.Inject;
 
@@ -22,6 +26,8 @@ import timber.log.Timber;
 public class App extends Application{
     AppComponent component;
 
+    @Inject
+    OkHttpClient okHttp;
     @Override
     public void onCreate() {
         super.onCreate();
@@ -38,14 +44,25 @@ public class App extends Application{
                 .apiModule(new ApiModule())
                 .fileModule(new FileModule())
                 .build();
-
         component.inject(this);
+
+        configFresco();
+
         JPushInterface.setDebugMode(BuildConfig.DEBUG);
         JPushInterface.init(this);
         if(BuildConfig.DEBUG) {
             Timber.plant(new Timber.DebugTree());
         }
     }
+
+    private void configFresco() {
+        ImagePipelineConfig config = OkHttpImagePipelineConfigFactory
+                .newBuilder(this, okHttp)
+                .build();
+        Fresco.initialize(this, config);
+
+    }
+
     public AppComponent component() {
         return component;
     }
@@ -53,4 +70,10 @@ public class App extends Application{
         return (App) activity.getApplication();
     }
 
+    public static App from(Context context) {
+        return (App) context.getApplicationContext();
+    }
+    public static App from(Service service) {
+        return (App) service.getApplication();
+    }
 }

@@ -1,6 +1,7 @@
 package com.linroid.pushapp.module;
 
 import android.app.Application;
+import android.app.NotificationManager;
 import android.content.Context;
 import android.content.SharedPreferences;
 
@@ -56,4 +57,9 @@ public class AppModule {
         return new StringPreference(sp, Constants.SP_TOKEN);
     }
 
+    @Provides
+    @Singleton
+    NotificationManager provideNotificationManager(Context context) {
+        return (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+    }
 }

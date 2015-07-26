@@ -19,4 +19,8 @@
     <string name="msg_scan_qrcode_success">扫描成功</string>
     <string name="bind_fist_content">请在电脑上打开:\n\n%s\n</string>
     <string name="error_unknown_barcode">无法识别二维码信息:(</string>
+    <string name="msg_downloading" formatted="false">%s 下载中…</string>
+    <string name="msg_download_complete" formatted="false">%s 下载完成</string>
+    <string name="msg_download_progress" formatted="false">%d%%</string>
+    <string name="msg_download_fail" >%s 下载无法完成</string>
 </resources>
