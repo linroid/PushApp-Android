@@ -132,13 +132,12 @@ public class DownloadService extends Service {
     }
 
     private void installPackage(InstallPackage pack) {
-        if (preferences.getBoolean(Constants.SP_AUTO_INSTALL_CONFIRMED, false)) {
-            Intent intent = new Intent(this, InstallService.class);
-            intent.putExtra(InstallService.EXTRA_PACKAGE, pack);
-            startService(intent);
-        } else {
-            AndroidUtil.installPackage(this, pack);
+        if (AndroidUtil.isAccessibilitySettingsOn(this, ApkAutoInstallService.class.getCanonicalName())) {
+            CharSequence label = AndroidUtil.getApkLabel(this, pack.getPath());
+            pack.setAppName(label != null ? label.toString() : pack.getAppName());
+            ApkAutoInstallService.installPackage(pack);
         }
+        AndroidUtil.installPackage(this, pack);
 
     }
 

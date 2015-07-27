@@ -171,11 +171,6 @@
             </intent-filter>
         </receiver>
 
-        <service
-            android:name=".service.InstallService"
-            android:enabled="true"
-            android:exported="true"/>
-
         <activity
             android:name=".ui.setting.SettingActivity"
             android:label="@string/title_activity_setting"

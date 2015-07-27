@@ -11,6 +11,7 @@ import android.view.accessibility.AccessibilityNodeInfo;
 
 import com.linroid.pushapp.BuildConfig;
 import com.linroid.pushapp.R;
+import com.linroid.pushapp.model.InstallPackage;
 import com.linroid.pushapp.util.DeviceUtil;
 
 import java.util.ArrayList;
@@ -30,10 +31,6 @@ import timber.log.Timber;
 @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
 public class ApkAutoInstallService extends AccessibilityService {
     public static final int AVAILABLE_API = 16;
-    public static final int ROM_COMMON = 1;
-    public static final int ROM_FLYME = 3;
-    public static final int ROM_LENOVO = 4;
-    public static final int ROM_MIUI = 2;
     private static final String CLASS_NAME_APP_ALERT_DIALOG = "android.app.AlertDialog";
     private static final String CLASS_NAME_LENOVO_SAFECENTER = "com.lenovo.safecenter";
     private static final String CLASS_NAME_PACKAGE_INSTALLER = "com.android.packageinstaller";
@@ -47,13 +44,12 @@ public class ApkAutoInstallService extends AccessibilityService {
     private static final String CLASS_NAME_WIDGET_TEXTVIEW = "android.widget.TextView";
 
     private static boolean enable = false;
-    private static List<String> mInstallPackageList = new ArrayList<>();
-    private static List<String> mUninstallPackageList = new ArrayList<>();
+    private static List<InstallPackage> sInstallList = new ArrayList<>();
+    private static List<InstallPackage> sUninstallList = new ArrayList<>();
 
     @Override
     public void onCreate() {
         super.onCreate();
-
     }
 
     @DebugLog
@@ -62,28 +58,38 @@ public class ApkAutoInstallService extends AccessibilityService {
         super.onServiceConnected();
     }
 
-    public static void installApplication(String label) {
+    /**
+     * 安装应用
+     *
+     * @param pack
+     */
+    public static void installPackage(InstallPackage pack) {
         enable = true;
 
-        if (label != null && !mInstallPackageList.contains(label)) {
-            mInstallPackageList.add(label);
+        if (pack != null && !sInstallList.contains(pack)) {
+            sInstallList.add(pack);
         }
     }
 
-    public static void uninstallApplication(String label) {
+    /**
+     * 卸载应用
+     *
+     * @param pack
+     */
+    public static void uninstallApplication(InstallPackage pack) {
         enable = true;
-        if (label != null && !mUninstallPackageList.contains(label)) {
-            mUninstallPackageList.add(label);
+        if (pack != null && !sUninstallList.contains(pack)) {
+            sUninstallList.add(pack);
         }
     }
 
     public static void reset() {
         enable = false;
-        if (mInstallPackageList != null) {
-            mInstallPackageList.clear();
+        if (sInstallList != null) {
+            sInstallList.clear();
         }
-        if (mUninstallPackageList != null) {
-            mUninstallPackageList.clear();
+        if (sUninstallList != null) {
+            sUninstallList.clear();
         }
     }
 
@@ -207,7 +213,7 @@ public class ApkAutoInstallService extends AccessibilityService {
     }
 
     /**
-     * 弹窗，如授权操作
+     * 弹窗，如安装失败、卸载等
      *
      * @param event
      * @param className
@@ -216,8 +222,10 @@ public class ApkAutoInstallService extends AccessibilityService {
     private void processAlertDialogEvent(AccessibilityEvent event, String className, String sourceText) {
         Timber.d("出现弹窗");
         String eventText = event.getText().toString();
-        if (!eventText.contains(getString(R.string.str_accessibility_uninstall))
-                && !eventText.contains(getString(R.string.str_accessibility_error))) {
+
+        if (eventText.contains(getString(R.string.str_accessibility_error))) {
+            onInstallFail(event);
+        } else if (!eventText.contains(getString(R.string.str_accessibility_uninstall))) {
             AccessibilityNodeInfo nodeInfo = getAccessibilityNodeInfoByText(event, CLASS_NAME_WIDGET_BUTTON, getString(R.string.btn_accessibility_ok));
             if (nodeInfo != null) {
                 performClick(nodeInfo);
@@ -238,6 +246,15 @@ public class ApkAutoInstallService extends AccessibilityService {
     }
 
 
+    /**
+     * 安装失败
+     *
+     * @param event
+     */
+    private void onInstallFail(AccessibilityEvent event) {
+
+    }
+
     private void onApplicationInstall(AccessibilityEvent event) {
         onApplicationInstall(event, DeviceUtil.isFlyme() ? CLASS_NAME_WIDGET_TEXTVIEW : CLASS_NAME_WIDGET_BUTTON, true);
     }
@@ -257,7 +274,7 @@ public class ApkAutoInstallService extends AccessibilityService {
      */
     private void onApplicationInstall(AccessibilityEvent event, String nodeClassName, boolean maybeValidate) {
         Timber.d("准备安装");
-        if (!maybeValidate || isValidPackageEvent(event, mInstallPackageList)) {
+        if (!maybeValidate || isValidPackageEvent(event, sInstallList)) {
             AccessibilityNodeInfo nodeInfo = getAccessibilityNodeInfoByText(event, nodeClassName, getString(R.string.btn_accessibility_install));
             if (nodeInfo != null) {
                 performClick(nodeInfo);
@@ -283,10 +300,19 @@ public class ApkAutoInstallService extends AccessibilityService {
      */
     private void onApplicationInstalled(AccessibilityEvent event) {
         Timber.d("安装完成");
-        AccessibilityNodeInfo validInfo = getValidAccessibilityNodeInfo(event, mInstallPackageList);
-        if (validInfo != null && processApplicationInstalled(event) && mInstallPackageList != null && validInfo.getText() != null) {
-            mInstallPackageList.remove(validInfo.getText().toString());
+        AccessibilityNodeInfo validInfo = getValidAccessibilityNodeInfo(event, sInstallList);
+        if (validInfo != null && processApplicationInstalled(event) && sInstallList != null && validInfo.getText() != null) {
+            String label = validInfo.getText().toString();
+            removePackFromList(sInstallList, label);
             validInfo.recycle();
+        }
+    }
+
+    private void removePackFromList(List<InstallPackage> list, String label) {
+        for(InstallPackage pack: list){
+            if(pack.getAppName().equals(label)) {
+                sInstallList.remove(pack);
+            }
         }
     }
 
@@ -327,7 +353,7 @@ public class ApkAutoInstallService extends AccessibilityService {
 
     private void onApplicationUninstall(AccessibilityEvent event, String nodeClassName) {
         Timber.d("准备卸载");
-        if (isValidPackageEvent(event, mUninstallPackageList)) {
+        if (isValidPackageEvent(event, sUninstallList)) {
             AccessibilityNodeInfo nodeInfo = getAccessibilityNodeInfoByText(event, nodeClassName, getString(R.string.btn_accessibility_uninstall));
             if (nodeInfo != null) {
                 performClick(nodeInfo);
@@ -348,11 +374,13 @@ public class ApkAutoInstallService extends AccessibilityService {
      */
     private void onApplicationUninstalled(AccessibilityEvent event) {
         Timber.d("卸载完成");
-        AccessibilityNodeInfo validInfo = getValidAccessibilityNodeInfo(event, mUninstallPackageList);
+        AccessibilityNodeInfo validInfo = getValidAccessibilityNodeInfo(event, sUninstallList);
         if (validInfo != null && processApplicationUninstalled(event)
-                && mUninstallPackageList != null
+                && sUninstallList != null
                 && validInfo.getText() != null) {
-            mUninstallPackageList.remove(validInfo.getText().toString());
+            String label = validInfo.getText().toString();
+            removePackFromList(sUninstallList, label);
+            validInfo.recycle();
         }
     }
 
@@ -409,7 +437,7 @@ public class ApkAutoInstallService extends AccessibilityService {
      * @param validPackageList
      * @return
      */
-    private boolean isValidPackageEvent(AccessibilityEvent event, List<String> validPackageList) {
+    private boolean isValidPackageEvent(AccessibilityEvent event, List<InstallPackage> validPackageList) {
         return getValidAccessibilityNodeInfo(event, validPackageList) != null;
     }
 
@@ -420,10 +448,10 @@ public class ApkAutoInstallService extends AccessibilityService {
      * @param validPackageList
      * @return
      */
-    private AccessibilityNodeInfo getValidAccessibilityNodeInfo(AccessibilityEvent event, List<String> validPackageList) {
+    private AccessibilityNodeInfo getValidAccessibilityNodeInfo(AccessibilityEvent event, List<InstallPackage> validPackageList) {
         if (validPackageList != null && validPackageList.size() > 0) {
-            for (String label : validPackageList) {
-                AccessibilityNodeInfo nodeInfo = getAccessibilityNodeInfoByText(event, CLASS_NAME_WIDGET_TEXTVIEW, label);
+            for (InstallPackage pack : validPackageList) {
+                AccessibilityNodeInfo nodeInfo = getAccessibilityNodeInfoByText(event, CLASS_NAME_WIDGET_TEXTVIEW, pack.getAppName());
                 if (nodeInfo != null) {
                     return nodeInfo;
                 }
