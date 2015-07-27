@@ -42,6 +42,19 @@ public class InstallPackage implements Parcelable {
     @SerializedName("download_url")
     @Expose
     private String downloadUrl;
+    /**
+     * 本地保存路径
+     */
+    private String path;
+
+    public String getPath() {
+        return path;
+    }
+
+    public void setPath(String path) {
+        this.path = path;
+    }
+
 
     /**
      * @return The id
@@ -235,6 +248,7 @@ public class InstallPackage implements Parcelable {
         dest.writeString(this.createdAt);
         dest.writeString(this.updatedAt);
         dest.writeString(this.downloadUrl);
+        dest.writeString(this.path);
     }
 
     protected InstallPackage(Parcel in) {
@@ -249,7 +263,9 @@ public class InstallPackage implements Parcelable {
         this.createdAt = in.readString();
         this.updatedAt = in.readString();
         this.downloadUrl = in.readString();
+        this.path = in.readString();
     }
+
 
     public static final Creator<InstallPackage> CREATOR = new Creator<InstallPackage>() {
         public InstallPackage createFromParcel(Parcel source) {

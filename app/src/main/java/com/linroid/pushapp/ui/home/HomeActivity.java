@@ -2,12 +2,17 @@ package com.linroid.pushapp.ui.home;
 
 import android.annotation.TargetApi;
 import android.app.ActivityManager;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
+import android.preference.Preference;
+import android.provider.Settings;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
@@ -20,13 +25,16 @@ import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Toast;
 
 import com.linroid.pushapp.App;
+import com.linroid.pushapp.BuildConfig;
 import com.linroid.pushapp.Constants;
 import com.linroid.pushapp.R;
 import com.linroid.pushapp.ui.base.BaseActivity;
 import com.linroid.pushapp.ui.bind.BindActivity;
 import com.linroid.pushapp.util.StringPreference;
+
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -49,6 +57,10 @@ public class HomeActivity extends BaseActivity {
     @Named(Constants.SP_TOKEN)
     @Inject
     StringPreference token;
+
+    @Inject
+    SharedPreferences preferences;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -80,6 +92,35 @@ public class HomeActivity extends BaseActivity {
 //        }
     }
 
+    private void checkAutoInstall() {
+        boolean confirmed = preferences.getBoolean(Constants.SP_AUTO_INSTALL_CONFIRMED, false);
+        if (!confirmed && Build.VERSION.SDK_INT>16) {
+            new AlertDialog.Builder(this).setTitle(R.string.title_auto_install_confirm_dialog)
+                    .setMessage(R.string.msg_auto_install_confirm_dialog)
+                    .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            SharedPreferences.Editor editor=  preferences.edit();
+                            editor.putBoolean(Constants.SP_AUTO_INSTALL_CONFIRMED, true);
+//                            editor.putBoolean(Constants.SP_AUTO_INSTALL, true);
+                            editor.apply();
+
+                            Intent intent = new Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS);
+                            startActivityForResult(intent, 0);
+                            dialog.cancel();
+                        }
+                    })
+                    .setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            preferences.edit().putBoolean(Constants.SP_AUTO_INSTALL_CONFIRMED, true).apply();
+                            Snackbar.make(refreshBtn, R.string.msg_auto_install_confirm_cancel, Snackbar.LENGTH_LONG);
+                        }
+                    }).show();
+        }
+        //TODO: 确认并开启，但是服务关了
+    }
+
     private void checkBind() {
         if (TextUtils.isEmpty(token.getValue())) {
             Timber.w("device does not bind");
@@ -88,6 +129,12 @@ public class HomeActivity extends BaseActivity {
             overridePendingTransition(0, 0);
             finish();
         }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        checkAutoInstall();
     }
 
     @Override

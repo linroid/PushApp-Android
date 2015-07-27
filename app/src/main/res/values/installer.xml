@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="btn_accessibility_ok">OK</string>
+
+    <string name="btn_accessibility_install">Install</string>
+
+    <string name="str_accessibility_installed">App installed</string>
+    <string name="str_accessibility_installed2">Application installed</string>
+    <string name="str_accessibility_installed3">Install successful</string>
+
+    <string name="btn_accessibility_uninstall">Uninstall</string>
+
+    <string name="str_accessibility_uninstall">uninstall this app</string>
+    <string name="str_accessibility_uninstall2">Uninstall finished</string>
+    <string name="str_accessibility_uninstall3">Uninstall complete</string>
+
+    <string name="str_accessibility_uninstalled">App uninstalled</string>
+    <string name="str_accessibility_uninstalled2">Uninstall finished</string>
+    <string name="str_accessibility_uninstalled3">Uninstall complete</string>
+
+
+    <string name="str_accessibility_install_blocked">Install blocked</string>
+    <string name="btn_accessibility_know">OK</string>
+    <string name="btn_accessibility_open">Open</string>
+    <string name="btn_accessibility_run">Run</string>
+    <string name="btn_accessibility_done">Done</string>
+    <string name="str_accessibility_error">Parse error</string>
+    <string name="btn_accessibility_complete">Complete</string>
+    <string name="btn_accessibility_allow_once">Allow once</string>
+    <string name="btn_accessibility_next">Next</string>
+    <string name="title_auto_install_accessibility_service">PushApp auto install service</string>
+    <string name="msg_description_auto_install_accessibility_service">" \"PushApp\'s auto install service offers users to install apps without manual clicking.
+        This service can provide a convenient auto-installing experience by automatically clicking install button, without silent-install method to be enabled.</string>
+
+</resources>

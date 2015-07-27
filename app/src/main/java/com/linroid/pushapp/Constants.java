@@ -9,5 +9,7 @@ public class Constants {
     public static final String SP_FILE_NAME = "pushapp";
 
     public static final String SP_TOKEN = "token";
+    public static final String SP_AUTO_INSTALL_CONFIRMED = "auto_install_confirmed";
+    public static final String SP_AUTO_INSTALL = "auto_install";
     public static final String PUSH_TYPE_PACKAGE = "package";
 }

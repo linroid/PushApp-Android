@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="btn_accessibility_ok">確定</string>
+    <string name="str_accessibility_install_blocked">安裝遭封鎖</string>
+
+    <string name="btn_accessibility_install">安裝</string>
+
+    <string name="str_accessibility_installed">已安裝應用程式</string>
+    <string name="str_accessibility_installed2">已安装</string>
+    <string name="str_accessibility_installed3">安装成功</string>
+
+    <string name="btn_accessibility_uninstall">卸載</string>
+
+    <string name="str_accessibility_uninstall">解除安裝</string>
+    <string name="str_accessibility_uninstall2">卸载完成</string>
+    <string name="str_accessibility_uninstall3">卸载完成</string>
+
+    <string name="str_accessibility_uninstalled">解除安裝完成</string>
+    <string name="str_accessibility_uninstalled2">卸載完成</string>
+    <string name="str_accessibility_uninstalled3">卸載完成</string>
+
+    <string name="btn_accessibility_complete">完成</string>
+    <string name="btn_accessibility_know">我知道了</string>
+    <string name="btn_accessibility_open">開啟</string>
+    <string name="btn_accessibility_run">運行</string>
+    <string name="btn_accessibility_done">完成</string>
+    <string name="str_accessibility_error">解析錯誤</string>
+    <string name="btn_accessibility_allow_once">僅允許一次</string>
+    <string name="btn_accessibility_next">下一步</string>
+    <string name="title_auto_install_accessibility_service">PushApp免ROOT自动安装服务</string>
+
+</resources>

@@ -23,4 +23,8 @@
     <string name="msg_download_complete" formatted="false">%s 下载完成</string>
     <string name="msg_download_progress" formatted="false">%d%%</string>
     <string name="msg_download_fail" >%s 下载无法完成</string>
-</resources>
+    <string name="title_auto_install_confirm_dialog">自动安装</string>
+    <string name="msg_auto_install_confirm_dialog">"打开后，会在安装包下载完成后自动帮您安装
+无需手动点击</string>
+    <string name="msg_auto_install_confirm_cancel" >你也可以在设置里打开哟~</string>
+    </resources>

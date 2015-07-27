@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.Application;
 import android.app.Service;
 import android.content.Context;
+import android.preference.PreferenceManager;
 
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.imagepipeline.backends.okhttp.OkHttpImagePipelineConfigFactory;
@@ -14,6 +15,7 @@ import com.linroid.pushapp.module.AppModule;
 import com.linroid.pushapp.module.FileModule;
 import com.linroid.pushapp.module.NetworkModule;
 import com.squareup.okhttp.OkHttpClient;
+
 
 import javax.inject.Inject;
 
@@ -50,6 +52,8 @@ public class App extends Application{
 
         JPushInterface.setDebugMode(BuildConfig.DEBUG);
         JPushInterface.init(this);
+
+        PreferenceManager.setDefaultValues(this, Constants.SP_FILE_NAME, Context.MODE_PRIVATE, R.xml.pref_general, false);
         if(BuildConfig.DEBUG) {
             Timber.plant(new Timber.DebugTree());
         }

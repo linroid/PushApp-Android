@@ -11,7 +11,7 @@ import com.linroid.pushapp.App;
 import com.linroid.pushapp.Constants;
 import com.linroid.pushapp.model.*;
 import com.linroid.pushapp.service.DownloadService;
-import com.linroid.pushapp.ui.AndroidUtil;
+import com.linroid.pushapp.util.AndroidUtil;
 
 import javax.inject.Inject;
 

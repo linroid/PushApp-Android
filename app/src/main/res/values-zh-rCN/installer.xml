@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="btn_accessibility_ok">确定</string>
+    <string name="str_accessibility_install_blocked">应用安全提醒</string>
+
+    <string name="btn_accessibility_install">安装</string>
+
+    <string name="str_accessibility_installed">安装完成</string>
+    <string name="str_accessibility_installed2">已安装</string>
+    <string name="str_accessibility_installed3">安装成功</string>
+
+    <string name="btn_accessibility_uninstall">卸载</string>
+
+    <string name="str_accessibility_uninstall">要卸载此应用吗</string>
+    <string name="str_accessibility_uninstall2">卸载完成</string>
+    <string name="str_accessibility_uninstall3">卸载完成</string>
+
+    <string name="str_accessibility_uninstalled">卸载完成</string>
+    <string name="str_accessibility_uninstalled2">卸载完成</string>
+    <string name="str_accessibility_uninstalled3">卸载完成</string>
+
+
+    <string name="btn_accessibility_know">我知道了</string>
+    <string name="btn_accessibility_open">打开</string>
+    <string name="btn_accessibility_run">运行</string>
+    <string name="btn_accessibility_done">完成</string>
+    <string name="str_accessibility_error">解析错误</string>
+
+
+    <string name="btn_accessibility_complete">完成</string>
+    <string name="btn_accessibility_allow_once">仅允许一次</string>
+    <string name="btn_accessibility_next">下一步</string>
+    <string name="title_auto_install_accessibility_service">PushApp免ROOT自动安装服务</string>
+    <string name="msg_description_auto_install_accessibility_service">"「PushApp」可以在安装和升级应用时，无需一直盯着手机，PushApp会帮你点击所需的按钮，确保应用顺利安装。
+
+打开服务时，系统会弹出例行的警告。
+
+如果你强制关闭PushApp，或使用内存清理工具关闭PushApp，会造成「PushApp」功能被系统关闭。为保证正常使用，请将PushApp放入清理白名单中。
+
+「PushApp」无需获取手机 Root 权限，支持 Android 4.1 以上系统。如果你的手机不能正常使用，发送邮件到:linroid@gmail.com
+    </string>
+
+</resources>

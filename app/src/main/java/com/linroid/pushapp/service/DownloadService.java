@@ -4,6 +4,7 @@ import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.Service;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Handler;
 import android.os.IBinder;
@@ -16,7 +17,7 @@ import com.linroid.pushapp.Constants;
 import com.linroid.pushapp.R;
 import com.linroid.pushapp.model.InstallPackage;
 import com.linroid.pushapp.module.identifier.PackageDownloadDir;
-import com.linroid.pushapp.ui.AndroidUtil;
+import com.linroid.pushapp.util.AndroidUtil;
 import com.linroid.pushapp.util.StringPreference;
 import com.thin.downloadmanager.DownloadRequest;
 import com.thin.downloadmanager.DownloadStatusListener;
@@ -44,6 +45,8 @@ public class DownloadService extends Service {
     @PackageDownloadDir
     @Inject
     File downloadDir;
+    @Inject
+    SharedPreferences preferences;
 
     private ThinDownloadManager downloadManager;
     private Map<Integer, InstallPackage> downloadPackageMap;
@@ -68,7 +71,7 @@ public class DownloadService extends Service {
     public int onStartCommand(Intent intent, int flags, int startId) {
         if (intent == null || !intent.hasExtra(EXTRA_PACKAGE)) {
 //            throw new IllegalArgumentException("require push info extra");
-            Timber.e("require push info extra");
+            Timber.e("require package info extra");
             return super.onStartCommand(intent, flags, startId);
         }
         Timber.d("Bundle: %s", AndroidUtil.sprintBundle(intent.getExtras()));
@@ -96,13 +99,17 @@ public class DownloadService extends Service {
             savedDir.mkdir();
         }
         File savedFile = new File(savedDir, downloadUri.getLastPathSegment());
+        pack.setPath(savedFile.getAbsolutePath());
         request.setDestinationURI(Uri.fromFile(savedFile));
         request.setDownloadListener(new DownloadStatusListener() {
             @Override
             @DebugLog
             public void onDownloadComplete(int i) {
-                downloadPackageMap.remove(i);
+                InstallPackage pack = downloadPackageMap.remove(i);
                 prevProgress = -1;
+                if(preferences.getBoolean(Constants.SP_AUTO_INSTALL, true)) {
+                    installPackage(pack);
+                }
             }
 
             @Override
@@ -112,10 +119,10 @@ public class DownloadService extends Service {
                 showNotification(pack, -1);
                 downloadPackageMap.remove(i);
                 prevProgress = -1;
+                installPackage(pack);
             }
 
             @Override
-            @DebugLog
             public void onProgress(int i, long l, int i1) {
                 showNotification(downloadPackageMap.get(i), i1);
             }
@@ -124,9 +131,21 @@ public class DownloadService extends Service {
         downloadPackageMap.put(downloadId, pack);
     }
 
+    private void installPackage(InstallPackage pack) {
+        if (preferences.getBoolean(Constants.SP_AUTO_INSTALL_CONFIRMED, false)) {
+            Intent intent = new Intent(this, InstallService.class);
+            intent.putExtra(InstallService.EXTRA_PACKAGE, pack);
+            startService(intent);
+        } else {
+            AndroidUtil.installPackage(this, pack);
+        }
+
+    }
+
     int prevProgress = -1;
+
     private void showNotification(InstallPackage pack, int progress) {
-        if (prevProgress == progress){
+        if (prevProgress == progress) {
             return;
         }
         prevProgress = progress;
@@ -145,7 +164,7 @@ public class DownloadService extends Service {
             titleText = getString(R.string.msg_downloading, pack.getAppName());
         }
         Notification notification = new NotificationCompat.Builder(this)
-                .setProgress(100, progress, false)
+                .setProgress(100, Math.max(progress, 0), false)
                 .setContentTitle(titleText)
                 .setSmallIcon(R.mipmap.ic_launcher)
                 .setContentText(pack.getVersionName())
