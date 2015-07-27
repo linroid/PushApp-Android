@@ -3,13 +3,16 @@ package com.linroid.pushapp.service;
 
 import android.accessibilityservice.AccessibilityService;
 import android.annotation.TargetApi;
+import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Build.VERSION;
 import android.view.KeyEvent;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityNodeInfo;
 
+import com.linroid.pushapp.App;
 import com.linroid.pushapp.BuildConfig;
+import com.linroid.pushapp.Constants;
 import com.linroid.pushapp.R;
 import com.linroid.pushapp.model.InstallPackage;
 import com.linroid.pushapp.util.DeviceUtil;
@@ -44,12 +47,15 @@ public class ApkAutoInstallService extends AccessibilityService {
     private static final String CLASS_NAME_WIDGET_TEXTVIEW = "android.widget.TextView";
 
     private static boolean enable = false;
+    //TODO 使用软引用
     private static List<InstallPackage> sInstallList = new ArrayList<>();
     private static List<InstallPackage> sUninstallList = new ArrayList<>();
 
+    private SharedPreferences preferences;
     @Override
     public void onCreate() {
         super.onCreate();
+        App.from(this).component().inject(this);
     }
 
     @DebugLog
@@ -278,17 +284,20 @@ public class ApkAutoInstallService extends AccessibilityService {
             AccessibilityNodeInfo nodeInfo = getAccessibilityNodeInfoByText(event, nodeClassName, getString(R.string.btn_accessibility_install));
             if (nodeInfo != null) {
                 performClick(nodeInfo);
+                nodeInfo.recycle();
                 return;
             }
             nodeInfo = getAccessibilityNodeInfoByText(event, nodeClassName, getString(R.string.btn_accessibility_allow_once));
             if (nodeInfo != null) {
                 performClick(nodeInfo);
+                nodeInfo.recycle();
                 return;
             }
             nodeInfo = getAccessibilityNodeInfoByText(event, nodeClassName, getString(R.string.btn_accessibility_next));
             if (nodeInfo != null) {
                 performClick(nodeInfo);
                 onApplicationInstall(event);
+                nodeInfo.recycle();
             }
         }
     }
@@ -302,6 +311,16 @@ public class ApkAutoInstallService extends AccessibilityService {
         Timber.d("安装完成");
         AccessibilityNodeInfo validInfo = getValidAccessibilityNodeInfo(event, sInstallList);
         if (validInfo != null && processApplicationInstalled(event) && sInstallList != null && validInfo.getText() != null) {
+            if(preferences.getBoolean(Constants.SP_AUTO_OPEN, true)) {
+                AccessibilityNodeInfo nodeInfo = getAccessibilityNodeInfoByText(event,
+                        DeviceUtil.isFlyme() ? CLASS_NAME_WIDGET_TEXTVIEW : CLASS_NAME_WIDGET_BUTTON,
+                        getString(R.string.btn_accessibility_uninstall));
+                if (nodeInfo != null) {
+                    performClick(nodeInfo);
+                    nodeInfo.recycle();
+                    return;
+                }
+            }
             String label = validInfo.getText().toString();
             removePackFromList(sInstallList, label);
             validInfo.recycle();

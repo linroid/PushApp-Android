@@ -93,9 +93,12 @@ public class AndroidUtil {
      * @return
      */
     public static CharSequence getApkLabel(Context context, String apkPath) {
+        Timber.d("apk path: %s", apkPath);
         PackageManager pm = context.getPackageManager();
         PackageInfo info = pm.getPackageArchiveInfo(apkPath, PackageManager.GET_ACTIVITIES);
         if (info != null) {
+            info.applicationInfo.sourceDir       = apkPath;
+            info.applicationInfo.publicSourceDir = apkPath;
             ApplicationInfo applicationInfo = info.applicationInfo;
             return applicationInfo.loadLabel(pm);
         }
