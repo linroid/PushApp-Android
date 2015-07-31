@@ -15,12 +15,10 @@ import android.text.TextUtils;
 import com.linroid.pushapp.App;
 import com.linroid.pushapp.Constants;
 import com.linroid.pushapp.R;
-import com.linroid.pushapp.database.DbOpenHelper;
 import com.linroid.pushapp.model.InstallPackage;
 import com.linroid.pushapp.module.identifier.PackageDownloadDir;
 import com.linroid.pushapp.util.AndroidUtil;
 import com.linroid.pushapp.util.StringPreference;
-import com.squareup.sqlbrite.BriteDatabase;
 import com.thin.downloadmanager.DownloadRequest;
 import com.thin.downloadmanager.DownloadStatusListener;
 import com.thin.downloadmanager.ThinDownloadManager;
@@ -50,10 +48,6 @@ public class DownloadService extends Service {
     @Inject
     SharedPreferences preferences;
 
-    @Inject
-    BriteDatabase db;
-
-
     private ThinDownloadManager downloadManager;
     private Map<Integer, InstallPackage> downloadPackageMap;
     private Handler handler = new Handler(Looper.getMainLooper());
@@ -64,7 +58,6 @@ public class DownloadService extends Service {
         App.from(this).component().inject(this);
         downloadManager = new ThinDownloadManager();
         downloadPackageMap = new HashMap<>();
-        db.insert()
     }
 
     @Override

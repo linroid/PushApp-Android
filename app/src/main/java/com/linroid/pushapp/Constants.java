@@ -13,4 +13,7 @@ public class Constants {
     public static final String SP_AUTO_INSTALL = "auto_install";
     public static final String SP_AUTO_OPEN = "auto_open";
     public static final String PUSH_TYPE_PACKAGE = "package";
+
+    public static final int DB_VERSION = 1;
+    public static final String DB_NAME = "pushapp.db";
 }

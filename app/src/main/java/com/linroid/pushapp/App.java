@@ -12,10 +12,9 @@ import com.facebook.imagepipeline.core.ImagePipelineConfig;
 import com.facebook.stetho.Stetho;
 import com.linroid.pushapp.module.ApiModule;
 import com.linroid.pushapp.module.AppModule;
+import com.linroid.pushapp.module.DataModule;
 import com.linroid.pushapp.module.FileModule;
-import com.linroid.pushapp.module.NetworkModule;
 import com.squareup.okhttp.OkHttpClient;
-
 
 import javax.inject.Inject;
 
@@ -25,11 +24,12 @@ import timber.log.Timber;
 /**
  * Created by linroid on 7/20/15.
  */
-public class App extends Application{
+public class App extends Application {
     AppComponent component;
 
     @Inject
     OkHttpClient okHttp;
+
     @Override
     public void onCreate() {
         super.onCreate();
@@ -42,7 +42,7 @@ public class App extends Application{
                         .build());
         component = DaggerAppComponent.builder()
                 .appModule(new AppModule(this))
-                .networkModule(new NetworkModule())
+                .dataModule(new DataModule())
                 .apiModule(new ApiModule())
                 .fileModule(new FileModule())
                 .build();
@@ -54,7 +54,7 @@ public class App extends Application{
         JPushInterface.init(this);
 
         PreferenceManager.setDefaultValues(this, Constants.SP_FILE_NAME, Context.MODE_PRIVATE, R.xml.pref_general, false);
-        if(BuildConfig.DEBUG) {
+        if (BuildConfig.DEBUG) {
             Timber.plant(new Timber.DebugTree());
         }
     }
@@ -70,6 +70,7 @@ public class App extends Application{
     public AppComponent component() {
         return component;
     }
+
     public static App from(Activity activity) {
         return (App) activity.getApplication();
     }
@@ -77,6 +78,7 @@ public class App extends Application{
     public static App from(Context context) {
         return (App) context.getApplicationContext();
     }
+
     public static App from(Service service) {
         return (App) service.getApplication();
     }

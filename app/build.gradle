@@ -120,9 +120,11 @@ dependencies {
     compile 'com.facebook.fresco:fresco:0.6.0'
     compile 'com.facebook.fresco:imagepipeline-okhttp:0.6.0'
     compile 'com.mani:thindownloadmanager:1.0.0'
-    compile 'com.squareup.sqlbrite:sqlbrite:0.2.1'
+//    compile 'com.squareup.sqlbrite:sqlbrite:0.2.1'
     compile 'io.reactivex:rxandroid:0.25.0'
-    compile 'io.realm:realm-android:0.82.0'
+//    compile 'io.realm:realm-android:0.82.0'
+//    compile "org.parceler:parceler-api:1.0.3"
+//    apt "org.parceler:parceler:1.0.3"
 //    compile 'de.greenrobot:greendao-generator:2.0.0'
 //        compile 'com.github.bunnyblue:ApkAutoInstaller:V1.0.0'
 }

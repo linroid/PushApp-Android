@@ -4,10 +4,7 @@ import android.content.Context;
 import android.text.TextUtils;
 
 import com.facebook.stetho.okhttp.StethoInterceptor;
-import com.google.gson.ExclusionStrategy;
-import com.google.gson.FieldAttributes;
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.linroid.pushapp.BuildConfig;
 import com.linroid.pushapp.Constants;
 import com.linroid.pushapp.R;
@@ -28,7 +25,6 @@ import javax.inject.Singleton;
 import dagger.Module;
 import dagger.Provides;
 import hugo.weaving.DebugLog;
-import io.realm.RealmObject;
 import retrofit.ErrorHandler;
 import retrofit.RequestInterceptor;
 import retrofit.RestAdapter;
@@ -41,7 +37,7 @@ import timber.log.Timber;
  * Created by linroid on 7/24/15.
  */
 @Module
-public class NetworkModule {
+public class DataModule {
     @Provides
     @Singleton
     OkHttpClient provideOkHttp(Cache cache) {
@@ -71,19 +67,7 @@ public class NetworkModule {
     @Provides
     @Singleton
     Gson provideGson() {
-        return new GsonBuilder()
-                .setExclusionStrategies(new ExclusionStrategy() {
-                    @Override
-                    public boolean shouldSkipField(FieldAttributes f) {
-                        return f.getDeclaringClass().equals(RealmObject.class);
-                    }
-
-                    @Override
-                    public boolean shouldSkipClass(Class<?> clazz) {
-                        return false;
-                    }
-                })
-                .create();
+        return new Gson();
     }
 
     @Provides
