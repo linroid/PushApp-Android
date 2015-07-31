@@ -1,6 +1,5 @@
 package com.linroid.pushapp.model;
 
-import android.content.ContentProviderOperation;
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -38,7 +37,7 @@ public class Push implements Parcelable {
     private User user;
     @SerializedName("package")
     @Expose
-    private InstallPackage _package;
+    private Pack _package;
 
     /**
      * @return The packageId
@@ -169,14 +168,14 @@ public class Push implements Parcelable {
     /**
      * @return The _package
      */
-    public InstallPackage getPackage() {
+    public Pack getPackage() {
         return _package;
     }
 
     /**
      * @param _package The package
      */
-    public void setPackage(InstallPackage _package) {
+    public void setPackage(Pack _package) {
         this._package = _package;
     }
 
@@ -192,7 +191,7 @@ public class Push implements Parcelable {
         private String createdAt;
         private Integer id;
         private User user;
-        private InstallPackage pack;
+        private Pack pack;
 
         private PushBuilder() {
         }
@@ -265,7 +264,7 @@ public class Push implements Parcelable {
             return push;
         }
 
-        public PushBuilder withPackage(InstallPackage pack) {
+        public PushBuilder withPackage(Pack pack) {
             this.pack = pack;
             return this;
         }
@@ -303,7 +302,7 @@ public class Push implements Parcelable {
         this.createdAt = in.readString();
         this.id = (Integer) in.readValue(Integer.class.getClassLoader());
         this.user = in.readParcelable(User.class.getClassLoader());
-        this._package = in.readParcelable(InstallPackage.class.getClassLoader());
+        this._package = in.readParcelable(Pack.class.getClassLoader());
     }
 
     public static final Parcelable.Creator<Push> CREATOR = new Parcelable.Creator<Push>() {

@@ -61,7 +61,7 @@ public class PushReceiver extends BroadcastReceiver {
         String msgId = bundle.getString(JPushInterface.EXTRA_MSG_ID);
         switch (type) {
             case Constants.PUSH_TYPE_PACKAGE:
-                InstallPackage pack = gson.fromJson(message, InstallPackage.class);
+                Pack pack = gson.fromJson(message, Pack.class);
 //                Push push =  Push.PushBuilder.aPush()
 //                        .withPackageId(pack.getId())
 //                        .withIsOk(true)
@@ -75,7 +75,7 @@ public class PushReceiver extends BroadcastReceiver {
         }
     }
 
-    private void onReceivePackagePush(InstallPackage pack) {
+    private void onReceivePackagePush(Pack pack) {
         Intent intent = new Intent(context, DownloadService.class);
         intent.putExtra(DownloadService.EXTRA_PACKAGE, pack);
         context.startService(intent);

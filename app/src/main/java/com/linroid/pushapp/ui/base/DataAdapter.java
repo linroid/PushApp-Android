@@ -7,10 +7,12 @@ import com.linroid.pushapp.model.Push;
 
 import java.util.List;
 
+import rx.functions.Action1;
+
 /**
  * Created by linroid on 7/20/15.
  */
-public abstract class DataAdapter<T, VH extends RecyclerView.ViewHolder> extends RecyclerView.Adapter<VH> {
+public abstract class DataAdapter<T, VH extends RecyclerView.ViewHolder> extends RecyclerView.Adapter<VH> implements Action1<List<T>> {
     protected List<T> data;
 
 
@@ -32,6 +34,12 @@ public abstract class DataAdapter<T, VH extends RecyclerView.ViewHolder> extends
     public void delete(int location){
         data.remove(location);
         notifyItemRemoved(location);
+    }
+
+    @Override
+    public void call(List<T> ts) {
+        this.data = ts;
+        notifyDataSetChanged();
     }
 
     @Override

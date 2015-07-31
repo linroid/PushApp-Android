@@ -1,6 +1,9 @@
 package com.linroid.pushapp.module;
 
+import android.app.Application;
 import android.content.Context;
+import android.content.res.Resources;
+import android.database.sqlite.SQLiteOpenHelper;
 import android.text.TextUtils;
 
 import com.facebook.stetho.okhttp.StethoInterceptor;
@@ -8,6 +11,8 @@ import com.google.gson.Gson;
 import com.linroid.pushapp.BuildConfig;
 import com.linroid.pushapp.Constants;
 import com.linroid.pushapp.R;
+import com.linroid.pushapp.database.DbOpenHelper;
+import com.linroid.pushapp.model.Error;
 import com.linroid.pushapp.module.identifier.DataCacheDir;
 import com.linroid.pushapp.module.identifier.HttpCacheDir;
 import com.linroid.pushapp.util.StringPreference;
@@ -15,6 +20,8 @@ import com.squareup.okhttp.Cache;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.internal.DiskLruCache;
 import com.squareup.okhttp.internal.io.FileSystem;
+import com.squareup.sqlbrite.BriteDatabase;
+import com.squareup.sqlbrite.SqlBrite;
 
 import java.io.File;
 import java.util.concurrent.TimeUnit;
@@ -105,7 +112,7 @@ public class DataModule {
 
     @Provides
     @Singleton
-    ErrorHandler provideErrorHandler(final Context ctx) {
+    ErrorHandler provideErrorHandler(final Resources res) {
         return new ErrorHandler() {
             @Override
             @DebugLog
@@ -113,18 +120,50 @@ public class DataModule {
                 Timber.e(retrofitError, "请求出现错误:%s", retrofitError.getUrl());
                 RetrofitError.Kind kind = retrofitError.getKind();
                 String message;
-                if (RetrofitError.Kind.NETWORK.equals(kind)) {
-                    message = ctx.getString(R.string.network_error);
-                } else if (RetrofitError.Kind.HTTP.equals(kind)) {
-                    message = ctx.getString(R.string.http_error);
-                } else if (RetrofitError.Kind.CONVERSION.equals(kind)) {
-                    message = ctx.getString(R.string.conversion_error);
+                if (retrofitError.getResponse() != null) {
+                    try {
+                        Error error = (Error) retrofitError.getBodyAs(Error.class);
+                        message = error.getMessage();
+                    } catch (RuntimeException e) {
+                        message = res.getString(R.string.server_error);
+                    }
                 } else {
-                    message = ctx.getString(R.string.unexpected_error);
+                    if (RetrofitError.Kind.NETWORK.equals(kind)) {
+                        message = res.getString(R.string.network_error);
+                    } else if (RetrofitError.Kind.HTTP.equals(kind)) {
+                        message = res.getString(R.string.http_error);
+                    } else if (RetrofitError.Kind.CONVERSION.equals(kind)) {
+                        message = res.getString(R.string.conversion_error);
+                    } else {
+                        message = res.getString(R.string.unexpected_error);
+                    }
                 }
                 return new Exception(message);
             }
         };
+    }
+
+    @Provides
+    @Singleton
+    SQLiteOpenHelper provideOpenHelper(Application application) {
+        return new DbOpenHelper(application);
+    }
+
+    @Provides
+    @Singleton
+    SqlBrite provideSqlBrite() {
+        return SqlBrite.create(new SqlBrite.Logger() {
+            @Override
+            public void log(String message) {
+                Timber.tag("SqlBrite").v(message);
+            }
+        });
+    }
+
+    @Provides
+    @Singleton
+    BriteDatabase provideDatabase(SqlBrite sqlBrite, SQLiteOpenHelper helper) {
+        return sqlBrite.wrapDatabaseHelper(helper);
     }
 
 }

@@ -13,10 +13,10 @@ public class StringPreference {
     private String key;
     private String value;
 
-    public StringPreference(SharedPreferences sp, String key) {
+    public StringPreference(SharedPreferences sp, String key, String defValue) {
         this.sp = sp;
         this.key = key;
-        this.value = sp.getString(key, null);
+        this.value = sp.getString(key, defValue);
     }
 
 

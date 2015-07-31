@@ -3,6 +3,7 @@ package com.linroid.pushapp.database;
 /**
  * copy from @{https://raw.githubusercontent.com/square/sqlbrite/master/sqlbrite-sample/src/main/java/com/example/sqlbrite/todo/db/Db.java}
  */
+
 import android.database.Cursor;
 
 public final class Db {

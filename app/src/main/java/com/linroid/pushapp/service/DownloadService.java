@@ -1,24 +1,24 @@
 package com.linroid.pushapp.service;
 
-import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.Service;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.database.Cursor;
 import android.net.Uri;
-import android.os.Handler;
 import android.os.IBinder;
-import android.os.Looper;
 import android.support.v4.app.NotificationCompat;
 import android.text.TextUtils;
 
 import com.linroid.pushapp.App;
 import com.linroid.pushapp.Constants;
 import com.linroid.pushapp.R;
-import com.linroid.pushapp.model.InstallPackage;
+import com.linroid.pushapp.model.Pack;
 import com.linroid.pushapp.module.identifier.PackageDownloadDir;
 import com.linroid.pushapp.util.AndroidUtil;
+import com.linroid.pushapp.util.BooleanPreference;
 import com.linroid.pushapp.util.StringPreference;
+import com.squareup.sqlbrite.BriteDatabase;
 import com.thin.downloadmanager.DownloadRequest;
 import com.thin.downloadmanager.DownloadStatusListener;
 import com.thin.downloadmanager.ThinDownloadManager;
@@ -42,15 +42,19 @@ public class DownloadService extends Service {
     @Named(Constants.SP_TOKEN)
     @Inject
     StringPreference token;
+    @Named(Constants.SP_AUTO_INSTALL)
+    @Inject
+    BooleanPreference autoInstall;
     @PackageDownloadDir
     @Inject
     File downloadDir;
     @Inject
     SharedPreferences preferences;
+    @Inject
+    BriteDatabase db;
 
     private ThinDownloadManager downloadManager;
-    private Map<Integer, InstallPackage> downloadPackageMap;
-    private Handler handler = new Handler(Looper.getMainLooper());
+    private Map<Integer, Pack> downloadPackageMap;
 
     @Override
     public void onCreate() {
@@ -75,13 +79,13 @@ public class DownloadService extends Service {
             return super.onStartCommand(intent, flags, startId);
         }
         Timber.d("Bundle: %s", AndroidUtil.sprintBundle(intent.getExtras()));
-        InstallPackage pack = intent.getParcelableExtra(EXTRA_PACKAGE);
+        Pack pack = intent.getParcelableExtra(EXTRA_PACKAGE);
         newDownloadTask(pack);
         return super.onStartCommand(intent, flags, startId);
     }
 
 
-    private void newDownloadTask(InstallPackage pack) {
+    private void newDownloadTask(Pack pack) {
         if (pack == null || TextUtils.isEmpty(pack.getDownloadUrl())) {
             Timber.e("invalid package download url");
             return;
@@ -99,23 +103,40 @@ public class DownloadService extends Service {
         if (!savedDir.exists()) {
             savedDir.mkdir();
         }
+        //如果已经存在则不需要下载
+        Cursor cursor = db.query(Pack.DB.SQL_ITEM_QUERY, String.valueOf(pack.getId()));
+        if (cursor.moveToNext()) {
+            Pack saved = Pack.fromCursor(cursor);
+            if (!TextUtils.isEmpty(saved.getPath()) && savedFile.exists()) {
+                notifyDownloadComplete();
+                if (autoInstall.getValue()) {
+                    installPackage(saved);
+                }
+                return;
+            }
+        }
+        db.insert(Pack.DB.TABLE_NAME, pack.toContentValues());
         pack.setPath(savedFile.getAbsolutePath());
         request.setDestinationURI(Uri.fromFile(savedFile));
         request.setDownloadListener(new DownloadStatusListener() {
             @Override
             @DebugLog
             public void onDownloadComplete(int i) {
-                InstallPackage pack = downloadPackageMap.remove(i);
                 prevProgress = -1;
-                if (preferences.getBoolean(Constants.SP_AUTO_INSTALL, true)) {
-                    parsePackage(pack);
+                Pack pack = downloadPackageMap.remove(i);
+                CharSequence label = AndroidUtil.getApkLabel(DownloadService.this, pack.getPath());
+                pack.setAppName(label != null ? label.toString() : pack.getAppName());
+                db.update(Pack.DB.TABLE_NAME, pack.toContentValues(), Pack.DB.WHERE_ID, String.valueOf(pack.getId()));
+                notifyDownloadComplete();
+                if (autoInstall.getValue()) {
+                    installPackage(pack);
                 }
             }
 
             @Override
             @DebugLog
             public void onDownloadFailed(int i, int i1, String s) {
-                InstallPackage pack = downloadPackageMap.get(i);
+                Pack pack = downloadPackageMap.get(i);
                 Timber.e("%s 下载失败:( %d %s", pack.getAppName(), i1, s);
                 showNotification(pack, -1);
                 downloadPackageMap.remove(i);
@@ -131,13 +152,12 @@ public class DownloadService extends Service {
         downloadPackageMap.put(downloadId, pack);
     }
 
-    private void parsePackage(InstallPackage pack) {
-        CharSequence label = AndroidUtil.getApkLabel(this, pack.getPath());
-        pack.setAppName(label != null ? label.toString() : pack.getAppName());
-        installPackage(pack);
+    private void notifyDownloadComplete() {
+
     }
 
-    private void installPackage(InstallPackage pack) {
+
+    private void installPackage(Pack pack) {
         if (AndroidUtil.isAccessibilitySettingsOn(this, ApkAutoInstallService.class.getCanonicalName())) {
             ApkAutoInstallService.installPackage(pack);
         } else {
@@ -150,7 +170,7 @@ public class DownloadService extends Service {
      */
     int prevProgress = -1;
 
-    private void showNotification(InstallPackage pack, int progress) {
+    private void showNotification(Pack pack, int progress) {
         if (prevProgress == progress) {
             return;
         }
@@ -169,16 +189,17 @@ public class DownloadService extends Service {
         } else {
             titleText = getString(R.string.msg_downloading, pack.getAppName());
         }
-        Notification notification = new NotificationCompat.Builder(this)
-                .setProgress(100, Math.max(progress, 0), false)
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this)
                 .setContentTitle(titleText)
                 .setSmallIcon(R.mipmap.ic_launcher)
-                .setContentText(pack.getVersionName())
-                .setContentInfo(getString(R.string.msg_download_progress, progress))
-                .build();
-//        ImageRequest request = ImageRequest.fromUri(pack.getIcon());
+                .setContentText(pack.getVersionName());
+        if (progress > 0) {
+            builder.setProgress(100, Math.max(progress, 0), false)
+                    .setContentInfo(getString(R.string.msg_download_progress, progress));
+        }
+//        ImageRequest request = ImageRequest.fromUri(pack.getIconUrl());
 //        ImagePipeline pipeline = Fresco.getImagePipeline();
 //        pipeline.prefetchToDiskCache(request, this);
-        notificationManager.notify(pack.getId(), notification);
+        notificationManager.notify(pack.getId(), builder.build());
     }
 }

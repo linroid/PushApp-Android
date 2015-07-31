@@ -23,7 +23,7 @@
             android:layout_marginBottom="8dp"
             android:layout_alignParentLeft="true"
             android:layout_alignParentTop="true"
-            android:layout_marginLeft="8dp"
+            android:layout_marginLeft="4dp"
             tool:src="@mipmap/ic_launcher" />
 
         <TextView
@@ -31,8 +31,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
-            android:layout_marginLeft="4dp"
-            android:layout_marginTop="4dp"
+            android:layout_marginLeft="8dp"
             android:layout_toRightOf="@id/icon_iv"
             tool:text="PushApp"
             android:textAppearance="@style/TextAppearance.AppCompat.Title" />
@@ -44,26 +43,27 @@
             android:layout_alignLeft="@id/name_tv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
-        <TextView
-            android:id="@+id/time_tv"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignLeft="@id/name_tv"
-            android:layout_alignParentBottom="true"
-            android:textSize="12sp"
-            android:textAppearance="?android:attr/textAppearanceSmall"
-            tool:text="14分钟前" />
+
 
         <TextView
             android:id="@+id/version_tv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
-            android:layout_toRightOf="@id/time_tv"
-            android:layout_marginLeft="4dp"
+            android:layout_alignLeft="@id/name_tv"
             android:textSize="12sp"
             android:textAppearance="?android:attr/textAppearanceSmall"
             tool:text="v1.0.0" />
+        <TextView
+            android:id="@+id/time_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_toRightOf="@id/version_tv"
+            android:layout_marginLeft="4dp"
+            android:textSize="12sp"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            tool:text="14分钟前" />
 
         <ImageButton
             android:id="@+id/action_btn"

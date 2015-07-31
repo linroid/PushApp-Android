@@ -33,8 +33,8 @@ public class ContentLoaderView extends FrameLayout implements SwipeRefreshLayout
     TextView emptyMessageTV;
     TextView errorMessageTV;
 
-    SwipeRefreshLayout refreshLayout;
-    RecyclerView recyclerView;
+    public SwipeRefreshLayout refreshLayout;
+    public RecyclerView recyclerView;
     private View contentView;
 
     private OnRefreshListener refreshListener;

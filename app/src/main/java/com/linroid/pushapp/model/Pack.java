@@ -1,19 +1,27 @@
 package com.linroid.pushapp.model;
 
+import android.content.ContentValues;
+import android.database.Cursor;
 import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.linroid.pushapp.database.Db;
 import com.linroid.pushapp.util.AndroidUtil;
+import com.squareup.sqlbrite.SqlBrite;
 
-import java.sql.Timestamp;
-import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.List;
+
+import rx.functions.Func1;
 
 /**
+ * Package Model
+ *
  * Created by linroid on 7/26/15.
  */
-public class InstallPackage implements Parcelable {
+public class Pack implements Parcelable {
     @Expose
     private Integer id;
     @SerializedName("package_name")
@@ -34,8 +42,9 @@ public class InstallPackage implements Parcelable {
     @SerializedName("user_id")
     @Expose
     private Integer userId;
+    @SerializedName("icon_url")
     @Expose
-    private String icon;
+    private String iconUrl;
     @SerializedName("created_at")
     @Expose
     private String createdAt;
@@ -158,17 +167,17 @@ public class InstallPackage implements Parcelable {
     }
 
     /**
-     * @return The icon
+     * @return The iconUrl
      */
-    public String getIcon() {
-        return icon;
+    public String getIconUrl() {
+        return iconUrl;
     }
 
     /**
-     * @param icon The icon
+     * @param iconUrl The iconUrl
      */
-    public void setIcon(String icon) {
-        this.icon = icon;
+    public void setIconUrl(String iconUrl) {
+        this.iconUrl = iconUrl;
     }
 
     /**
@@ -219,7 +228,7 @@ public class InstallPackage implements Parcelable {
 
     @Override
     public String toString() {
-        return "InstallPackage{" +
+        return "Pack{" +
                 "id=" + id +
                 ", packageName='" + packageName + '\'' +
                 ", appName='" + appName + '\'' +
@@ -227,14 +236,15 @@ public class InstallPackage implements Parcelable {
                 ", versionCode=" + versionCode +
                 ", sdkLevel=" + sdkLevel +
                 ", userId=" + userId +
-                ", icon='" + icon + '\'' +
+                ", iconUrl='" + iconUrl + '\'' +
                 ", createdAt='" + createdAt + '\'' +
                 ", updatedAt='" + updatedAt + '\'' +
                 ", downloadUrl='" + downloadUrl + '\'' +
                 '}';
     }
 
-    public InstallPackage() {
+
+    public Pack() {
     }
 
 
@@ -252,14 +262,14 @@ public class InstallPackage implements Parcelable {
         dest.writeValue(this.versionCode);
         dest.writeValue(this.sdkLevel);
         dest.writeValue(this.userId);
-        dest.writeString(this.icon);
+        dest.writeString(this.iconUrl);
         dest.writeString(this.createdAt);
         dest.writeString(this.updatedAt);
         dest.writeString(this.downloadUrl);
         dest.writeString(this.path);
     }
 
-    protected InstallPackage(Parcel in) {
+    protected Pack(Parcel in) {
         this.id = (Integer) in.readValue(Integer.class.getClassLoader());
         this.packageName = in.readString();
         this.appName = in.readString();
@@ -267,20 +277,112 @@ public class InstallPackage implements Parcelable {
         this.versionCode = (Integer) in.readValue(Integer.class.getClassLoader());
         this.sdkLevel = (Integer) in.readValue(Integer.class.getClassLoader());
         this.userId = (Integer) in.readValue(Integer.class.getClassLoader());
-        this.icon = in.readString();
+        this.iconUrl = in.readString();
         this.createdAt = in.readString();
         this.updatedAt = in.readString();
         this.downloadUrl = in.readString();
         this.path = in.readString();
     }
 
-    public static final Creator<InstallPackage> CREATOR = new Creator<InstallPackage>() {
-        public InstallPackage createFromParcel(Parcel source) {
-            return new InstallPackage(source);
+    public ContentValues toContentValues() {
+        ContentValues values = new ContentValues();
+        values.put(DB.COLUMN_ID, id);
+        values.put(DB.COLUMN_PACKAGE_NAME, packageName);
+        values.put(DB.COLUMN_APP_NAME, appName);
+        values.put(DB.COLUMN_VERSION_NAME, versionName);
+        values.put(DB.COLUMN_VERSION_CODE, versionCode);
+        values.put(DB.COLUMN_SDK_LEVEL, sdkLevel);
+        values.put(DB.COLUMN_USER_ID, userId);
+        values.put(DB.COLUMN_ICON_URL, iconUrl);
+        values.put(DB.COLUMN_DOWNLOAD_URL, downloadUrl);
+        values.put(DB.COLUMN_PATH, path);
+        values.put(DB.COLUMN_CREATED_AT, createdAt);
+        values.put(DB.COLUMN_UPDATED_AT, updatedAt);
+        return values;
+    }
+
+    public static Pack fromCursor(Cursor cursor) {
+        Pack pack = new Pack();
+        pack.id = Db.getInt(cursor, DB.COLUMN_ID);
+        pack.packageName = Db.getString(cursor, DB.COLUMN_PACKAGE_NAME);
+        pack.appName = Db.getString(cursor, DB.COLUMN_APP_NAME);
+        pack.versionName = Db.getString(cursor, DB.COLUMN_VERSION_NAME);
+        pack.versionCode = Db.getInt(cursor, DB.COLUMN_VERSION_CODE);
+        pack.sdkLevel = Db.getInt(cursor, DB.COLUMN_SDK_LEVEL);
+        pack.userId = Db.getInt(cursor, DB.COLUMN_USER_ID);
+        pack.iconUrl = Db.getString(cursor, DB.COLUMN_ICON_URL);
+        pack.downloadUrl = Db.getString(cursor, DB.COLUMN_DOWNLOAD_URL);
+        pack.path = Db.getString(cursor, DB.COLUMN_PATH);
+        pack.createdAt = Db.getString(cursor, DB.COLUMN_CREATED_AT);
+        pack.updatedAt = Db.getString(cursor, DB.COLUMN_UPDATED_AT);
+        return pack;
+    }
+
+
+    public static final Creator<Pack> CREATOR = new Creator<Pack>() {
+        public Pack createFromParcel(Parcel source) {
+            return new Pack(source);
         }
 
-        public InstallPackage[] newArray(int size) {
-            return new InstallPackage[size];
+        public Pack[] newArray(int size) {
+            return new Pack[size];
         }
     };
+
+    public static class DB {
+        public static final String TABLE_NAME = "packages";
+
+        public static final String COLUMN_ID = "id";
+        public static final String COLUMN_PACKAGE_NAME = "package_name";
+        public static final String COLUMN_APP_NAME = "app_name";
+        public static final String COLUMN_VERSION_NAME = "version_name";
+        public static final String COLUMN_VERSION_CODE = "version_code";
+        public static final String COLUMN_SDK_LEVEL = "sdk_level";
+        public static final String COLUMN_USER_ID = "user_id";
+        public static final String COLUMN_ICON_URL = "icon_url";
+        public static final String COLUMN_DOWNLOAD_URL = "download_url";
+        public static final String COLUMN_PATH = "path";
+        public static final String COLUMN_CREATED_AT = "created_at";
+        public static final String COLUMN_UPDATED_AT = "updated_at";
+
+        public static final String SQL_CREATE = ""
+                + "CREATE TABLE " + TABLE_NAME + "("
+                + COLUMN_ID + " INTEGER NOT NULL,"
+                + COLUMN_APP_NAME + " TEXT NOT NULL,"
+                + COLUMN_PACKAGE_NAME + " TEXT NOT NULL,"
+                + COLUMN_VERSION_NAME + " TEXT NOT NULL,"
+                + COLUMN_VERSION_CODE + " TEXT NOT NULL,"
+                + COLUMN_SDK_LEVEL + " INTEGER NOT NULL,"
+                + COLUMN_USER_ID + " INTEGER NOT NULL,"
+                + COLUMN_ICON_URL + " TEXT,"
+                + COLUMN_DOWNLOAD_URL + " TEXT NOT NULL,"
+                + COLUMN_PATH + " TEXT,"
+                + COLUMN_CREATED_AT + " TEXT NOT NULL,"
+                + COLUMN_UPDATED_AT + " TEXT NOT NULL"
+                + ")";
+
+        public static final String SQL_DROP = "DROP TABLE " + TABLE_NAME;
+
+        public static final String SQL_LIST_QUERY = "SELECT * FROM " + TABLE_NAME + " ORDER BY " + COLUMN_CREATED_AT + " DESC";
+
+        public static final String WHERE_ID =  COLUMN_ID+ "= ?";
+        public static final String SQL_ITEM_QUERY = "SELECT * FROM " + TABLE_NAME + " WHERE " + WHERE_ID;
+
+
+        public static final Func1<SqlBrite.Query, List<Pack>> MAP = new Func1<SqlBrite.Query, List<Pack>>() {
+            @Override
+            public List<Pack> call(SqlBrite.Query query) {
+                Cursor cursor = query.run();
+                try {
+                    List<Pack> values = new ArrayList<>(cursor.getCount());
+                    while (cursor.moveToNext()) {
+                        values.add(Pack.fromCursor(cursor));
+                    }
+                    return values;
+                } finally {
+                    cursor.close();
+                }
+            }
+        };
+    }
 }

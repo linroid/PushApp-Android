@@ -6,7 +6,7 @@ import com.google.gson.annotations.SerializedName;
 /**
  * Created by linroid on 7/24/15.
  */
-public class ServerError {
+public class Error {
 
     @Expose
     private String message;
@@ -44,7 +44,7 @@ public class ServerError {
 
     @Override
     public String toString() {
-        return "ServerError{" +
+        return "Error{" +
                 "message='" + message + '\'' +
                 ", statusCode=" + statusCode +
                 '}';

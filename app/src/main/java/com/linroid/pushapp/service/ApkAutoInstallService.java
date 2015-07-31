@@ -14,7 +14,7 @@ import com.linroid.pushapp.App;
 import com.linroid.pushapp.BuildConfig;
 import com.linroid.pushapp.Constants;
 import com.linroid.pushapp.R;
-import com.linroid.pushapp.model.InstallPackage;
+import com.linroid.pushapp.model.Pack;
 import com.linroid.pushapp.util.DeviceUtil;
 
 import java.util.ArrayList;
@@ -50,8 +50,8 @@ public class ApkAutoInstallService extends AccessibilityService {
 
     private static boolean enable = false;
     //TODO 使用软引用
-    private static List<InstallPackage> sInstallList = new ArrayList<>();
-    private static List<InstallPackage> sUninstallList = new ArrayList<>();
+    private static List<Pack> sInstallList = new ArrayList<>();
+    private static List<Pack> sUninstallList = new ArrayList<>();
 
     @Inject
     public SharedPreferences preferences;
@@ -73,7 +73,7 @@ public class ApkAutoInstallService extends AccessibilityService {
      *
      * @param pack
      */
-    public static void installPackage(InstallPackage pack) {
+    public static void installPackage(Pack pack) {
         enable = true;
 
         if (pack != null && !sInstallList.contains(pack)) {
@@ -86,7 +86,7 @@ public class ApkAutoInstallService extends AccessibilityService {
      *
      * @param pack
      */
-    public static void uninstallApplication(InstallPackage pack) {
+    public static void uninstallApplication(Pack pack) {
         enable = true;
         if (pack != null && !sUninstallList.contains(pack)) {
             sUninstallList.add(pack);
@@ -330,8 +330,8 @@ public class ApkAutoInstallService extends AccessibilityService {
         }
     }
 
-    private void removePackFromList(List<InstallPackage> list, String label) {
-        for (InstallPackage pack : list) {
+    private void removePackFromList(List<Pack> list, String label) {
+        for (Pack pack : list) {
             if (pack.getAppName().equals(label)) {
                 sInstallList.remove(pack);
             }
@@ -459,7 +459,7 @@ public class ApkAutoInstallService extends AccessibilityService {
      * @param validPackageList
      * @return
      */
-    private boolean isValidPackageEvent(AccessibilityEvent event, List<InstallPackage> validPackageList) {
+    private boolean isValidPackageEvent(AccessibilityEvent event, List<Pack> validPackageList) {
         return getValidAccessibilityNodeInfo(event, validPackageList) != null;
     }
 
@@ -470,9 +470,9 @@ public class ApkAutoInstallService extends AccessibilityService {
      * @param validPackageList
      * @return
      */
-    private AccessibilityNodeInfo getValidAccessibilityNodeInfo(AccessibilityEvent event, List<InstallPackage> validPackageList) {
+    private AccessibilityNodeInfo getValidAccessibilityNodeInfo(AccessibilityEvent event, List<Pack> validPackageList) {
         if (validPackageList != null && validPackageList.size() > 0) {
-            for (InstallPackage pack : validPackageList) {
+            for (Pack pack : validPackageList) {
                 AccessibilityNodeInfo nodeInfo = getAccessibilityNodeInfoByText(event, CLASS_NAME_WIDGET_TEXTVIEW, pack.getAppName());
                 if (nodeInfo != null) {
                     return nodeInfo;

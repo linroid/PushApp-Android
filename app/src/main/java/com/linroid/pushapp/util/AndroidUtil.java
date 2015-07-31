@@ -14,7 +14,7 @@ import android.text.TextUtils;
 import android.text.format.DateUtils;
 
 import com.linroid.pushapp.BuildConfig;
-import com.linroid.pushapp.model.InstallPackage;
+import com.linroid.pushapp.model.Pack;
 
 import java.io.File;
 import java.text.DateFormat;
@@ -61,7 +61,7 @@ public class AndroidUtil {
      * @param context
      * @param pack
      */
-    public static void installPackage(Context context, InstallPackage pack) {
+    public static void installPackage(Context context, Pack pack) {
         Intent intent = new Intent(Intent.ACTION_VIEW);
         intent.setDataAndType(Uri.fromFile(new File(pack.getPath())),
                 "application/vnd.android.package-archive");
@@ -140,11 +140,11 @@ public class AndroidUtil {
         return null;
     }
 
-    public int dpToPx(int dp) {
+    public static int dpToPx(int dp) {
         return (int) (dp * Resources.getSystem().getDisplayMetrics().density);
     }
 
-    public float pxToDp(int px) {
+    public static float pxToDp(int px) {
         return px / Resources.getSystem().getDisplayMetrics().density;
     }
 

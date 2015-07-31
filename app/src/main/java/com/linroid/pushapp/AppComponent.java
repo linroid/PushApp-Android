@@ -7,6 +7,9 @@ import com.linroid.pushapp.module.FileModule;
 import com.linroid.pushapp.receiver.PushReceiver;
 import com.linroid.pushapp.service.ApkAutoInstallService;
 import com.linroid.pushapp.service.DownloadService;
+import com.linroid.pushapp.ui.bind.BindActivity;
+import com.linroid.pushapp.ui.home.HomeActivity;
+import com.linroid.pushapp.ui.pack.PackageFragment;
 
 import javax.inject.Singleton;
 
@@ -16,8 +19,7 @@ import dagger.Component;
  * Created by linroid on 7/24/15.
  */
 @Singleton
-@Component(modules = {AppModule.class, DataModule.class, FileModule.class, ApiModule.class},
-        dependencies = {UIComponent.class})
+@Component(modules = {AppModule.class, DataModule.class, FileModule.class, ApiModule.class})
 public interface AppComponent {
     void inject(App app);
 
@@ -26,4 +28,10 @@ public interface AppComponent {
     void inject(DownloadService service);
 
     void inject(ApkAutoInstallService service);
+
+    void inject(PackageFragment fragment);
+
+    void inject(BindActivity activity);
+
+    void inject(HomeActivity activity);
 }
