@@ -1,6 +1,5 @@
 package com.linroid.pushapp.ui.base;
 
-import android.graphics.Canvas;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -13,43 +12,54 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.linroid.pushapp.R;
+import com.linroid.pushapp.util.SampleItemDecoration;
+import com.linroid.pushapp.view.ContentLoaderView;
 
 /**
  * Created by linroid on 7/20/15.
  */
 public abstract class RefreshableFragment extends Fragment
-        implements SwipeRefreshLayout.OnRefreshListener {
+        implements ContentLoaderView.OnRefreshListener, ContentLoaderView.OnMoreListener {
+    protected RecyclerView recyclerView;
+    protected ContentLoaderView loaderView;
 
-    SwipeRefreshLayout refreshLayout;
-    RecyclerView recyclerView;
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+    }
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_refreshable, container, false);
-        refreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.refresher);
-        refreshLayout.setColorSchemeResources(
-                android.R.color.holo_blue_light,
-                android.R.color.holo_green_light,
-                android.R.color.holo_red_light,
-                android.R.color.holo_orange_light
-        );
-        refreshLayout.setOnRefreshListener(this);
 
+        loaderView = (ContentLoaderView) view.findViewById(R.id.content_loader);
         recyclerView = (RecyclerView) view.findViewById(R.id.recycler);
         recyclerView.setLayoutManager(new LinearLayoutManager(recyclerView.getContext()));
-        recyclerView.setAdapter(getAdapter());
         recyclerView.setItemAnimator(new DefaultItemAnimator());
+        recyclerView.setHasFixedSize(true);
+        recyclerView.addItemDecoration(new SampleItemDecoration(getResources().getDimensionPixelSize(R.dimen.item_divider_space)));
+        loaderView.setAdapter(getAdapter());
+        loaderView.setOnRefreshListener(this);
+        loaderView.setMoreListener(this);
         return view;
     }
 
+    public abstract RecyclerView.Adapter<? extends RecyclerView.ViewHolder> getAdapter();
+
     @Override
-    public void onDestroyView() {
-        super.onDestroyView();
+    public void onRefresh(boolean fromSwipe) {
+        loadData(1);
     }
 
     @Override
-    public abstract void onRefresh();
+    public void onMore(int page) {
+        loadData(page);
+    }
 
-    public abstract RecyclerView.Adapter<? extends RecyclerView.ViewHolder> getAdapter();
+    public abstract void loadData(int page);
 
+    protected void refresh() {
+        onRefresh(false);
+    }
 }

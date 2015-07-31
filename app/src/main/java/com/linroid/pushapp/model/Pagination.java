@@ -161,4 +161,18 @@ public class Pagination<T> {
         this.data = data;
     }
 
+    @Override
+    public String toString() {
+        return "Pagination{" +
+                "total=" + total +
+                ", perPage=" + perPage +
+                ", currentPage=" + currentPage +
+                ", lastPage=" + lastPage +
+                ", nextPageUrl='" + nextPageUrl + '\'' +
+                ", prevPageUrl='" + prevPageUrl + '\'' +
+                ", from=" + from +
+                ", to=" + to +
+                ", data=" + data +
+                '}';
+    }
 }

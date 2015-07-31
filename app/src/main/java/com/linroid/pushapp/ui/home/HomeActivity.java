@@ -31,6 +31,7 @@ import com.linroid.pushapp.App;
 import com.linroid.pushapp.BuildConfig;
 import com.linroid.pushapp.Constants;
 import com.linroid.pushapp.R;
+import com.linroid.pushapp.service.ApkAutoInstallService;
 import com.linroid.pushapp.ui.base.BaseActivity;
 import com.linroid.pushapp.ui.bind.BindActivity;
 import com.linroid.pushapp.util.StringPreference;
@@ -94,7 +95,7 @@ public class HomeActivity extends BaseActivity {
 
     private void checkAutoInstall() {
         boolean confirmed = preferences.getBoolean(Constants.SP_AUTO_INSTALL_CONFIRMED, false);
-        if (!confirmed && Build.VERSION.SDK_INT>16) {
+        if (!confirmed && ApkAutoInstallService.avaliable()) {
             new AlertDialog.Builder(this).setTitle(R.string.title_auto_install_confirm_dialog)
                     .setMessage(R.string.msg_auto_install_confirm_dialog)
                     .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
@@ -106,6 +107,7 @@ public class HomeActivity extends BaseActivity {
                             editor.apply();
 
                             Intent intent = new Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS);
+                            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                             startActivityForResult(intent, 0);
                             dialog.cancel();
                         }

@@ -38,4 +38,8 @@ public abstract class DataAdapter<T, VH extends RecyclerView.ViewHolder> extends
     public int getItemCount() {
         return data==null ? 0 : data.size();
     }
+
+    public List<T> getData() {
+        return data;
+    }
 }

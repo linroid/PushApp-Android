@@ -20,6 +20,8 @@ import com.linroid.pushapp.util.DeviceUtil;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.inject.Inject;
+
 import hugo.weaving.DebugLog;
 import timber.log.Timber;
 
@@ -33,7 +35,7 @@ import timber.log.Timber;
  */
 @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
 public class ApkAutoInstallService extends AccessibilityService {
-    public static final int AVAILABLE_API = 16;
+    public static final int AVALIABLE_API = 16;
     private static final String CLASS_NAME_APP_ALERT_DIALOG = "android.app.AlertDialog";
     private static final String CLASS_NAME_LENOVO_SAFECENTER = "com.lenovo.safecenter";
     private static final String CLASS_NAME_PACKAGE_INSTALLER = "com.android.packageinstaller";
@@ -51,7 +53,9 @@ public class ApkAutoInstallService extends AccessibilityService {
     private static List<InstallPackage> sInstallList = new ArrayList<>();
     private static List<InstallPackage> sUninstallList = new ArrayList<>();
 
-    private SharedPreferences preferences;
+    @Inject
+    public SharedPreferences preferences;
+
     @Override
     public void onCreate() {
         super.onCreate();
@@ -101,7 +105,7 @@ public class ApkAutoInstallService extends AccessibilityService {
 
     @Override
     public void onAccessibilityEvent(AccessibilityEvent event) {
-        if (enable && VERSION.SDK_INT >= AVAILABLE_API) {
+        if (enable && avaliable()) {
             try {
                 onProcessAccessibilityEvent(event);
             } catch (Exception e) {
@@ -129,7 +133,6 @@ public class ApkAutoInstallService extends AccessibilityService {
             if (isApplicationInstallEvent(event, className, sourceText)) {
                 //准备安装
                 onApplicationInstall(event);
-                return;
             }
             if (className.equalsIgnoreCase(CLASS_NAME_APP_ALERT_DIALOG)) {
                 //弹窗，如授权操作
@@ -258,7 +261,7 @@ public class ApkAutoInstallService extends AccessibilityService {
      * @param event
      */
     private void onInstallFail(AccessibilityEvent event) {
-
+        Timber.e("安装失败");
     }
 
     private void onApplicationInstall(AccessibilityEvent event) {
@@ -311,10 +314,10 @@ public class ApkAutoInstallService extends AccessibilityService {
         Timber.d("安装完成");
         AccessibilityNodeInfo validInfo = getValidAccessibilityNodeInfo(event, sInstallList);
         if (validInfo != null && processApplicationInstalled(event) && sInstallList != null && validInfo.getText() != null) {
-            if(preferences.getBoolean(Constants.SP_AUTO_OPEN, true)) {
+            if (preferences.getBoolean(Constants.SP_AUTO_OPEN, true)) {
                 AccessibilityNodeInfo nodeInfo = getAccessibilityNodeInfoByText(event,
                         DeviceUtil.isFlyme() ? CLASS_NAME_WIDGET_TEXTVIEW : CLASS_NAME_WIDGET_BUTTON,
-                        getString(R.string.btn_accessibility_uninstall));
+                        getString(R.string.btn_accessibility_open));
                 if (nodeInfo != null) {
                     performClick(nodeInfo);
                     nodeInfo.recycle();
@@ -328,8 +331,8 @@ public class ApkAutoInstallService extends AccessibilityService {
     }
 
     private void removePackFromList(List<InstallPackage> list, String label) {
-        for(InstallPackage pack: list){
-            if(pack.getAppName().equals(label)) {
+        for (InstallPackage pack : list) {
+            if (pack.getAppName().equals(label)) {
                 sInstallList.remove(pack);
             }
         }
@@ -558,4 +561,7 @@ public class ApkAutoInstallService extends AccessibilityService {
                 && node.performAction(AccessibilityNodeInfo.ACTION_CLICK);
     }
 
+    public static boolean avaliable() {
+        return VERSION.SDK_INT >= AVALIABLE_API;
+    }
 }

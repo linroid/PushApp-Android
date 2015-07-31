@@ -15,10 +15,12 @@ import android.text.TextUtils;
 import com.linroid.pushapp.App;
 import com.linroid.pushapp.Constants;
 import com.linroid.pushapp.R;
+import com.linroid.pushapp.database.DbOpenHelper;
 import com.linroid.pushapp.model.InstallPackage;
 import com.linroid.pushapp.module.identifier.PackageDownloadDir;
 import com.linroid.pushapp.util.AndroidUtil;
 import com.linroid.pushapp.util.StringPreference;
+import com.squareup.sqlbrite.BriteDatabase;
 import com.thin.downloadmanager.DownloadRequest;
 import com.thin.downloadmanager.DownloadStatusListener;
 import com.thin.downloadmanager.ThinDownloadManager;
@@ -48,6 +50,10 @@ public class DownloadService extends Service {
     @Inject
     SharedPreferences preferences;
 
+    @Inject
+    BriteDatabase db;
+
+
     private ThinDownloadManager downloadManager;
     private Map<Integer, InstallPackage> downloadPackageMap;
     private Handler handler = new Handler(Looper.getMainLooper());
@@ -58,6 +64,7 @@ public class DownloadService extends Service {
         App.from(this).component().inject(this);
         downloadManager = new ThinDownloadManager();
         downloadPackageMap = new HashMap<>();
+        db.insert()
     }
 
     @Override
@@ -89,8 +96,9 @@ public class DownloadService extends Service {
         Timber.d("Download url: %s", pack.getDownloadUrl());
         Uri downloadUri = Uri.parse(pack.getDownloadUrl());
 
-        DownloadRequest request = new DownloadRequest(downloadUri);
         File savedDir = new File(downloadDir, String.valueOf(pack.getId()));
+        File savedFile = new File(savedDir, downloadUri.getLastPathSegment());
+        DownloadRequest request = new DownloadRequest(downloadUri);
         if (downloadPackageMap.containsKey(pack.getId())) {
             Timber.w("download existing... break out");
             return;
@@ -98,7 +106,6 @@ public class DownloadService extends Service {
         if (!savedDir.exists()) {
             savedDir.mkdir();
         }
-        File savedFile = new File(savedDir, downloadUri.getLastPathSegment());
         pack.setPath(savedFile.getAbsolutePath());
         request.setDestinationURI(Uri.fromFile(savedFile));
         request.setDownloadListener(new DownloadStatusListener() {
@@ -107,8 +114,8 @@ public class DownloadService extends Service {
             public void onDownloadComplete(int i) {
                 InstallPackage pack = downloadPackageMap.remove(i);
                 prevProgress = -1;
-                if(preferences.getBoolean(Constants.SP_AUTO_INSTALL, true)) {
-                    installPackage(pack);
+                if (preferences.getBoolean(Constants.SP_AUTO_INSTALL, true)) {
+                    parsePackage(pack);
                 }
             }
 
@@ -116,10 +123,10 @@ public class DownloadService extends Service {
             @DebugLog
             public void onDownloadFailed(int i, int i1, String s) {
                 InstallPackage pack = downloadPackageMap.get(i);
+                Timber.e("%s 下载失败:( %d %s", pack.getAppName(), i1, s);
                 showNotification(pack, -1);
                 downloadPackageMap.remove(i);
                 prevProgress = -1;
-                installPackage(pack);
             }
 
             @Override
@@ -131,16 +138,23 @@ public class DownloadService extends Service {
         downloadPackageMap.put(downloadId, pack);
     }
 
-    private void installPackage(InstallPackage pack) {
-        if (AndroidUtil.isAccessibilitySettingsOn(this, ApkAutoInstallService.class.getCanonicalName())) {
-            CharSequence label = AndroidUtil.getApkLabel(this, pack.getPath());
-            pack.setAppName(label != null ? label.toString() : pack.getAppName());
-            ApkAutoInstallService.installPackage(pack);
-        }
-        AndroidUtil.installPackage(this, pack);
-
+    private void parsePackage(InstallPackage pack) {
+        CharSequence label = AndroidUtil.getApkLabel(this, pack.getPath());
+        pack.setAppName(label != null ? label.toString() : pack.getAppName());
+        installPackage(pack);
     }
 
+    private void installPackage(InstallPackage pack) {
+        if (AndroidUtil.isAccessibilitySettingsOn(this, ApkAutoInstallService.class.getCanonicalName())) {
+            ApkAutoInstallService.installPackage(pack);
+        } else {
+            AndroidUtil.installPackage(this, pack);
+        }
+    }
+
+    /**
+     * 防止进度更新太快
+     */
     int prevProgress = -1;
 
     private void showNotification(InstallPackage pack, int progress) {

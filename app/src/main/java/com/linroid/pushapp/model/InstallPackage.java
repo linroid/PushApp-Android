@@ -5,12 +5,15 @@ import android.os.Parcelable;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.linroid.pushapp.util.AndroidUtil;
+
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 
 /**
  * Created by linroid on 7/26/15.
  */
 public class InstallPackage implements Parcelable {
-
     @Expose
     private Integer id;
     @SerializedName("package_name")
@@ -24,13 +27,13 @@ public class InstallPackage implements Parcelable {
     private String versionName;
     @SerializedName("version_code")
     @Expose
-    private int versionCode;
+    private Integer versionCode;
     @SerializedName("sdk_level")
     @Expose
-    private int sdkLevel;
+    private Integer sdkLevel;
     @SerializedName("user_id")
     @Expose
-    private int userId;
+    private Integer userId;
     @Expose
     private String icon;
     @SerializedName("created_at")
@@ -43,7 +46,7 @@ public class InstallPackage implements Parcelable {
     @Expose
     private String downloadUrl;
     /**
-     * 本地保存路径
+     * 本地保存的路径
      */
     private String path;
 
@@ -66,7 +69,7 @@ public class InstallPackage implements Parcelable {
     /**
      * @param id The id
      */
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
@@ -115,28 +118,28 @@ public class InstallPackage implements Parcelable {
     /**
      * @return The versionCode
      */
-    public int getVersionCode() {
+    public Integer getVersionCode() {
         return versionCode;
     }
 
     /**
      * @param versionCode The version_code
      */
-    public void setVersionCode(int versionCode) {
+    public void setVersionCode(Integer versionCode) {
         this.versionCode = versionCode;
     }
 
     /**
      * @return The sdkLevel
      */
-    public int getSdkLevel() {
+    public Integer getSdkLevel() {
         return sdkLevel;
     }
 
     /**
      * @param sdkLevel The sdk_level
      */
-    public void setSdkLevel(int sdkLevel) {
+    public void setSdkLevel(Integer sdkLevel) {
         this.sdkLevel = sdkLevel;
     }
 
@@ -210,6 +213,10 @@ public class InstallPackage implements Parcelable {
         this.downloadUrl = downloadUrl;
     }
 
+    public CharSequence getFriendlyTime() {
+        return AndroidUtil.friendlyTime(createdAt);
+    }
+
     @Override
     public String toString() {
         return "InstallPackage{" +
@@ -230,6 +237,7 @@ public class InstallPackage implements Parcelable {
     public InstallPackage() {
     }
 
+
     @Override
     public int describeContents() {
         return 0;
@@ -241,9 +249,9 @@ public class InstallPackage implements Parcelable {
         dest.writeString(this.packageName);
         dest.writeString(this.appName);
         dest.writeString(this.versionName);
-        dest.writeInt(this.versionCode);
-        dest.writeInt(this.sdkLevel);
-        dest.writeInt(this.userId);
+        dest.writeValue(this.versionCode);
+        dest.writeValue(this.sdkLevel);
+        dest.writeValue(this.userId);
         dest.writeString(this.icon);
         dest.writeString(this.createdAt);
         dest.writeString(this.updatedAt);
@@ -256,16 +264,15 @@ public class InstallPackage implements Parcelable {
         this.packageName = in.readString();
         this.appName = in.readString();
         this.versionName = in.readString();
-        this.versionCode = in.readInt();
-        this.sdkLevel = in.readInt();
-        this.userId = in.readInt();
+        this.versionCode = (Integer) in.readValue(Integer.class.getClassLoader());
+        this.sdkLevel = (Integer) in.readValue(Integer.class.getClassLoader());
+        this.userId = (Integer) in.readValue(Integer.class.getClassLoader());
         this.icon = in.readString();
         this.createdAt = in.readString();
         this.updatedAt = in.readString();
         this.downloadUrl = in.readString();
         this.path = in.readString();
     }
-
 
     public static final Creator<InstallPackage> CREATOR = new Creator<InstallPackage>() {
         public InstallPackage createFromParcel(Parcel source) {

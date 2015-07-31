@@ -30,14 +30,15 @@ public class DeviceFragment extends RefreshableFragment {
         return inflater.inflate(R.layout.fragment_device, container, false);
     }
 
-    @Override
-    public void onRefresh() {
-
-    }
 
     @Override
     public RecyclerView.Adapter<? extends RecyclerView.ViewHolder> getAdapter() {
         return null;
+    }
+
+    @Override
+    public void loadData(int page) {
+
     }
 
 

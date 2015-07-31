@@ -5,15 +5,22 @@ import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.content.res.Resources;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.text.TextUtils;
+import android.text.format.DateUtils;
 
 import com.linroid.pushapp.BuildConfig;
 import com.linroid.pushapp.model.InstallPackage;
 
 import java.io.File;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import timber.log.Timber;
 
@@ -21,6 +28,22 @@ import timber.log.Timber;
  * Created by linroid on 7/26/15.
  */
 public class AndroidUtil {
+    public static final DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+
+    public static Date formatDate(String dateStr) {
+        try {
+            return formatter.parse(dateStr);
+        } catch (ParseException e) {
+            return null;
+        }
+
+    }
+
+    public static CharSequence friendlyTime(String dateStr) {
+        Date date = formatDate(dateStr);
+        return DateUtils.getRelativeTimeSpanString(date.getTime());
+    }
+
     public static String sprintBundle(Bundle bundle) {
         StringBuilder sb = new StringBuilder();
         for (String key : bundle.keySet()) {
@@ -97,11 +120,32 @@ public class AndroidUtil {
         PackageManager pm = context.getPackageManager();
         PackageInfo info = pm.getPackageArchiveInfo(apkPath, PackageManager.GET_ACTIVITIES);
         if (info != null) {
-            info.applicationInfo.sourceDir       = apkPath;
+            info.applicationInfo.sourceDir = apkPath;
             info.applicationInfo.publicSourceDir = apkPath;
             ApplicationInfo applicationInfo = info.applicationInfo;
             return applicationInfo.loadLabel(pm);
         }
         return null;
     }
+
+    public static Drawable getApkIcon(Context context, String apkPath) {
+        PackageManager pm = context.getPackageManager();
+        PackageInfo info = pm.getPackageArchiveInfo(apkPath, PackageManager.GET_ACTIVITIES);
+        if (info != null) {
+            info.applicationInfo.sourceDir = apkPath;
+            info.applicationInfo.publicSourceDir = apkPath;
+            ApplicationInfo applicationInfo = info.applicationInfo;
+            return applicationInfo.loadIcon(pm);
+        }
+        return null;
+    }
+
+    public int dpToPx(int dp) {
+        return (int) (dp * Resources.getSystem().getDisplayMetrics().density);
+    }
+
+    public float pxToDp(int px) {
+        return px / Resources.getSystem().getDisplayMetrics().density;
+    }
+
 }

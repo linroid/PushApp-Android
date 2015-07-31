@@ -6,7 +6,7 @@ import android.support.v4.app.FragmentPagerAdapter;
 
 import com.linroid.pushapp.ui.app.AppFragment;
 import com.linroid.pushapp.ui.device.DeviceFragment;
-import com.linroid.pushapp.ui.push.PushFragment;
+import com.linroid.pushapp.ui.pack.PackageFragment;
 
 /**
  * Created by linroid on 7/20/15.
@@ -21,7 +21,7 @@ public class HomePagerAdapter extends FragmentPagerAdapter {
         Fragment fragment;
         switch (position) {
             case 0:
-                fragment = new PushFragment();
+                fragment = new PackageFragment();
                 break;
             case 1:
                 fragment = new AppFragment();

@@ -37,7 +37,7 @@ public class FileModule {
     @PackageDownloadDir
     @Provides
     @Singleton
-    File provideApkDownloadDir(Context context) {
+    File providePackageDownloadDir(Context context) {
         String state = Environment.getExternalStorageState();
         File rootDir;
         if (Environment.MEDIA_MOUNTED.equals(state)) {

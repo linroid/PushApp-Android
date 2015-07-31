@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    xmlns:tool="http://schemas.android.com/tools"
     android:id="@+id/push_card"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -15,7 +16,7 @@
         style="@style/Widget.CardContent">
 
         <ImageView
-            android:id="@+id/logo_iv"
+            android:id="@+id/icon_iv"
             android:layout_width="56dp"
             android:layout_height="56dp"
             android:layout_marginTop="8dp"
@@ -23,7 +24,7 @@
             android:layout_alignParentLeft="true"
             android:layout_alignParentTop="true"
             android:layout_marginLeft="8dp"
-            android:src="@mipmap/ic_launcher" />
+            tool:src="@mipmap/ic_launcher" />
 
         <TextView
             android:id="@+id/name_tv"
@@ -32,13 +33,13 @@
             android:layout_alignParentTop="true"
             android:layout_marginLeft="4dp"
             android:layout_marginTop="4dp"
-            android:layout_toRightOf="@id/logo_iv"
-            android:text="PushApp"
+            android:layout_toRightOf="@id/icon_iv"
+            tool:text="PushApp"
             android:textAppearance="@style/TextAppearance.AppCompat.Title" />
 
         <TextView
             android:id="@+id/package_tv"
-            android:text="com.linroid.pushapp"
+            tool:text="com.linroid.pushapp"
             android:layout_below="@id/name_tv"
             android:layout_alignLeft="@id/name_tv"
             android:layout_width="wrap_content"
@@ -51,10 +52,10 @@
             android:layout_alignParentBottom="true"
             android:textSize="12sp"
             android:textAppearance="?android:attr/textAppearanceSmall"
-            android:text="14分钟前" />
+            tool:text="14分钟前" />
 
         <TextView
-            android:id="@+id/version"
+            android:id="@+id/version_tv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
@@ -62,16 +63,16 @@
             android:layout_marginLeft="4dp"
             android:textSize="12sp"
             android:textAppearance="?android:attr/textAppearanceSmall"
-            android:text="v1.0.0" />
+            tool:text="v1.0.0" />
 
-        <Button
+        <ImageButton
             android:id="@+id/action_btn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
+            android:layout_alignParentTop="true"
             android:background="?attr/selectableItemBackgroundBorderless"
-            android:text="分享" />
+            android:src="@drawable/ic_more_vert" />
     </RelativeLayout>
 
 </android.support.v7.widget.CardView>

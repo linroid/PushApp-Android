@@ -41,13 +41,13 @@ public class AppFragment extends RefreshableFragment {
     }
 
     @Override
-    public void onRefresh() {
-
+    public RecyclerView.Adapter<? extends RecyclerView.ViewHolder> getAdapter() {
+        return adapter;
     }
 
     @Override
-    public RecyclerView.Adapter<? extends RecyclerView.ViewHolder> getAdapter() {
-        return adapter;
+    public void loadData(int page) {
+
     }
 
 
