@@ -10,6 +10,7 @@ import com.linroid.pushapp.api.PackageService;
 import com.linroid.pushapp.model.Pack;
 import com.linroid.pushapp.model.Pagination;
 import com.linroid.pushapp.ui.base.RefreshableFragment;
+import com.squareup.picasso.Picasso;
 import com.squareup.sqlbrite.BriteDatabase;
 
 import javax.inject.Inject;
@@ -29,6 +30,8 @@ public class PackageFragment extends RefreshableFragment {
     PackageService packageApi;
     @Inject
     BriteDatabase db;
+    @Inject
+    Picasso picasso;
 
     PackageAdapter adapter;
 
@@ -38,7 +41,7 @@ public class PackageFragment extends RefreshableFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        adapter = new PackageAdapter();
+        adapter = new PackageAdapter(picasso);
 //        if (savedInstanceState != null) {
 //            List<Pack> savedPacks = savedInstanceState.getParcelableArrayList(STATE_PACKAGE);
 //            adapter.setData(savedPacks);

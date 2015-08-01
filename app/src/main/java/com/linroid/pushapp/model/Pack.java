@@ -4,6 +4,7 @@ import android.content.ContentValues;
 import android.database.Cursor;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.text.TextUtils;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
@@ -11,6 +12,7 @@ import com.linroid.pushapp.database.Db;
 import com.linroid.pushapp.util.AndroidUtil;
 import com.squareup.sqlbrite.SqlBrite;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,7 +20,7 @@ import rx.functions.Func1;
 
 /**
  * Package Model
- *
+ * <p/>
  * Created by linroid on 7/26/15.
  */
 public class Pack implements Parcelable {
@@ -222,8 +224,26 @@ public class Pack implements Parcelable {
         this.downloadUrl = downloadUrl;
     }
 
+    /**
+     * 获得友好的时间显示(xx分钟前)
+     *
+     * @return
+     */
     public CharSequence getFriendlyTime() {
         return AndroidUtil.friendlyTime(createdAt);
+    }
+
+    /**
+     * 判断是否存在本地文件
+     *
+     * @return
+     */
+    public boolean fileExists() {
+        if (TextUtils.isEmpty(this.path)) {
+            return false;
+        }
+        File file = new File(this.path);
+        return file.exists();
     }
 
     @Override
@@ -365,7 +385,7 @@ public class Pack implements Parcelable {
 
         public static final String SQL_LIST_QUERY = "SELECT * FROM " + TABLE_NAME + " ORDER BY " + COLUMN_CREATED_AT + " DESC";
 
-        public static final String WHERE_ID =  COLUMN_ID+ "= ?";
+        public static final String WHERE_ID = COLUMN_ID + "= ?";
         public static final String SQL_ITEM_QUERY = "SELECT * FROM " + TABLE_NAME + " WHERE " + WHERE_ID;
 
 

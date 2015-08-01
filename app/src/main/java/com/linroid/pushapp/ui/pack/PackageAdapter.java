@@ -17,6 +17,7 @@ import com.linroid.pushapp.R;
 import com.linroid.pushapp.model.Pack;
 import com.linroid.pushapp.ui.base.DataAdapter;
 import com.linroid.pushapp.util.AndroidUtil;
+import com.squareup.picasso.Picasso;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -26,6 +27,10 @@ import hugo.weaving.DebugLog;
  * Created by linroid on 7/20/15.
  */
 public class PackageAdapter extends DataAdapter<Pack, PackageAdapter.PackageHolder> {
+    Picasso picasso;
+    public PackageAdapter(Picasso picasso) {
+        this.picasso = picasso;
+    }
 
     @Override
     public int getItemCount() {
@@ -42,9 +47,13 @@ public class PackageAdapter extends DataAdapter<Pack, PackageAdapter.PackageHold
     @Override
     public void onBindViewHolder(PackageHolder holder, int i) {
         Pack pack = data.get(i);
-        Drawable icon = AndroidUtil.getApkIcon(holder.iconIv.getContext(), pack.getPath());
-//        Drawable icon = holder.iconIv.getContext().getResources().getDrawable(R.mipmap.ic_launcher);
-        holder.iconIv.setImageDrawable(icon);
+        //本地文件存在则从文件中加载图片，否则从网络中加载
+        if (pack.fileExists()) {
+            picasso.load(pack.getIconUrl()).centerInside().into(holder.iconIv);
+        } else {
+            Drawable icon = AndroidUtil.getApkIcon(holder.iconIv.getContext(), pack.getPath());
+            holder.iconIv.setImageDrawable(icon);
+        }
         holder.nameTv.setText(pack.getAppName());
         holder.versionTv.setText("v" + pack.getVersionName() + "(" + pack.getVersionCode() + ")");
         holder.packageTv.setText(pack.getPackageName());

@@ -6,17 +6,11 @@ import android.app.Service;
 import android.content.Context;
 import android.preference.PreferenceManager;
 
-import com.facebook.drawee.backends.pipeline.Fresco;
-import com.facebook.imagepipeline.backends.okhttp.OkHttpImagePipelineConfigFactory;
-import com.facebook.imagepipeline.core.ImagePipelineConfig;
 import com.facebook.stetho.Stetho;
 import com.linroid.pushapp.module.ApiModule;
 import com.linroid.pushapp.module.AppModule;
 import com.linroid.pushapp.module.DataModule;
 import com.linroid.pushapp.module.FileModule;
-import com.squareup.okhttp.OkHttpClient;
-
-import javax.inject.Inject;
 
 import cn.jpush.android.api.JPushInterface;
 import timber.log.Timber;
@@ -26,9 +20,6 @@ import timber.log.Timber;
  */
 public class App extends Application {
     AppComponent component;
-
-    @Inject
-    OkHttpClient okHttp;
 
     @Override
     public void onCreate() {
@@ -48,8 +39,6 @@ public class App extends Application {
                 .build();
         component.inject(this);
 
-        configFresco();
-
         JPushInterface.setDebugMode(BuildConfig.DEBUG);
         JPushInterface.init(this);
 
@@ -57,14 +46,6 @@ public class App extends Application {
         if (BuildConfig.DEBUG) {
             Timber.plant(new Timber.DebugTree());
         }
-    }
-
-    private void configFresco() {
-        ImagePipelineConfig config = OkHttpImagePipelineConfigFactory
-                .newBuilder(this, okHttp)
-                .build();
-        Fresco.initialize(this, config);
-
     }
 
     public AppComponent component() {

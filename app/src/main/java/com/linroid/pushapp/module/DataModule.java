@@ -1,9 +1,11 @@
 package com.linroid.pushapp.module;
 
+import android.app.ActivityManager;
 import android.app.Application;
 import android.content.Context;
 import android.content.res.Resources;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.net.Uri;
 import android.text.TextUtils;
 
 import com.facebook.stetho.okhttp.StethoInterceptor;
@@ -20,6 +22,9 @@ import com.squareup.okhttp.Cache;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.internal.DiskLruCache;
 import com.squareup.okhttp.internal.io.FileSystem;
+import com.squareup.picasso.LruCache;
+import com.squareup.picasso.OkHttpDownloader;
+import com.squareup.picasso.Picasso;
 import com.squareup.sqlbrite.BriteDatabase;
 import com.squareup.sqlbrite.SqlBrite;
 
@@ -141,6 +146,24 @@ public class DataModule {
                 return new Exception(message);
             }
         };
+    }
+
+
+    @Provides
+    @Singleton
+    Picasso providePicasso(OkHttpClient okHttp, Context context) {
+        ActivityManager am = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
+        return new Picasso.Builder(context)
+                .downloader(new OkHttpDownloader(okHttp))
+                .listener(new Picasso.Listener() {
+                    @Override
+                    public void onImageLoadFailed(Picasso picasso, Uri uri, Exception exception) {
+                        Timber.e("Image load failed: %s\n%s", uri, exception.getMessage());
+                    }
+                })
+                //30M
+                .memoryCache(new LruCache(am.getMemoryClass()*1024*1024 / 8))
+                .build();
     }
 
     @Provides
