@@ -106,6 +106,7 @@
     <orderEntry type="library" exported="" name="rxjava-1.0.12" level="project" />
     <orderEntry type="library" exported="" name="core-3.2.0" level="project" />
     <orderEntry type="library" exported="" name="timber-3.1.0" level="project" />
+    <orderEntry type="library" exported="" name="jpush-sdk-release1.8.0" level="project" />
     <orderEntry type="library" exported="" name="jsr305-2.0.1" level="project" />
     <orderEntry type="library" exported="" name="hugo-annotations-1.2.1" level="project" />
     <orderEntry type="library" exported="" name="sqlbrite-0.2.1" level="project" />
@@ -113,12 +114,11 @@
     <orderEntry type="library" exported="" name="butterknife-7.0.1" level="project" />
     <orderEntry type="library" exported="" name="support-annotations-22.2.0" level="project" />
     <orderEntry type="library" exported="" name="stetho-okhttp-1.1.1" level="project" />
-    <orderEntry type="library" exported="" name="jpush-sdk-release1.7.5" level="project" />
     <orderEntry type="library" exported="" name="recyclerview-v7-22.2.0" level="project" />
     <orderEntry type="library" exported="" name="cardview-v7-22.2.0" level="project" />
     <orderEntry type="library" exported="" name="stetho-1.1.1" level="project" />
-    <orderEntry type="library" exported="" name="retrofit-1.9.0" level="project" />
     <orderEntry type="library" exported="" name="okhttp-urlconnection-2.4.0" level="project" />
+    <orderEntry type="library" exported="" name="retrofit-1.9.0" level="project" />
     <orderEntry type="library" exported="" name="gson-2.3.1" level="project" />
     <orderEntry type="library" exported="" name="okhttp-2.4.0" level="project" />
     <orderEntry type="library" exported="" name="hugo-runtime-1.2.1" level="project" />
