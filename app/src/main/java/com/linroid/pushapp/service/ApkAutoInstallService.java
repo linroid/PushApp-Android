@@ -319,17 +319,10 @@ public class ApkAutoInstallService extends AccessibilityService {
     private void onApplicationInstalled(AccessibilityEvent event) {
         Timber.d("安装完成");
         AccessibilityNodeInfo validInfo = getValidAccessibilityNodeInfo(event, sInstallList);
-        if (validInfo != null && processApplicationInstalled(event) && sInstallList != null && validInfo.getText() != null) {
+        if (validInfo != null) {
             if (autoOpen.getValue()) {
-                Timber.w("准备打开");
-                AccessibilityNodeInfo nodeInfo = getAccessibilityNodeInfoByText(event,
-                        DeviceUtil.isFlyme() ? CLASS_NAME_WIDGET_TEXTVIEW : CLASS_NAME_WIDGET_BUTTON,
-                        getString(R.string.btn_accessibility_open));
-                if (nodeInfo != null) {
-                    performClick(nodeInfo);
-                    nodeInfo.recycle();
-                    return;
-                }
+                boolean openSuccess =  openAfterInstalled(event);
+                Timber.d("成功打开？%s", openSuccess);
             }
             String label = validInfo.getText().toString();
             removePackFromListByAppName(sInstallList, label);
@@ -356,27 +349,50 @@ public class ApkAutoInstallService extends AccessibilityService {
     }
 
     /**
-     * 安装完成之后的处理操作
+     * 安装完成之后打开应用
      *
      * @param event
      * @return
      */
-    private boolean processApplicationInstalled(AccessibilityEvent event) {
-        AccessibilityNodeInfo eventInfo = null;
+    private boolean openAfterInstalled(AccessibilityEvent event) {
+        AccessibilityNodeInfo eventInfo;
         if (event != null && event.getSource() != null) {
             eventInfo = event.getSource();
-        } else if (VERSION.SDK_INT >= 16) {
+        } else {
             eventInfo = getRootInActiveWindow();
         }
         boolean success = false;
         if (eventInfo != null) {
+            success = performEventAction(eventInfo, null, getString(R.string.btn_accessibility_run), false)
+                    || performEventAction(eventInfo, null, getString(R.string.btn_accessibility_open), false);
             eventInfo.recycle();
-            success = performEventAction(eventInfo, null, getString(R.string.btn_accessibility_ok), false)
+        }
+        return success;
+    }
+
+    /**
+     * 安装完成之后关闭安装窗口
+     * @param event
+     * @return
+     */
+    private boolean closeAfterInstalled(AccessibilityEvent event){
+        AccessibilityNodeInfo eventInfo;
+        if (event != null && event.getSource() != null) {
+            eventInfo = event.getSource();
+        } else {
+            eventInfo = getRootInActiveWindow();
+        }
+        boolean success = false;
+        if (eventInfo != null) {
+            success =
+                    performEventAction(eventInfo, null, getString(R.string.btn_accessibility_ok), false)
                     || performEventAction(eventInfo, null, getString(R.string.btn_accessibility_done), false)
                     || performEventAction(eventInfo, null, getString(R.string.btn_accessibility_complete), false)
                     || performEventAction(eventInfo, null, getString(R.string.btn_accessibility_know), false)
+                    || performEventAction(eventInfo, null, getString(R.string.btn_accessibility_know), false)
                     || performEventAction(eventInfo, null, getString(R.string.btn_accessibility_run), true)
                     || performEventAction(eventInfo, null, getString(R.string.btn_accessibility_open), true);
+            eventInfo.recycle();
         }
         return success;
     }
