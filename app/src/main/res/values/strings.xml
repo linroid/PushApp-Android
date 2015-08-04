@@ -28,4 +28,8 @@
 无需手动点击</string>
     <string name="msg_auto_install_confirm_cancel" >你也可以在设置里打开哟~</string>
     <string name="loading_text">加载中…</string>
+    <string name="action_install">安装</string>
+    <string name="action_uninstall">卸载</string>
+    <string name="action_send_to_others">发给其他设备</string>
+    <string name="action_download">下载</string>
 </resources>

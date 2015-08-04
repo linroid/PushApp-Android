@@ -1,6 +1,7 @@
 package com.linroid.pushapp.service;
 
 import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -161,7 +162,7 @@ public class DownloadService extends Service {
         if (AndroidUtil.isAccessibilitySettingsOn(this, ApkAutoInstallService.class.getCanonicalName())) {
             ApkAutoInstallService.installPackage(pack);
         } else {
-            AndroidUtil.installPackage(this, pack);
+            AndroidUtil.installApk(this, pack.getPath());
         }
     }
 
@@ -190,12 +191,20 @@ public class DownloadService extends Service {
             titleText = getString(R.string.msg_downloading, pack.getAppName());
         }
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this)
-                .setContentTitle(titleText)
+                .setContentTitle("v" + titleText)
                 .setSmallIcon(R.mipmap.ic_launcher)
                 .setContentText(pack.getVersionName());
         if (progress > 0) {
             builder.setProgress(100, Math.max(progress, 0), false)
                     .setContentInfo(getString(R.string.msg_download_progress, progress));
+        }
+        if (progress == 100) {
+            Intent intent = new Intent(Intent.ACTION_VIEW);
+            intent.setDataAndType(Uri.fromFile(new File(pack.getPath())),
+                    "application/vnd.android.package-archive");
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            PendingIntent pi = PendingIntent.getActivity(this, 0x1, intent, 0);
+            builder.setContentIntent(pi);
         }
 //        ImageRequest request = ImageRequest.fromUri(pack.getIconUrl());
 //        ImagePipeline pipeline = Fresco.getImagePipeline();

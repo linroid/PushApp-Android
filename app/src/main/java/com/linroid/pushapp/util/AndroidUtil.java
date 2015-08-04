@@ -10,11 +10,11 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.support.v4.app.FragmentActivity;
 import android.text.TextUtils;
 import android.text.format.DateUtils;
 
 import com.linroid.pushapp.BuildConfig;
-import com.linroid.pushapp.model.Pack;
 
 import java.io.File;
 import java.text.DateFormat;
@@ -59,14 +59,46 @@ public class AndroidUtil {
      * 打开安装页面
      *
      * @param context
-     * @param pack
+     * @param apkPath apk文件路径
      */
-    public static void installPackage(Context context, Pack pack) {
+    public static void installApk(Context context, String apkPath) {
         Intent intent = new Intent(Intent.ACTION_VIEW);
-        intent.setDataAndType(Uri.fromFile(new File(pack.getPath())),
+        intent.setDataAndType(Uri.fromFile(new File(apkPath)),
                 "application/vnd.android.package-archive");
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         context.startActivity(intent);
+    }
+
+
+    /**
+     * 卸载应用
+     *
+     * @param context
+     * @param packageName 包名
+     */
+    public static void uninstallApp(Context context, String packageName) {
+        Uri uri = Uri.parse("package:" + packageName);
+        Intent intent = new Intent(Intent.ACTION_DELETE, uri);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        context.startActivity(intent);
+    }
+
+    /**
+     * 判断应用是否已经安装
+     *
+     * @param context
+     * @param packageName 包名
+     * @return
+     */
+    public static boolean isInstalled(Context context, String packageName) {
+        PackageManager pm = context.getPackageManager();
+        PackageInfo info;
+        try {
+            info = pm.getPackageInfo(packageName, 0);
+        } catch (PackageManager.NameNotFoundException e) {
+            info = null;
+        }
+        return info != null;
     }
 
     /**
@@ -128,6 +160,13 @@ public class AndroidUtil {
         return null;
     }
 
+    /**
+     * 获取apk的icon
+     *
+     * @param context
+     * @param apkPath
+     * @return
+     */
     public static Drawable getApkIcon(Context context, String apkPath) {
         PackageManager pm = context.getPackageManager();
         PackageInfo info = pm.getPackageArchiveInfo(apkPath, PackageManager.GET_ACTIVITIES);
@@ -140,6 +179,12 @@ public class AndroidUtil {
         return null;
     }
 
+    /**
+     * dp转px
+     *
+     * @param dp
+     * @return
+     */
     public static int dpToPx(int dp) {
         return (int) (dp * Resources.getSystem().getDisplayMetrics().density);
     }
@@ -147,5 +192,4 @@ public class AndroidUtil {
     public static float pxToDp(int px) {
         return px / Resources.getSystem().getDisplayMetrics().density;
     }
-
 }

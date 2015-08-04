@@ -2,7 +2,6 @@ package com.linroid.pushapp.ui.pack;
 
 import android.app.Activity;
 import android.os.Bundle;
-import android.support.design.widget.Snackbar;
 import android.support.v7.widget.RecyclerView;
 
 import com.linroid.pushapp.App;
@@ -10,6 +9,7 @@ import com.linroid.pushapp.api.PackageService;
 import com.linroid.pushapp.model.Pack;
 import com.linroid.pushapp.model.Pagination;
 import com.linroid.pushapp.ui.base.RefreshableFragment;
+import com.linroid.pushapp.util.AndroidUtil;
 import com.squareup.picasso.Picasso;
 import com.squareup.sqlbrite.BriteDatabase;
 
@@ -24,7 +24,7 @@ import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 
-public class PackageFragment extends RefreshableFragment {
+public class PackageFragment extends RefreshableFragment implements PackageAdapter.OnActionListener {
     public static final String STATE_PACKAGE = "package";
     @Inject
     PackageService packageApi;
@@ -42,6 +42,7 @@ public class PackageFragment extends RefreshableFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         adapter = new PackageAdapter(picasso);
+        adapter.setListener(this);
 //        if (savedInstanceState != null) {
 //            List<Pack> savedPacks = savedInstanceState.getParcelableArrayList(STATE_PACKAGE);
 //            adapter.setData(savedPacks);
@@ -121,4 +122,23 @@ public class PackageFragment extends RefreshableFragment {
         subscriptions.add(subscription);
     }
 
+    @Override
+    public void onInstall(Pack pack) {
+        AndroidUtil.installApk(getActivity(), pack.getPath());
+    }
+
+    @Override
+    public void onUninstall(Pack pack) {
+        AndroidUtil.uninstallApp(getActivity(), pack.getPackageName());
+    }
+
+    @Override
+    public void onSend(Pack pack) {
+
+    }
+
+    @Override
+    public void onDownload(Pack pack) {
+
+    }
 }
