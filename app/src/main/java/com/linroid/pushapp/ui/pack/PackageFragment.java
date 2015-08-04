@@ -1,21 +1,29 @@
 package com.linroid.pushapp.ui.pack;
 
 import android.app.Activity;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 
 import com.linroid.pushapp.App;
+import com.linroid.pushapp.Constants;
 import com.linroid.pushapp.api.PackageService;
 import com.linroid.pushapp.model.Pack;
 import com.linroid.pushapp.model.Pagination;
+import com.linroid.pushapp.service.ApkAutoInstallService;
+import com.linroid.pushapp.service.DownloadService;
 import com.linroid.pushapp.ui.base.RefreshableFragment;
 import com.linroid.pushapp.util.AndroidUtil;
 import com.squareup.picasso.Picasso;
 import com.squareup.sqlbrite.BriteDatabase;
 
+import java.util.List;
+
 import javax.inject.Inject;
+import javax.inject.Named;
 
 import hugo.weaving.DebugLog;
+import rx.Observable;
 import rx.Observer;
 import rx.Subscription;
 import rx.android.app.AppObservable;
@@ -66,12 +74,12 @@ public class PackageFragment extends RefreshableFragment implements PackageAdapt
     @Override
     public void onResume() {
         super.onResume();
-        Subscription subscription = db.createQuery(Pack.DB.TABLE_NAME, Pack.DB.SQL_LIST_QUERY)
+        subscriptions.add(db.createQuery(Pack.DB.TABLE_NAME, Pack.DB.SQL_LIST_QUERY)
                 .map(Pack.DB.MAP)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(adapter);
-        subscriptions.add(subscription);
+                .subscribe(adapter)
+        );
     }
 
     @Override
@@ -92,15 +100,28 @@ public class PackageFragment extends RefreshableFragment implements PackageAdapt
 
     @Override
     public void loadData(int page) {
-        Subscription subscription =
-                AppObservable.bindSupportFragment(this, packageApi.listReceived(page))
-                .map(new Func1<Pagination<Pack>, Pagination<Pack>>() {
+        subscriptions.add(AppObservable.bindSupportFragment(this, packageApi.listReceived(page))
+                .map(new Func1<Pagination<Pack>, List<Pack>>() {
                     @Override
-                    public Pagination<Pack> call(Pagination<Pack> packPagination) {
-                        return packPagination;
+                    public List<Pack> call(Pagination<Pack> pagination) {
+                        return pagination.getData();
                     }
                 })
-                .subscribe(new Observer<Pagination<Pack>>() {
+                .flatMap(new Func1<List<Pack>, Observable<Pack>>() {
+                    @Override
+                    public Observable<Pack> call(List<Pack> packs) {
+                        return Observable.from(packs);
+                    }
+                })
+                .filter(new Func1<Pack, Boolean>() {
+                    @Override
+                    public Boolean call(Pack pack) {
+                        Cursor cursor = db.query(Pack.DB.SQL_ITEM_QUERY, String.valueOf(pack.getId()));
+                        return !cursor.moveToNext();
+                    }
+                })
+                .toList()
+                .subscribe(new Observer<List<Pack>>() {
 
                     @DebugLog
                     @Override
@@ -111,19 +132,28 @@ public class PackageFragment extends RefreshableFragment implements PackageAdapt
                     @DebugLog
                     @Override
                     public void onError(Throwable e) {
+                        loaderView.refreshLayout.setRefreshing(false);
+
                     }
 
                     @DebugLog
                     @Override
-                    public void onNext(Pagination<Pack> packPagination) {
-
+                    public void onNext(List<Pack> packs) {
+                        loaderView.refreshLayout.setRefreshing(false);
+                        db.beginTransaction();
+                        for (Pack pack : packs) {
+                            db.insert(Pack.DB.TABLE_NAME, pack.toContentValues());
+                        }
+                        db.setTransactionSuccessful();
+                        db.endTransaction();
                     }
-                });
-        subscriptions.add(subscription);
+
+                }));
     }
 
     @Override
     public void onInstall(Pack pack) {
+        ApkAutoInstallService.installPackage(pack);
         AndroidUtil.installApk(getActivity(), pack.getPath());
     }
 
@@ -139,6 +169,6 @@ public class PackageFragment extends RefreshableFragment implements PackageAdapt
 
     @Override
     public void onDownload(Pack pack) {
-
+        DownloadService.download(getActivity(), pack);
     }
 }

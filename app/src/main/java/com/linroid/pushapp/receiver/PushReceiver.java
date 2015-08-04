@@ -68,16 +68,11 @@ public class PushReceiver extends BroadcastReceiver {
 //                        .withMsgId(msgId)
 //                        .withPackage(pack)
 //                        .build();
-                onReceivePackagePush(pack);
+                DownloadService.download(context, pack);
                 break;
             default:
                 break;
         }
     }
 
-    private void onReceivePackagePush(Pack pack) {
-        Intent intent = new Intent(context, DownloadService.class);
-        intent.putExtra(DownloadService.EXTRA_PACKAGE, pack);
-        context.startService(intent);
-    }
 }

@@ -3,6 +3,7 @@ package com.linroid.pushapp.service;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
@@ -56,6 +57,13 @@ public class DownloadService extends Service {
 
     private ThinDownloadManager downloadManager;
     private Map<Integer, Pack> downloadPackageMap;
+
+    public static void download(Context context, Pack pack) {
+        Intent intent = new Intent(context, DownloadService.class);
+        intent.putExtra(DownloadService.EXTRA_PACKAGE, pack);
+        context.startService(intent);
+
+    }
 
     @Override
     public void onCreate() {
@@ -115,8 +123,9 @@ public class DownloadService extends Service {
                 }
                 return;
             }
+        } else {
+            db.insert(Pack.DB.TABLE_NAME, pack.toContentValues());
         }
-        db.insert(Pack.DB.TABLE_NAME, pack.toContentValues());
         pack.setPath(savedFile.getAbsolutePath());
         request.setDestinationURI(Uri.fromFile(savedFile));
         request.setDownloadListener(new DownloadStatusListener() {
@@ -151,6 +160,7 @@ public class DownloadService extends Service {
         });
         int downloadId = downloadManager.add(request);
         downloadPackageMap.put(downloadId, pack);
+        showNotification(pack, 0);
     }
 
     private void notifyDownloadComplete() {
@@ -178,12 +188,6 @@ public class DownloadService extends Service {
         prevProgress = progress;
         String titleText;
         if (progress == 100) {
-//            handler.postDelayed(new Runnable() {
-//                @Override
-//                public void run() {
-//                    notificationManager.cancel(NOTIFICATION_DOWNLOAD);
-//                }
-//            }, 5 * 1000);
             titleText = getString(R.string.msg_download_complete, pack.getAppName());
         } else if (progress < 0) {
             titleText = getString(R.string.msg_download_fail, pack.getAppName());
@@ -191,12 +195,15 @@ public class DownloadService extends Service {
             titleText = getString(R.string.msg_downloading, pack.getAppName());
         }
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this)
-                .setContentTitle("v" + titleText)
+                .setContentTitle(titleText)
                 .setSmallIcon(R.mipmap.ic_launcher)
-                .setContentText(pack.getVersionName());
+                .setAutoCancel(false)
+                .setContentText("v" + pack.getVersionName());
         if (progress > 0) {
             builder.setProgress(100, Math.max(progress, 0), false)
                     .setContentInfo(getString(R.string.msg_download_progress, progress));
+        } else if (progress == 0) {
+            builder.setProgress(100, 0, true);
         }
         if (progress == 100) {
             Intent intent = new Intent(Intent.ACTION_VIEW);

@@ -54,10 +54,10 @@ public class PackageAdapter extends DataAdapter<Pack, PackageAdapter.PackageHold
         final Pack pack = data.get(i);
         //本地文件存在则从文件中加载图片，否则从网络中加载
         if (pack.fileExists()) {
-            picasso.load(pack.getIconUrl()).into(holder.iconIv);
-        } else {
             Drawable icon = AndroidUtil.getApkIcon(holder.iconIv.getContext(), pack.getPath());
             holder.iconIv.setImageDrawable(icon);
+        } else {
+            picasso.load(pack.getIconUrl()).into(holder.iconIv);
         }
         holder.nameTv.setText(pack.getAppName());
         holder.versionTv.setText("v" + pack.getVersionName() + "(" + pack.getVersionCode() + ")");
@@ -122,6 +122,9 @@ public class PackageAdapter extends DataAdapter<Pack, PackageAdapter.PackageHold
                     if (AndroidUtil.isInstalled(v.getContext(), pack.getPackageName())) {
                         menu.findItem(R.id.action_install).setVisible(false);
                     } else {
+                        if (!pack.fileExists()) {
+                            menu.findItem(R.id.action_install).setVisible(false);
+                        }
                         menu.findItem(R.id.action_uninstall).setVisible(false);
                     }
                     popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {

@@ -3,9 +3,9 @@ package com.linroid.pushapp.service;
 
 import android.accessibilityservice.AccessibilityService;
 import android.annotation.TargetApi;
-import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Build.VERSION;
+import android.util.SparseArray;
 import android.view.KeyEvent;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityNodeInfo;
@@ -15,12 +15,13 @@ import com.linroid.pushapp.BuildConfig;
 import com.linroid.pushapp.Constants;
 import com.linroid.pushapp.R;
 import com.linroid.pushapp.model.Pack;
+import com.linroid.pushapp.util.BooleanPreference;
 import com.linroid.pushapp.util.DeviceUtil;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 
 import hugo.weaving.DebugLog;
 import timber.log.Timber;
@@ -50,11 +51,12 @@ public class ApkAutoInstallService extends AccessibilityService {
 
     private static boolean enable = false;
     //TODO 使用软引用
-    private static List<Pack> sInstallList = new ArrayList<>();
-    private static List<Pack> sUninstallList = new ArrayList<>();
+    private static SparseArray<Pack> sInstallList = new SparseArray<>();
+    private static SparseArray<Pack> sUninstallList = new SparseArray<>();
 
     @Inject
-    public SharedPreferences preferences;
+    @Named(Constants.SP_AUTO_OPEN)
+    public BooleanPreference autoOpen;
 
     @Override
     public void onCreate() {
@@ -76,8 +78,8 @@ public class ApkAutoInstallService extends AccessibilityService {
     public static void installPackage(Pack pack) {
         enable = true;
 
-        if (pack != null && !sInstallList.contains(pack)) {
-            sInstallList.add(pack);
+        if (pack != null) {
+            sInstallList.put(pack.getId(), pack);
         }
     }
 
@@ -88,8 +90,8 @@ public class ApkAutoInstallService extends AccessibilityService {
      */
     public static void uninstallApplication(Pack pack) {
         enable = true;
-        if (pack != null && !sUninstallList.contains(pack)) {
-            sUninstallList.add(pack);
+        if (pack != null) {
+            sUninstallList.put(pack.getId(), pack);
         }
     }
 
@@ -114,9 +116,13 @@ public class ApkAutoInstallService extends AccessibilityService {
         }
     }
 
+    @Override
+    @DebugLog
     public void onInterrupt() {
     }
 
+    @DebugLog
+    @Override
     protected boolean onKeyEvent(KeyEvent event) {
         return true;
     }
@@ -314,7 +320,8 @@ public class ApkAutoInstallService extends AccessibilityService {
         Timber.d("安装完成");
         AccessibilityNodeInfo validInfo = getValidAccessibilityNodeInfo(event, sInstallList);
         if (validInfo != null && processApplicationInstalled(event) && sInstallList != null && validInfo.getText() != null) {
-            if (preferences.getBoolean(Constants.SP_AUTO_OPEN, true)) {
+            if (autoOpen.getValue()) {
+                Timber.w("准备打开");
                 AccessibilityNodeInfo nodeInfo = getAccessibilityNodeInfoByText(event,
                         DeviceUtil.isFlyme() ? CLASS_NAME_WIDGET_TEXTVIEW : CLASS_NAME_WIDGET_BUTTON,
                         getString(R.string.btn_accessibility_open));
@@ -325,16 +332,26 @@ public class ApkAutoInstallService extends AccessibilityService {
                 }
             }
             String label = validInfo.getText().toString();
-            removePackFromList(sInstallList, label);
+            removePackFromListByAppName(sInstallList, label);
             validInfo.recycle();
         }
     }
 
-    private void removePackFromList(List<Pack> list, String label) {
-        for (Pack pack : list) {
-            if (pack.getAppName().equals(label)) {
-                sInstallList.remove(pack);
+    /**
+     * 通过应用名称从列表中移除
+     * @param list 保存的列表
+     * @param appName 应用名称
+     */
+    private void removePackFromListByAppName(SparseArray<Pack> list, String appName) {
+        for (int i = 0; i < list.size(); i++) {
+            int key = list.keyAt(i);
+            Pack pack = list.get(key);
+            if (pack.getAppName().equals(appName)) {
+                sInstallList.remove(key);
             }
+        }
+        if (sInstallList.size() == 0 && sUninstallList.size()==0) {
+            enable = false;
         }
     }
 
@@ -401,7 +418,7 @@ public class ApkAutoInstallService extends AccessibilityService {
                 && sUninstallList != null
                 && validInfo.getText() != null) {
             String label = validInfo.getText().toString();
-            removePackFromList(sUninstallList, label);
+            removePackFromListByAppName(sUninstallList, label);
             validInfo.recycle();
         }
     }
@@ -459,7 +476,7 @@ public class ApkAutoInstallService extends AccessibilityService {
      * @param validPackageList
      * @return
      */
-    private boolean isValidPackageEvent(AccessibilityEvent event, List<Pack> validPackageList) {
+    private boolean isValidPackageEvent(AccessibilityEvent event, SparseArray<Pack> validPackageList) {
         return getValidAccessibilityNodeInfo(event, validPackageList) != null;
     }
 
@@ -467,12 +484,14 @@ public class ApkAutoInstallService extends AccessibilityService {
      * 获取有效的的AccessibilityNodeInfo
      *
      * @param event
-     * @param validPackageList
+     * @param validPackageList 包列表
      * @return
      */
-    private AccessibilityNodeInfo getValidAccessibilityNodeInfo(AccessibilityEvent event, List<Pack> validPackageList) {
+    private AccessibilityNodeInfo getValidAccessibilityNodeInfo(AccessibilityEvent event, SparseArray<Pack> validPackageList) {
         if (validPackageList != null && validPackageList.size() > 0) {
-            for (Pack pack : validPackageList) {
+            for (int i = 0; i < validPackageList.size(); i++) {
+                int key = validPackageList.keyAt(i);
+                Pack pack = validPackageList.get(key);
                 AccessibilityNodeInfo nodeInfo = getAccessibilityNodeInfoByText(event, CLASS_NAME_WIDGET_TEXTVIEW, pack.getAppName());
                 if (nodeInfo != null) {
                     return nodeInfo;

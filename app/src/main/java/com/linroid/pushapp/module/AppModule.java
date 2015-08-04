@@ -71,6 +71,13 @@ public class AppModule {
     BooleanPreference provideAutoInstallPreference(SharedPreferences sp) {
         return new BooleanPreference(sp, Constants.SP_AUTO_INSTALL, true);
     }
+    @Provides
+    @Singleton
+    @Named(Constants.SP_AUTO_OPEN)
+    BooleanPreference provideAutoOpenPreference(SharedPreferences sp) {
+        return new BooleanPreference(sp, Constants.SP_AUTO_OPEN, true);
+    }
+
 
     @Provides
     @Singleton

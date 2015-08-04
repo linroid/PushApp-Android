@@ -16,6 +16,7 @@ public class BooleanPreference {
         this.sp = sp;
         this.key = key;
         this.value = sp.getBoolean(key, defValue);
+        Timber.d("%s => %s", key, this.value);
     }
 
 

@@ -186,7 +186,9 @@ public class DataModule {
     @Provides
     @Singleton
     BriteDatabase provideDatabase(SqlBrite sqlBrite, SQLiteOpenHelper helper) {
-        return sqlBrite.wrapDatabaseHelper(helper);
+        BriteDatabase db = sqlBrite.wrapDatabaseHelper(helper);
+        db.setLoggingEnabled(true);
+        return db;
     }
 
 }

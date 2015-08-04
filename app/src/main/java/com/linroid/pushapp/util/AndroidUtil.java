@@ -164,7 +164,7 @@ public class AndroidUtil {
      * 获取apk的icon
      *
      * @param context
-     * @param apkPath
+     * @param apkPath apk路径
      * @return
      */
     public static Drawable getApkIcon(Context context, String apkPath) {

@@ -8,6 +8,7 @@ import com.linroid.pushapp.model.Push;
 import java.util.List;
 
 import rx.functions.Action1;
+import timber.log.Timber;
 
 /**
  * Created by linroid on 7/20/15.
@@ -38,6 +39,7 @@ public abstract class DataAdapter<T, VH extends RecyclerView.ViewHolder> extends
 
     @Override
     public void call(List<T> ts) {
+        Timber.d("数据发生变化");
         this.data = ts;
         notifyDataSetChanged();
     }
