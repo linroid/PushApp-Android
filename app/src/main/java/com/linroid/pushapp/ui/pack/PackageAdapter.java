@@ -5,12 +5,15 @@ import android.graphics.drawable.Drawable;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.TouchDelegate;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.PopupMenu;
 import android.widget.TextView;
 
 import com.linroid.pushapp.R;
@@ -27,7 +30,9 @@ import hugo.weaving.DebugLog;
  * Created by linroid on 7/20/15.
  */
 public class PackageAdapter extends DataAdapter<Pack, PackageAdapter.PackageHolder> {
-    Picasso picasso;
+    private Picasso picasso;
+    private OnActionListener listener;
+
     public PackageAdapter(Picasso picasso) {
         this.picasso = picasso;
     }
@@ -46,10 +51,10 @@ public class PackageAdapter extends DataAdapter<Pack, PackageAdapter.PackageHold
 
     @Override
     public void onBindViewHolder(PackageHolder holder, int i) {
-        Pack pack = data.get(i);
+        final Pack pack = data.get(i);
         //本地文件存在则从文件中加载图片，否则从网络中加载
         if (pack.fileExists()) {
-            picasso.load(pack.getIconUrl()).centerInside().into(holder.iconIv);
+            picasso.load(pack.getIconUrl()).into(holder.iconIv);
         } else {
             Drawable icon = AndroidUtil.getApkIcon(holder.iconIv.getContext(), pack.getPath());
             holder.iconIv.setImageDrawable(icon);
@@ -58,6 +63,11 @@ public class PackageAdapter extends DataAdapter<Pack, PackageAdapter.PackageHold
         holder.versionTv.setText("v" + pack.getVersionName() + "(" + pack.getVersionCode() + ")");
         holder.packageTv.setText(pack.getPackageName());
         holder.timeTv.setText(pack.getFriendlyTime());
+        holder.pack = pack;
+    }
+
+    public void setListener(OnActionListener listener) {
+        this.listener = listener;
     }
 
 
@@ -77,6 +87,7 @@ public class PackageAdapter extends DataAdapter<Pack, PackageAdapter.PackageHold
         ImageButton actionBtn;
         @Bind(R.id.push_card)
         CardView pushCard;
+        public Pack pack;
 
         public PackageHolder(final View itemView) {
             super(itemView);
@@ -88,7 +99,7 @@ public class PackageAdapter extends DataAdapter<Pack, PackageAdapter.PackageHold
                     actionBtn.getViewTreeObserver().removeOnPreDrawListener(this);
                     Rect bounds = new Rect();
                     actionBtn.getHitRect(bounds);
-                    int val = AndroidUtil.dpToPx(128);
+                    int val = AndroidUtil.dpToPx(8);
                     bounds.top += val;
                     bounds.right += val;
                     bounds.bottom += val;
@@ -99,10 +110,61 @@ public class PackageAdapter extends DataAdapter<Pack, PackageAdapter.PackageHold
                 }
             });
             itemView.setOnClickListener(this);
+            actionBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    final PopupMenu popupMenu = new PopupMenu(v.getContext(), v);
+                    Menu menu = popupMenu.getMenu();
+                    popupMenu.getMenuInflater().inflate(R.menu.item_pack, menu);
+                    if (pack.fileExists()) {
+                        menu.findItem(R.id.action_download).setVisible(false);
+                    }
+                    if (AndroidUtil.isInstalled(v.getContext(), pack.getPackageName())) {
+                        menu.findItem(R.id.action_install).setVisible(false);
+                    } else {
+                        menu.findItem(R.id.action_uninstall).setVisible(false);
+                    }
+                    popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                        @Override
+                        public boolean onMenuItemClick(MenuItem item) {
+                            if (listener != null) {
+                                switch (item.getItemId()) {
+                                    case R.id.action_install:
+                                        listener.onInstall(pack);
+                                        break;
+                                    case R.id.action_uninstall:
+                                        listener.onUninstall(pack);
+                                        break;
+                                    case R.id.action_send_to_others:
+                                        listener.onSend(pack);
+                                        break;
+                                    case R.id.action_download:
+                                        listener.onDownload(pack);
+                                        break;
+                                }
+                                return true;
+                            }
+                            return false;
+                        }
+                    });
+                    popupMenu.show();
+                }
+            });
+
         }
 
         @Override
         public void onClick(View v) {
         }
+    }
+
+    public static interface OnActionListener {
+        void onInstall(Pack pack);
+
+        void onUninstall(Pack pack);
+
+        void onSend(Pack pack);
+
+        void onDownload(Pack pack);
     }
 }
