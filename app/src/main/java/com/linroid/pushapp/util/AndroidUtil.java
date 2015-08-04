@@ -10,7 +10,6 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.Settings;
-import android.support.v4.app.FragmentActivity;
 import android.text.TextUtils;
 import android.text.format.DateUtils;
 
@@ -191,5 +190,23 @@ public class AndroidUtil {
 
     public static float pxToDp(int px) {
         return px / Resources.getSystem().getDisplayMetrics().density;
+    }
+
+    /**
+     * 根据包名打开其他应用
+     *
+     * @param context
+     * @param packageName
+     */
+    public static void openApplication(Context context, String packageName) {
+        PackageManager pm = context.getPackageManager();
+        Intent intent = pm.getLaunchIntentForPackage(packageName);
+        if (intent != null) {
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            context.startActivity(intent);
+        } else {
+            Timber.e("未找到包名为[%s]的应用", packageName);
+        }
+
     }
 }

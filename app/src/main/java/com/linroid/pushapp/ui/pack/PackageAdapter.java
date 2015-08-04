@@ -125,6 +125,7 @@ public class PackageAdapter extends DataAdapter<Pack, PackageAdapter.PackageHold
                         if (!pack.fileExists()) {
                             menu.findItem(R.id.action_install).setVisible(false);
                         }
+                        menu.findItem(R.id.action_open).setVisible(false);
                         menu.findItem(R.id.action_uninstall).setVisible(false);
                     }
                     popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
@@ -132,6 +133,9 @@ public class PackageAdapter extends DataAdapter<Pack, PackageAdapter.PackageHold
                         public boolean onMenuItemClick(MenuItem item) {
                             if (listener != null) {
                                 switch (item.getItemId()) {
+                                    case R.id.action_open:
+                                        listener.onOpen(pack);
+                                        break;
                                     case R.id.action_install:
                                         listener.onInstall(pack);
                                         break;
@@ -162,6 +166,8 @@ public class PackageAdapter extends DataAdapter<Pack, PackageAdapter.PackageHold
     }
 
     public static interface OnActionListener {
+        void onOpen(Pack pack);
+
         void onInstall(Pack pack);
 
         void onUninstall(Pack pack);

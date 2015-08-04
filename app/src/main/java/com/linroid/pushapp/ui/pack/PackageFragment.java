@@ -1,6 +1,7 @@
 package com.linroid.pushapp.ui.pack;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
@@ -149,6 +150,11 @@ public class PackageFragment extends RefreshableFragment implements PackageAdapt
                     }
 
                 }));
+    }
+
+    @Override
+    public void onOpen(Pack pack) {
+        AndroidUtil.openApplication(getActivity(), pack.getPackageName());
     }
 
     @Override
