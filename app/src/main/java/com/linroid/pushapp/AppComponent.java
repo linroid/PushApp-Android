@@ -8,6 +8,7 @@ import com.linroid.pushapp.receiver.PushReceiver;
 import com.linroid.pushapp.service.ApkAutoInstallService;
 import com.linroid.pushapp.service.DownloadService;
 import com.linroid.pushapp.ui.bind.BindActivity;
+import com.linroid.pushapp.ui.device.DeviceFragment;
 import com.linroid.pushapp.ui.home.HomeActivity;
 import com.linroid.pushapp.ui.pack.PackageFragment;
 
@@ -30,6 +31,8 @@ public interface AppComponent {
     void inject(ApkAutoInstallService service);
 
     void inject(PackageFragment fragment);
+
+    void inject(DeviceFragment fragment);
 
     void inject(BindActivity activity);
 

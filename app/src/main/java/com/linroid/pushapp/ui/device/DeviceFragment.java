@@ -1,39 +1,51 @@
 package com.linroid.pushapp.ui.device;
 
 
+import android.app.Activity;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
 
-import com.linroid.pushapp.R;
+import com.linroid.pushapp.App;
+import com.linroid.pushapp.model.Device;
+import com.linroid.pushapp.ui.base.DataAdapter;
 import com.linroid.pushapp.ui.base.RefreshableFragment;
+import com.squareup.sqlbrite.BriteDatabase;
+
+import javax.inject.Inject;
+
+import rx.android.app.AppObservable;
+import rx.schedulers.Schedulers;
+import rx.subscriptions.CompositeSubscription;
 
 
-/**
- * A simple {@link Fragment} subclass.
- */
 public class DeviceFragment extends RefreshableFragment {
 
-
-    public DeviceFragment() {
-        // Required empty public constructor
-    }
+    CompositeSubscription subscriptions = new CompositeSubscription();
+    @Inject
+    BriteDatabase db;
+    DeviceAdapter adapter;
 
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_device, container, false);
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        adapter = new DeviceAdapter();
+        subscriptions.add(AppObservable.bindSupportFragment(this, db.createQuery(Device.DB.TABLE_NAME, Device.DB.SQL_LIST_QUERY))
+                        .map(Device.DB.MAP)
+                        .subscribeOn(Schedulers.io())
+                        .subscribe(adapter)
+        );
     }
 
-
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        App.from(activity).component().inject(this);
+    }
     @Override
     public RecyclerView.Adapter<? extends RecyclerView.ViewHolder> getAdapter() {
-        return null;
+        return adapter;
     }
 
     @Override
@@ -41,5 +53,9 @@ public class DeviceFragment extends RefreshableFragment {
 
     }
 
-
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        subscriptions.unsubscribe();
+    }
 }

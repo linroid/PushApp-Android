@@ -10,12 +10,15 @@ import com.linroid.pushapp.App;
 import com.linroid.pushapp.Constants;
 import com.linroid.pushapp.util.BooleanPreference;
 import com.linroid.pushapp.util.StringPreference;
+import com.squareup.leakcanary.LeakCanary;
+import com.squareup.leakcanary.RefWatcher;
 
 import javax.inject.Named;
 import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;
+import timber.log.Timber;
 
 /**
  * Created by linroid on 7/24/15.
@@ -56,6 +59,12 @@ public class AppModule {
     @Singleton
     SharedPreferences provideSharedPreferences(Context context) {
         return context.getSharedPreferences(Constants.SP_FILE_NAME, Context.MODE_PRIVATE);
+    }
+    @Provides
+    @Singleton
+    RefWatcher provideRefWatcher(Application application) {
+        Timber.d("start memory leak detection..");
+        return LeakCanary.install(application);
     }
 
     @Provides

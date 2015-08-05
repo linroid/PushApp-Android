@@ -165,7 +165,7 @@ public class PackageAdapter extends DataAdapter<Pack, PackageAdapter.PackageHold
         }
     }
 
-    public static interface OnActionListener {
+    public interface OnActionListener {
         void onOpen(Pack pack);
 
         void onInstall(Pack pack);

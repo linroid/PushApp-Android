@@ -1,13 +1,12 @@
 package com.linroid.pushapp.ui.pack;
 
 import android.app.Activity;
-import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
+import android.widget.Toast;
 
 import com.linroid.pushapp.App;
-import com.linroid.pushapp.Constants;
 import com.linroid.pushapp.api.PackageService;
 import com.linroid.pushapp.model.Pack;
 import com.linroid.pushapp.model.Pagination;
@@ -21,17 +20,16 @@ import com.squareup.sqlbrite.BriteDatabase;
 import java.util.List;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 
 import hugo.weaving.DebugLog;
 import rx.Observable;
 import rx.Observer;
-import rx.Subscription;
 import rx.android.app.AppObservable;
-import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
+import timber.log.Timber;
 
 public class PackageFragment extends RefreshableFragment implements PackageAdapter.OnActionListener {
     public static final String STATE_PACKAGE = "package";
@@ -52,6 +50,11 @@ public class PackageFragment extends RefreshableFragment implements PackageAdapt
         super.onCreate(savedInstanceState);
         adapter = new PackageAdapter(picasso);
         adapter.setListener(this);
+        subscriptions.add(AppObservable.bindSupportFragment(this, db.createQuery(Pack.DB.TABLE_NAME, Pack.DB.SQL_LIST_QUERY))
+                        .map(Pack.DB.MAP)
+                        .subscribeOn(Schedulers.io())
+                        .subscribe(adapter)
+        );
 //        if (savedInstanceState != null) {
 //            List<Pack> savedPacks = savedInstanceState.getParcelableArrayList(STATE_PACKAGE);
 //            adapter.setData(savedPacks);
@@ -75,17 +78,17 @@ public class PackageFragment extends RefreshableFragment implements PackageAdapt
     @Override
     public void onResume() {
         super.onResume();
-        subscriptions.add(db.createQuery(Pack.DB.TABLE_NAME, Pack.DB.SQL_LIST_QUERY)
-                .map(Pack.DB.MAP)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(adapter)
-        );
+
     }
 
     @Override
     public void onPause() {
         super.onPause();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
         subscriptions.unsubscribe();
     }
 
@@ -122,6 +125,18 @@ public class PackageFragment extends RefreshableFragment implements PackageAdapt
                     }
                 })
                 .toList()
+                .doOnNext(new Action1<List<Pack>>() {
+                    @Override
+                    public void call(List<Pack> packs) {
+                        Timber.d("save to database on Thread:%s", Thread.currentThread().getName());
+                        db.beginTransaction();
+                        for (Pack pack : packs) {
+                            db.insert(Pack.DB.TABLE_NAME, pack.toContentValues());
+                        }
+                        db.setTransactionSuccessful();
+                        db.endTransaction();
+                    }
+                })
                 .subscribe(new Observer<List<Pack>>() {
 
                     @DebugLog
@@ -134,19 +149,12 @@ public class PackageFragment extends RefreshableFragment implements PackageAdapt
                     @Override
                     public void onError(Throwable e) {
                         loaderView.refreshLayout.setRefreshing(false);
-
+                        Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_SHORT).show();
                     }
 
                     @DebugLog
                     @Override
                     public void onNext(List<Pack> packs) {
-                        loaderView.refreshLayout.setRefreshing(false);
-                        db.beginTransaction();
-                        for (Pack pack : packs) {
-                            db.insert(Pack.DB.TABLE_NAME, pack.toContentValues());
-                        }
-                        db.setTransactionSuccessful();
-                        db.endTransaction();
                     }
 
                 }));

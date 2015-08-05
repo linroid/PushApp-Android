@@ -4,14 +4,17 @@ import android.app.NotificationManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
 import android.os.Bundle;
 
 import com.google.gson.Gson;
 import com.linroid.pushapp.App;
 import com.linroid.pushapp.Constants;
-import com.linroid.pushapp.model.*;
+import com.linroid.pushapp.model.Device;
+import com.linroid.pushapp.model.Pack;
 import com.linroid.pushapp.service.DownloadService;
 import com.linroid.pushapp.util.AndroidUtil;
+import com.squareup.sqlbrite.BriteDatabase;
 
 import javax.inject.Inject;
 
@@ -24,15 +27,16 @@ import timber.log.Timber;
  */
 public class PushReceiver extends BroadcastReceiver {
     private NotificationManager nm;
-    private Context context;
+    public static final String ACTION_NEW_DEVICE = "com.linroid.pushapp.action.new_device";
     @Inject
     Gson gson;
+    @Inject
+    BriteDatabase db;
 
     @Override
     @DebugLog
     public void onReceive(Context context, Intent intent) {
         App.from(context).component().inject(this);
-        this.context = context;
         if (null == nm) {
             nm = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
         }
@@ -70,8 +74,23 @@ public class PushReceiver extends BroadcastReceiver {
 //                        .build();
                 DownloadService.download(context, pack);
                 break;
+            case Constants.PUSH_TYPE_DEVICE:
+                Device device = gson.fromJson(message, Device.class);
+                saveNewDevice(device);
+                break;
             default:
                 break;
+        }
+    }
+
+    private void saveNewDevice(Device device) {
+        Cursor cursor = db.query(Device.DB.SQL_ITEM_QUERY, String.valueOf(device.getId()));
+        if (cursor.moveToNext()) {
+            Timber.d("[%s]设备状态变更", device.getAlias());
+            db.update(Device.DB.TABLE_NAME, device.toValues(), Pack.DB.WHERE_ID, String.valueOf(device.getId()));
+        } else {
+            Timber.d("[%s]设备新增", device.getAlias());
+            db.insert(Device.DB.TABLE_NAME, device.toValues());
         }
     }
 

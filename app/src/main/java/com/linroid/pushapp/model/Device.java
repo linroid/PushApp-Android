@@ -1,10 +1,19 @@
 package com.linroid.pushapp.model;
 
+import android.content.ContentValues;
+import android.database.Cursor;
 import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.linroid.pushapp.database.Db;
+import com.squareup.sqlbrite.SqlBrite;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import rx.functions.Func1;
 
 /**
  * Created by linroid on 7/24/15.
@@ -336,6 +345,44 @@ public class Device implements Parcelable {
 
     public Device() {
     }
+    private static Device fromCursor(Cursor cursor) {
+        Device device = new Device();
+        device.id = Db.getInt(cursor, DB.COLUMN_ID);
+        device.alias = Db.getString(cursor, DB.COLUMN_ALIAS);
+        device.sdkLevel = Db.getInt(cursor, DB.COLUMN_SDK_LEVEL);
+        device.height = Db.getInt(cursor, DB.COLUMN_HEIGHT);
+        device.width = Db.getInt(cursor, DB.COLUMN_WIDTH);
+        device.dpi = Db.getInt(cursor, DB.COLUMN_DPI);
+        device.deviceId = Db.getString(cursor, DB.COLUMN_DEVICE_ID);
+        device.pushId = Db.getString(cursor, DB.COLUMN_PUSH_ID);
+        device.memorySize = Db.getInt(cursor, DB.COLUMN_MEMORY_SIZE);
+        device.cpuType = Db.getString(cursor, DB.COLUMN_CPU_TYPE);
+        device.token = Db.getString(cursor, DB.COLUMN_TOKEN);
+        device.networkType = Db.getString(cursor, DB.COLUMN_NETWORK_TYPE);
+        device.userId = Db.getInt(cursor, DB.COLUMN_USER_ID);
+        device.createdAt = Db.getString(cursor, DB.COLUMN_CREATED_AT);
+        device.updatedAt = Db.getString(cursor, DB.COLUMN_UPDATED_AT);
+        return device;
+    }
+    public ContentValues toValues() {
+        ContentValues values = new ContentValues();
+        values.put(DB.COLUMN_ID, id);
+        values.put(DB.COLUMN_ALIAS, alias);
+        values.put(DB.COLUMN_SDK_LEVEL, sdkLevel);
+        values.put(DB.COLUMN_HEIGHT, height);
+        values.put(DB.COLUMN_WIDTH, width);
+        values.put(DB.COLUMN_DPI, dpi);
+        values.put(DB.COLUMN_DEVICE_ID, deviceId);
+        values.put(DB.COLUMN_PUSH_ID, pushId);
+        values.put(DB.COLUMN_MEMORY_SIZE, memorySize);
+        values.put(DB.COLUMN_CPU_TYPE, cpuType);
+        values.put(DB.COLUMN_TOKEN, token);
+        values.put(DB.COLUMN_NETWORK_TYPE, networkType);
+        values.put(DB.COLUMN_USER_ID, userId);
+        values.put(DB.COLUMN_CREATED_AT, createdAt);
+        values.put(DB.COLUMN_UPDATED_AT, updatedAt);
+        return values;
+    }
 
     public static class DeviceBuilder {
         private Integer id;
@@ -532,4 +579,70 @@ public class Device implements Parcelable {
             return new Device[size];
         }
     };
+
+
+    public static class DB {
+        public static final String TABLE_NAME = "devices";
+
+        public static final String COLUMN_ID = "model";
+        public static final String COLUMN_ALIAS = "alias";
+        public static final String COLUMN_SDK_LEVEL = "sdk_level";
+        public static final String COLUMN_OS_NAME = "os_name";
+        public static final String COLUMN_HEIGHT = "height";
+        public static final String COLUMN_WIDTH = "width";
+        public static final String COLUMN_DPI = "dpi";
+        //TODO rename for conflict
+        public static final String COLUMN_DEVICE_ID = "device_id";
+        //TODO rename for conflict
+        public static final String COLUMN_PUSH_ID = "push_id";
+        public static final String COLUMN_MEMORY_SIZE = "memory_size";
+        public static final String COLUMN_CPU_TYPE = "cpu_type";
+        public static final String COLUMN_TOKEN = "token";
+        public static final String COLUMN_NETWORK_TYPE = "network_type";
+        public static final String COLUMN_USER_ID = "user_id";
+        public static final String COLUMN_CREATED_AT = "created_at";
+        public static final String COLUMN_UPDATED_AT = "updated_at";
+
+        public static final String SQL_CREATE = ""
+                + "CREATE TABLE " + TABLE_NAME + "("
+                + COLUMN_ID + " INTEGER NOT NULL,"
+                + COLUMN_ALIAS + " TEXT NOT NULL,"
+                + COLUMN_SDK_LEVEL + " INTEGER NOT NULL,"
+                + COLUMN_HEIGHT + " TEXT NOT NULL,"
+                + COLUMN_WIDTH + " INTEGER NOT NULL,"
+                + COLUMN_DPI + " INTEGER NOT NULL,"
+                + COLUMN_DEVICE_ID + " TEXT NOT NULL,"
+                + COLUMN_PUSH_ID + " TEXT NOT NULL,"
+                + COLUMN_MEMORY_SIZE + " INTEGER NOT NULL,"
+                + COLUMN_CPU_TYPE + " TEXT NOT NULL,"
+                + COLUMN_TOKEN + " TEXT NOT NULL,"
+                + COLUMN_NETWORK_TYPE + " TEXT NOT NULL,"
+                + COLUMN_USER_ID + " TEXT NOT NULL,"
+                + COLUMN_CREATED_AT + " TEXT NOT NULL,"
+                + COLUMN_UPDATED_AT + " TEXT NOT NULL"
+                + ")";
+
+        public static final String SQL_DROP = "DROP TABLE " + TABLE_NAME;
+        public static final String SQL_LIST_QUERY = "SELECT * FROM " + TABLE_NAME + " ORDER BY " + COLUMN_CREATED_AT + " DESC";
+        public static final String WHERE_ID = COLUMN_ID + "= ?";
+        public static final String SQL_ITEM_QUERY = "SELECT * FROM " + TABLE_NAME + " WHERE " + WHERE_ID;
+
+        public static final Func1<SqlBrite.Query, List<Device>> MAP = new Func1<SqlBrite.Query, List<Device>>() {
+            @Override
+            public List<Device> call(SqlBrite.Query query) {
+                Cursor cursor = query.run();
+                try {
+                    List<Device> values = new ArrayList<>(cursor.getCount());
+                    while (cursor.moveToNext()) {
+                        values.add(Device.fromCursor(cursor));
+                    }
+                    return values;
+                } finally {
+                    cursor.close();
+                }
+            }
+        };
+    }
+
+
 }

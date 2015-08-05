@@ -5,6 +5,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
 import com.linroid.pushapp.Constants;
+import com.linroid.pushapp.model.Device;
 import com.linroid.pushapp.model.Pack;
 
 import timber.log.Timber;
@@ -21,6 +22,7 @@ public class DbOpenHelper extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         Timber.d("onCreate Database");
         db.execSQL(Pack.DB.SQL_CREATE);
+        db.execSQL(Device.DB.SQL_CREATE);
     }
 
     @Override

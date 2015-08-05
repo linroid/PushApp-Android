@@ -476,7 +476,7 @@ public class ApkAutoInstallService extends AccessibilityService {
         List<AccessibilityNodeInfo> nodes = null;
         if (event != null && event.getSource() != null) {
             nodes = event.getSource().findAccessibilityNodeInfosByText(text);
-        } else if (VERSION.SDK_INT >= 16) {
+        } else {
             AccessibilityNodeInfo info = getRootInActiveWindow();
             if (info != null) {
                 nodes = info.findAccessibilityNodeInfosByText(text);
