@@ -75,7 +75,7 @@ public class ApkAutoInstallService extends AccessibilityService {
      *
      * @param pack
      */
-    public static void installPackage(Pack pack) {
+    public static void addInstallPackage(Pack pack) {
         enable = true;
 
         if (pack != null) {
@@ -88,7 +88,7 @@ public class ApkAutoInstallService extends AccessibilityService {
      *
      * @param pack
      */
-    public static void uninstallApplication(Pack pack) {
+    public static void addUninstallApplication(Pack pack) {
         enable = true;
         if (pack != null) {
             sUninstallList.put(pack.getId(), pack);

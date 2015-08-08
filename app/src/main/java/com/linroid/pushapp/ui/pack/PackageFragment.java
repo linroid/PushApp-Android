@@ -167,7 +167,7 @@ public class PackageFragment extends RefreshableFragment implements PackageAdapt
 
     @Override
     public void onInstall(Pack pack) {
-        ApkAutoInstallService.installPackage(pack);
+        ApkAutoInstallService.addInstallPackage(pack);
         AndroidUtil.installApk(getActivity(), pack.getPath());
     }
 

@@ -117,7 +117,7 @@ public class DownloadService extends Service {
         if (cursor.moveToNext()) {
             Pack saved = Pack.fromCursor(cursor);
             if (!TextUtils.isEmpty(saved.getPath()) && savedFile.exists()) {
-                notifyDownloadComplete();
+                notifyDownloadComplete(saved);
                 if (autoInstall.getValue()) {
                     installPackage(saved);
                 }
@@ -137,7 +137,7 @@ public class DownloadService extends Service {
                 CharSequence label = AndroidUtil.getApkLabel(DownloadService.this, pack.getPath());
                 pack.setAppName(label != null ? label.toString() : pack.getAppName());
                 db.update(Pack.DB.TABLE_NAME, pack.toContentValues(), Pack.DB.WHERE_ID, String.valueOf(pack.getId()));
-                notifyDownloadComplete();
+                notifyDownloadComplete(pack);
                 if (autoInstall.getValue()) {
                     installPackage(pack);
                 }
@@ -163,16 +163,15 @@ public class DownloadService extends Service {
         showNotification(pack, 0);
     }
 
-    private void notifyDownloadComplete() {
+    private void notifyDownloadComplete(Pack pack) {
 
     }
 
 
     private void installPackage(Pack pack) {
+        AndroidUtil.installApk(this, pack.getPath());
         if (AndroidUtil.isAccessibilitySettingsOn(this, ApkAutoInstallService.class.getCanonicalName())) {
-            ApkAutoInstallService.installPackage(pack);
-        } else {
-            AndroidUtil.installApk(this, pack.getPath());
+            ApkAutoInstallService.addInstallPackage(pack);
         }
     }
 
