@@ -156,28 +156,28 @@ public class QrcodeActivity extends BaseActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.qrcode, menu);
-        MenuItem menuItem = menu.findItem(R.id.action_flash);
-        if (isTorchOn) {
-            menuItem.setTitle(R.string.action_torch_on);
-        } else {
-            menuItem.setTitle(R.string.action_torch_off);
-        }
+//        MenuItem menuItem = menu.findItem(R.id.action_flash);
+//        if (isTorchOn) {
+//            menuItem.setTitle(R.string.action_torch_on);
+//        } else {
+//            menuItem.setTitle(R.string.action_torch_off);
+//        }
         return super.onCreateOptionsMenu(menu);
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.action_flash:
-                if (!isTorchOn) {
-                    scannerView.setTorchOn();
-                } else {
-                    scannerView.setTorchOff();
-                }
-                isTorchOn = !isTorchOn;
-                item.setTitle(isTorchOn ? R.string.action_torch_on : R.string.action_torch_off);
-                return true;
-        }
+//        switch (item.getItemId()) {
+//            case R.id.action_flash:
+//                if (!isTorchOn) {
+//                    scannerView.setTorchOn();
+//                } else {
+//                    scannerView.setTorchOff();
+//                }
+//                isTorchOn = !isTorchOn;
+//                item.setTitle(isTorchOn ? R.string.action_torch_on : R.string.action_torch_off);
+//                return true;
+//        }
         return super.onOptionsItemSelected(item);
     }
 

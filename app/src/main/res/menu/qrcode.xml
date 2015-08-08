@@ -2,8 +2,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context="com.linroid.studyhelper.ui.scan.QrcodeActivity">
-    <item android:id="@+id/action_flash"
-        android:title="@string/action_torch_off"
-        android:orderInCategory="100"
-        app:showAsAction="always" />
+    <!--<item android:id="@+id/action_flash"-->
+        <!--android:title="@string/action_torch_off"-->
+        <!--android:orderInCategory="100"-->
+        <!--app:showAsAction="always" />-->
 </menu>
