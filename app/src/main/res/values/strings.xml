@@ -33,4 +33,6 @@
     <string name="action_send_to_others">发给其他设备</string>
     <string name="action_download">下载</string>
     <string name="action_open">打开</string>
+    <string name="btn_dialog_copy">复制到剪切板</string>
+    <string name="title_dialog_unsupport_qrcode">二维码信息</string>
 </resources>

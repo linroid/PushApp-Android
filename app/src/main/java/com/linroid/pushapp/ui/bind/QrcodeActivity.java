@@ -1,5 +1,9 @@
 package com.linroid.pushapp.ui.bind;
 
+import android.app.AlertDialog;
+import android.content.ClipData;
+import android.content.ClipboardManager;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
@@ -47,12 +51,13 @@ public class QrcodeActivity extends BaseActivity {
             @DebugLog
             @Override
             public void barcodeResult(BarcodeResult barcodeResult) {
+                Timber.d("扫描到信息:%s", barcodeResult.getText());
                 Uri uri = Uri.parse(barcodeResult.getText());
                 String token = uri.getQueryParameter("token");
                 if (!TextUtils.isEmpty(token) && token.length() == 64) {
                     onScanSuccess(token);
                 } else {
-                    handleUnknownBarcode(barcodeResult.getText());
+                    handleUnknownQrcode(barcodeResult.getText());
                 }
             }
 
@@ -63,9 +68,14 @@ public class QrcodeActivity extends BaseActivity {
         });
     }
 
-    private void handleUnknownBarcode(String text) {
-        Timber.e("Unknown barcode content: %s", text);
+    /**
+     * 处理未知的二维码扫描结果
+     * @param text
+     */
+    private void handleUnknownQrcode(final String text) {
+        Timber.e("Unknown qrcode content: %s", text);
         Uri uri = Uri.parse(text);
+        // 内容为Uri
         if (!TextUtils.isEmpty(uri.getScheme())) {
             Intent intent = new Intent(Intent.ACTION_VIEW);
             intent.setData(uri);
@@ -74,9 +84,32 @@ public class QrcodeActivity extends BaseActivity {
             if (activities.size() > 0) {
                 startActivity(Intent.createChooser(intent, getString(R.string.title_choose_app)));
             } else {
-                Snackbar.make(scannerView, R.string.error_unknown_barcode, Snackbar.LENGTH_LONG).show();
+                handleResultAsPlainText(text);
             }
+        } else {
+            handleResultAsPlainText(text);
         }
+    }
+
+    /**
+     * 当作纯文本处理
+     * @param text
+     */
+    private void handleResultAsPlainText(final String text) {
+        capture.onPause();
+        new AlertDialog.Builder(this)
+                .setTitle(R.string.title_dialog_unsupport_qrcode)
+                .setMessage(text)
+                .setPositiveButton(R.string.btn_dialog_copy, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        ClipboardManager cm = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
+                        cm.setPrimaryClip(ClipData.newPlainText("qrcode", text));
+                        Snackbar.make(scannerView, "复制成功!", Snackbar.LENGTH_SHORT).show();
+                        capture.onResume();
+                    }
+                })
+                .show();
     }
 
     private void onScanSuccess(String token) {
