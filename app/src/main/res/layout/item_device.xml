@@ -7,7 +7,8 @@
     android:layout_height="wrap_content"
     card_view:cardCornerRadius="2dp"
     card_view:cardElevation="1dp"
-    card_view:cardUseCompatPadding="true">
+    card_view:cardUseCompatPadding="true"
+    android:foreground="?attr/selectableItemBackground">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -15,12 +16,51 @@
         style="@style/Widget.CardContent">
 
         <TextView
-            android:id="@+id/device_alias"
+            android:id="@+id/alias_tv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_marginLeft="8dp"
             android:textAppearance="@style/TextAppearance.AppCompat.Title"
             tools:text="设备别名"/>
+        <Space
+            android:id="@+id/center"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_centerHorizontal="true"/>
+        <TextView
+            android:id="@+id/model_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="@string/txt_device_model"
+            android:layout_below="@id/alias_tv"
+            android:layout_marginTop="8dp"/>
+        <TextView
+            android:id="@+id/system_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignTop="@id/model_tv"
+            android:layout_toRightOf="@id/center"
+            tools:text="@string/txt_device_system"/>
+        <TextView
+            android:id="@+id/cpu_type_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/model_tv"
+            android:layout_marginTop="4dp"
+            tools:text="@string/txt_device_cpu_type"/>
+        <TextView
+            android:id="@+id/memory_size_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignTop="@id/cpu_type_tv"
+            android:layout_toRightOf="@id/center"
+            tools:text="@string/txt_device_memory_size"/>
+
+        <TextView
+            android:id="@+id/screen_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/cpu_type_tv"
+            android:layout_marginTop="4dp"
+            tools:text="@string/txt_device_screen"/>
     </RelativeLayout>
 </android.support.v7.widget.CardView>

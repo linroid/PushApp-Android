@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:card_view="http://schemas.android.com/apk/res-auto"
-    xmlns:tool="http://schemas.android.com/tools"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/push_card"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -24,7 +24,7 @@
             android:layout_alignParentLeft="true"
             android:layout_alignParentTop="true"
             android:layout_marginLeft="4dp"
-            tool:src="@mipmap/ic_launcher" />
+            tools:src="@mipmap/ic_launcher" />
 
         <TextView
             android:id="@+id/name_tv"
@@ -33,11 +33,17 @@
             android:layout_alignParentTop="true"
             android:layout_marginLeft="8dp"
             android:layout_toRightOf="@id/icon_iv"
-            tool:text="PushApp"
+            tools:text="PushApp"
             android:textAppearance="@style/TextAppearance.AppCompat.Title" />
 
-
-
+        <TextView
+            android:id="@+id/package_tv"
+            android:text="com.linroid.pushapp"
+            android:layout_below="@id/name_tv"
+            android:layout_marginTop="8dp"
+            android:layout_alignLeft="@id/name_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
         <TextView
             android:id="@+id/version_tv"
             android:layout_width="wrap_content"
@@ -46,7 +52,7 @@
             android:layout_alignLeft="@id/name_tv"
             android:textSize="12sp"
             android:textAppearance="?android:attr/textAppearanceSmall"
-            tool:text="v1.0.0" />
+            tools:text="v1.0.0" />
         <TextView
             android:id="@+id/time_tv"
             android:layout_width="wrap_content"
@@ -56,15 +62,7 @@
             android:layout_marginLeft="4dp"
             android:textSize="12sp"
             android:textAppearance="?android:attr/textAppearanceSmall"
-            tool:text="14分钟前" />
-        <TextView
-            android:id="@+id/package_tv"
-            tool:text="com.linroid.pushapp"
-            android:layout_above="@id/version_tv"
-            android:layout_alignLeft="@id/name_tv"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
-
+            tools:text="14分钟前" />
         <ImageButton
             android:id="@+id/action_btn"
             android:layout_width="wrap_content"

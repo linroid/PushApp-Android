@@ -35,4 +35,9 @@
     <string name="action_open">打开</string>
     <string name="btn_dialog_copy">复制到剪切板</string>
     <string name="title_dialog_unsupport_qrcode">二维码信息</string>
+    <string name="txt_device_model" formatted="false">型号: %s</string>
+    <string name="txt_device_system" formatted="false">系统: %s(API %s)</string>
+    <string name="txt_device_cpu_type" formatted="false">CPU: %s</string>
+    <string name="txt_device_screen" formatted="false">屏幕: %dx%d(%ddpi)</string>
+    <string name="txt_device_memory_size" formatted="false">内存: %s</string>
 </resources>
