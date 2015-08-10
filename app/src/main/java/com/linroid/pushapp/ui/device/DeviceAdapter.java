@@ -46,13 +46,17 @@ public class DeviceAdapter extends DataAdapter<Device, DeviceAdapter.DeviceHolde
 
     @Override
     public void onBindViewHolder(DeviceHolder holder, int i) {
-
+        Device device = data.get(i);
+        holder.aliasTV.setText(device.getAlias());
     }
 
     class DeviceHolder extends RecyclerView.ViewHolder{
 
+        @Bind(R.id.device_alias)
+        TextView aliasTV;
         public DeviceHolder(final View itemView) {
             super(itemView);
+            ButterKnife.bind(this, itemView);
         }
 
     }

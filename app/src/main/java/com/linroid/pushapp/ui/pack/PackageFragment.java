@@ -128,7 +128,6 @@ public class PackageFragment extends RefreshableFragment implements PackageAdapt
                 .doOnNext(new Action1<List<Pack>>() {
                     @Override
                     public void call(List<Pack> packs) {
-                        Timber.d("save to database on Thread:%s", Thread.currentThread().getName());
                         db.beginTransaction();
                         for (Pack pack : packs) {
                             db.insert(Pack.DB.TABLE_NAME, pack.toContentValues());

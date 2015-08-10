@@ -22,5 +22,5 @@ public interface DeviceService {
     @GET("/device/check")
     void checkToken(@Query("token") String token, @Query("device_id") String deviceId, Callback<Device> callback);
     @GET("/device")
-    Observable<Pagination<Device>> listDevice();
+    Observable<Pagination<Device>> listDevice(@Query("page") int page);
 }

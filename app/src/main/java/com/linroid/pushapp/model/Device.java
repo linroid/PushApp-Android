@@ -364,7 +364,7 @@ public class Device implements Parcelable {
         device.updatedAt = Db.getString(cursor, DB.COLUMN_UPDATED_AT);
         return device;
     }
-    public ContentValues toValues() {
+    public ContentValues toContentValues() {
         ContentValues values = new ContentValues();
         values.put(DB.COLUMN_ID, id);
         values.put(DB.COLUMN_ALIAS, alias);

@@ -87,10 +87,10 @@ public class PushReceiver extends BroadcastReceiver {
         Cursor cursor = db.query(Device.DB.SQL_ITEM_QUERY, String.valueOf(device.getId()));
         if (cursor.moveToNext()) {
             Timber.d("[%s]设备状态变更", device.getAlias());
-            db.update(Device.DB.TABLE_NAME, device.toValues(), Pack.DB.WHERE_ID, String.valueOf(device.getId()));
+            db.update(Device.DB.TABLE_NAME, device.toContentValues(), Pack.DB.WHERE_ID, String.valueOf(device.getId()));
         } else {
             Timber.d("[%s]设备新增", device.getAlias());
-            db.insert(Device.DB.TABLE_NAME, device.toValues());
+            db.insert(Device.DB.TABLE_NAME, device.toContentValues());
         }
     }
 
