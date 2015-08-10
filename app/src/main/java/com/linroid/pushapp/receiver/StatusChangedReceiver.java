@@ -7,6 +7,7 @@ import android.net.ConnectivityManager;
 
 import com.linroid.pushapp.App;
 import com.linroid.pushapp.api.DeviceService;
+import com.linroid.pushapp.model.Authorization;
 import com.linroid.pushapp.model.Device;
 import com.linroid.pushapp.util.DeviceUtil;
 
@@ -24,6 +25,8 @@ import timber.log.Timber;
 public class StatusChangedReceiver extends BroadcastReceiver {
     @Inject
     DeviceService deviceApi;
+    @Inject
+    Authorization auth;
 
     public StatusChangedReceiver() {
     }
@@ -46,15 +49,15 @@ public class StatusChangedReceiver extends BroadcastReceiver {
     private void onNetworkChanged(Context context, Intent intent) {
         Map<String, String> params = new HashMap<>();
         params.put("network_type", DeviceUtil.networkType(context));
-        deviceApi.updateDevice(params, new Callback<Device>() {
+        deviceApi.updateDevice(auth.getDevice().getId(), params, new Callback<Device>() {
             @Override
             public void success(Device device, Response response) {
-                Timber.d("设备网络状态上报成功");
+                Timber.d("设备网络状态上报成功:)");
             }
 
             @Override
             public void failure(RetrofitError error) {
-
+                Timber.d("设备网络状态上报失败:(", error);
             }
         });
     }

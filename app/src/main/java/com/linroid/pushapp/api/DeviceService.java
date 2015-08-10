@@ -11,10 +11,9 @@ import retrofit.http.Body;
 import retrofit.http.FieldMap;
 import retrofit.http.FormUrlEncoded;
 import retrofit.http.GET;
-import retrofit.http.Multipart;
 import retrofit.http.POST;
 import retrofit.http.PUT;
-import retrofit.http.PartMap;
+import retrofit.http.Path;
 import retrofit.http.Query;
 import rx.Observable;
 
@@ -32,6 +31,6 @@ public interface DeviceService {
     Observable<Pagination<Device>> listDevice(@Query("page") int page);
 
     @FormUrlEncoded
-    @PUT("/device")
-    void updateDevice(@FieldMap Map<String, String> params, Callback<Device> callback);
+    @PUT("/device/{id}")
+    void updateDevice(@Path("id") int id, @FieldMap Map<String, String> params, Callback<Device> callback);
 }
