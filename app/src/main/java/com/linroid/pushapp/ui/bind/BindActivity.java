@@ -54,12 +54,10 @@ public class BindActivity extends BaseActivity {
     @Bind(R.id.tv_first_content)
     TextView firstContentTV;
 
-    @Named(Constants.SP_TOKEN)
-    @Inject
-    StringPreference token;
-
     @Inject
     DeviceService deviceApi;
+    @Inject
+    Authorization auth;
 
     private String bindToken;
     private boolean showProgress = false;
@@ -156,11 +154,16 @@ public class BindActivity extends BaseActivity {
         deviceApi.bindDevice(queryAndBuildDeviceInfo(), new Callback<Authorization>() {
             @Override
             @DebugLog
-            public void success(Authorization authorization, Response response) {
-                Device device = authorization.getDevice();
-                User user = authorization.getUser();
-                token.setValue(device.getToken());
-                user.saveToFile(BindActivity.this);
+            public void success(Authorization authInfo, Response response) {
+                authInfo.saveToFile(getApplicationContext());
+                Device device = authInfo.getDevice();
+                User user = authInfo.getUser();
+                String token = authInfo.getToken();
+                auth.setDevice(device);
+                auth.setUser(user);
+                auth.setToken(token);
+                auth.saveToFile(getApplicationContext());
+                
                 dialog.dismiss();
                 redirectToHome();
             }

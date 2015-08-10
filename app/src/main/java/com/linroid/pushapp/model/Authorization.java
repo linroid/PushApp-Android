@@ -1,9 +1,22 @@
 package com.linroid.pushapp.model;
 
+import android.content.Context;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.text.TextUtils;
 
+import com.google.gson.Gson;
 import com.google.gson.annotations.Expose;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.Reader;
+import java.io.Writer;
+
+import timber.log.Timber;
 
 /**
  * Created by linroid on 7/25/15.
@@ -13,6 +26,16 @@ public class Authorization implements Parcelable {
     private Device device;
     @Expose
     private User user;
+    @Expose
+    private String token;
+
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
+    }
 
     public Device getDevice() {
         return device;
@@ -30,12 +53,54 @@ public class Authorization implements Parcelable {
         this.user = user;
     }
 
+
+    /**
+     * 判断授权是否有效
+     * @return
+     */
+    public boolean isValid() {
+        return !TextUtils.isEmpty(token);
+    }
+
+    public boolean saveToFile(Context context) {
+        Gson gson = new Gson();
+        String json = gson.toJson(this);
+        File saveFile = new File(context.getFilesDir(), "auth.json");
+        Writer writer = null;
+        try {
+            writer = new FileWriter(saveFile);
+            writer.write(json);
+            writer.close();
+        } catch (IOException e) {
+            Timber.e("write auth info to file fail", e);
+            return false;
+        }
+        return true;
+    }
+
+    public static Authorization readFromFile(Context context) {
+        File saveFile = new File(context.getFilesDir(), "auth.json");
+        Authorization auth = null;
+        try {
+            Reader reader = new FileReader(saveFile);
+            Gson gson = new Gson();
+            auth = gson.fromJson(reader, Authorization.class);
+        } catch (FileNotFoundException e) {
+            Timber.e("read auth info from file fail", e);
+        }
+        return auth;
+    }
+
     @Override
     public String toString() {
-        return "Authoization{" +
+        return "Authorization{" +
                 "device=" + device +
                 ", user=" + user +
+                ", token='" + token + '\'' +
                 '}';
+    }
+
+    public Authorization() {
     }
 
     @Override
@@ -47,17 +112,16 @@ public class Authorization implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeParcelable(this.device, 0);
         dest.writeParcelable(this.user, 0);
-    }
-
-    public Authorization() {
+        dest.writeString(this.token);
     }
 
     protected Authorization(Parcel in) {
         this.device = in.readParcelable(Device.class.getClassLoader());
         this.user = in.readParcelable(User.class.getClassLoader());
+        this.token = in.readString();
     }
 
-    public static final Parcelable.Creator<Authorization> CREATOR = new Parcelable.Creator<Authorization>() {
+    public static final Creator<Authorization> CREATOR = new Creator<Authorization>() {
         public Authorization createFromParcel(Parcel source) {
             return new Authorization(source);
         }

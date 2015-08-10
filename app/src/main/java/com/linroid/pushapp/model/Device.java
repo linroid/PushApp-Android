@@ -50,8 +50,7 @@ public class Device implements Parcelable {
     @SerializedName("cpu_type")
     @Expose
     private String cpuType;
-    @Expose
-    private String token;
+
     @SerializedName("network_type")
     @Expose
     private String networkType;
@@ -236,20 +235,6 @@ public class Device implements Parcelable {
     }
 
     /**
-     * @return The token
-     */
-    public String getToken() {
-        return token;
-    }
-
-    /**
-     * @param token The token
-     */
-    public void setToken(String token) {
-        this.token = token;
-    }
-
-    /**
      * @return The networkType
      */
     public String getNetworkType() {
@@ -334,7 +319,6 @@ public class Device implements Parcelable {
                 ", pushId='" + pushId + '\'' +
                 ", memorySize=" + memorySize +
                 ", cpuType='" + cpuType + '\'' +
-                ", token='" + token + '\'' +
                 ", networkType='" + networkType + '\'' +
                 ", userId=" + userId +
                 ", user=" + user +
@@ -359,7 +343,6 @@ public class Device implements Parcelable {
         device.pushId       = Db.getString(cursor, DB.COLUMN_PUSH_ID);
         device.memorySize   = Db.getInt(cursor, DB.COLUMN_MEMORY_SIZE);
         device.cpuType      = Db.getString(cursor, DB.COLUMN_CPU_TYPE);
-        device.token        = Db.getString(cursor, DB.COLUMN_TOKEN);
         device.networkType  = Db.getString(cursor, DB.COLUMN_NETWORK_TYPE);
         device.userId       = Db.getInt(cursor, DB.COLUMN_USER_ID);
         device.createdAt    = Db.getString(cursor, DB.COLUMN_CREATED_AT);
@@ -380,7 +363,6 @@ public class Device implements Parcelable {
         values.put(DB.COLUMN_PUSH_ID, pushId);
         values.put(DB.COLUMN_MEMORY_SIZE, memorySize);
         values.put(DB.COLUMN_CPU_TYPE, cpuType);
-        values.put(DB.COLUMN_TOKEN, token);
         values.put(DB.COLUMN_NETWORK_TYPE, networkType);
         values.put(DB.COLUMN_USER_ID, userId);
         values.put(DB.COLUMN_CREATED_AT, createdAt);
@@ -517,7 +499,6 @@ public class Device implements Parcelable {
             device.setPushId(pushId);
             device.setMemorySize(memorySize);
             device.setCpuType(cpuType);
-            device.setToken(token);
             device.setNetworkType(networkType);
             device.setUserId(userId);
             device.setCreatedAt(createdAt);
@@ -545,7 +526,6 @@ public class Device implements Parcelable {
         dest.writeString(this.pushId);
         dest.writeInt(this.memorySize);
         dest.writeString(this.cpuType);
-        dest.writeString(this.token);
         dest.writeString(this.networkType);
         dest.writeInt(this.userId);
         dest.writeParcelable(this.user, 0);
@@ -566,7 +546,6 @@ public class Device implements Parcelable {
         this.pushId = in.readString();
         this.memorySize = in.readInt();
         this.cpuType = in.readString();
-        this.token = in.readString();
         this.networkType = in.readString();
         this.userId = in.readInt();
         this.user = in.readParcelable(User.class.getClassLoader());
@@ -602,7 +581,6 @@ public class Device implements Parcelable {
         public static final String COLUMN_PUSH_ID = "push_id";
         public static final String COLUMN_MEMORY_SIZE = "memory_size";
         public static final String COLUMN_CPU_TYPE = "cpu_type";
-        public static final String COLUMN_TOKEN = "token";
         public static final String COLUMN_NETWORK_TYPE = "network_type";
         public static final String COLUMN_USER_ID = "user_id";
         public static final String COLUMN_CREATED_AT = "created_at";
@@ -622,7 +600,6 @@ public class Device implements Parcelable {
                 + COLUMN_PUSH_ID + " TEXT NOT NULL,"
                 + COLUMN_MEMORY_SIZE + " INTEGER NOT NULL,"
                 + COLUMN_CPU_TYPE + " TEXT NOT NULL,"
-                + COLUMN_TOKEN + " TEXT NOT NULL,"
                 + COLUMN_NETWORK_TYPE + " TEXT NOT NULL,"
                 + COLUMN_USER_ID + " TEXT NOT NULL,"
                 + COLUMN_CREATED_AT + " TEXT NOT NULL,"

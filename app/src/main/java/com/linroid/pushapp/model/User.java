@@ -128,33 +128,6 @@ public class User implements Parcelable {
 //    }
 
 
-    public boolean saveToFile(Context context) {
-        Gson gson = new Gson();
-        String json = gson.toJson(this);
-        File saveFile = new File(context.getFilesDir(), "user.json");
-        Writer writer = null;
-        try {
-            writer = new FileWriter(saveFile);
-            writer.write(json);
-            writer.close();
-        } catch (IOException e) {
-            Timber.e("write user to file fail", e);
-            return false;
-        }
-        return true;
-    }
-    public static User readFromFile(Context context) {
-        File saveFile = new File(context.getFilesDir(), "user.json");
-        User user = null;
-        try {
-            Reader reader = new FileReader(saveFile);
-            Gson gson = new Gson();
-            user = gson.fromJson(reader, User.class);
-        } catch (FileNotFoundException e) {
-            Timber.e("read user from file fail", e);
-        }
-        return user;
-    }
 
     @Override
     public String toString() {

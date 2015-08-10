@@ -93,7 +93,11 @@ public class AppModule {
     @Provides
     @Singleton
     Authorization provideAuthorization(Context context) {
-        return Authorization.readFromFile(context);
+        Authorization auth = Authorization.readFromFile(context);
+        if(auth == null){
+            auth = new Authorization();
+        }
+        return auth;
     }
 
     @Provides

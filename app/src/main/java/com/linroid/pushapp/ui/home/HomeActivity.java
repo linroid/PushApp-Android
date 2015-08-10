@@ -31,6 +31,7 @@ import com.linroid.pushapp.App;
 import com.linroid.pushapp.BuildConfig;
 import com.linroid.pushapp.Constants;
 import com.linroid.pushapp.R;
+import com.linroid.pushapp.model.Authorization;
 import com.linroid.pushapp.service.ApkAutoInstallService;
 import com.linroid.pushapp.ui.base.BaseActivity;
 import com.linroid.pushapp.ui.bind.BindActivity;
@@ -55,10 +56,8 @@ public class HomeActivity extends BaseActivity {
     @Bind(R.id.toolbar)
     protected Toolbar toolbar;
 
-    @Named(Constants.SP_TOKEN)
     @Inject
-    StringPreference token;
-
+    Authorization auth;
     @Inject
     SharedPreferences preferences;
 
@@ -124,7 +123,7 @@ public class HomeActivity extends BaseActivity {
     }
 
     private void checkBind() {
-        if (TextUtils.isEmpty(token.getValue())) {
+        if (!auth.isValid()) {
             Timber.w("device does not bind");
             Intent intent = new Intent(this, BindActivity.class);
             startActivity(intent);
