@@ -23,7 +23,7 @@ import rx.Observable;
  */
 public interface DeviceService {
     @POST("/device/bind")
-    void bindDevice(@Body Device device, Callback<Authorization> callback);
+    void bindDevice(@Query("token") String token, @Body Device device, Callback<Authorization> callback);
 
     @GET("/device/check")
     void checkToken(@Query("token") String token, @Query("device_id") String deviceId, Callback<Device> callback);

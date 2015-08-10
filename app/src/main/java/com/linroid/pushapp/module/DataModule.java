@@ -14,6 +14,7 @@ import com.linroid.pushapp.BuildConfig;
 import com.linroid.pushapp.Constants;
 import com.linroid.pushapp.R;
 import com.linroid.pushapp.database.DbOpenHelper;
+import com.linroid.pushapp.model.Authorization;
 import com.linroid.pushapp.model.Error;
 import com.linroid.pushapp.module.identifier.DataCacheDir;
 import com.linroid.pushapp.module.identifier.HttpCacheDir;
@@ -96,7 +97,7 @@ public class DataModule {
     @Provides
     @Singleton
     RestAdapter provideRestAdapter(Gson gson, OkHttpClient okHttpClient,
-                                   @Named(Constants.SP_TOKEN) final StringPreference token,
+                                   final Authorization auth,
                                    ErrorHandler errorHandler) {
         return new RestAdapter.Builder()
                 .setErrorHandler(errorHandler)
@@ -107,8 +108,8 @@ public class DataModule {
                 .setRequestInterceptor(new RequestInterceptor() {
                     @Override
                     public void intercept(RequestFacade request) {
-                        if (!TextUtils.isEmpty(token.getValue())) {
-                            request.addHeader(Constants.AUTH_HEADER, token.getValue());
+                        if (auth.isValid()) {
+                            request.addHeader(Constants.AUTH_HEADER, auth.getToken());
                         }
                     }
                 })

@@ -151,7 +151,7 @@ public class BindActivity extends BaseActivity {
         dialog.setMessage(getString(R.string.msg_dialog_bind));
         dialog.setCancelable(false);
         dialog.show();
-        deviceApi.bindDevice(queryAndBuildDeviceInfo(), new Callback<Authorization>() {
+        deviceApi.bindDevice(bindToken, queryAndBuildDeviceInfo(), new Callback<Authorization>() {
             @Override
             @DebugLog
             public void success(Authorization authInfo, Response response) {
@@ -163,7 +163,7 @@ public class BindActivity extends BaseActivity {
                 auth.setUser(user);
                 auth.setToken(token);
                 auth.saveToFile(getApplicationContext());
-                
+
                 dialog.dismiss();
                 redirectToHome();
             }
