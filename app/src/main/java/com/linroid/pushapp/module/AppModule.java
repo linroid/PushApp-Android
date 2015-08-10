@@ -8,6 +8,7 @@ import android.content.res.Resources;
 
 import com.linroid.pushapp.App;
 import com.linroid.pushapp.Constants;
+import com.linroid.pushapp.model.Authorization;
 import com.linroid.pushapp.util.BooleanPreference;
 import com.linroid.pushapp.util.StringPreference;
 import com.squareup.leakcanary.LeakCanary;
@@ -60,6 +61,7 @@ public class AppModule {
     SharedPreferences provideSharedPreferences(Context context) {
         return context.getSharedPreferences(Constants.SP_FILE_NAME, Context.MODE_PRIVATE);
     }
+
     @Provides
     @Singleton
     RefWatcher provideRefWatcher(Application application) {
@@ -80,6 +82,7 @@ public class AppModule {
     BooleanPreference provideAutoInstallPreference(SharedPreferences sp) {
         return new BooleanPreference(sp, Constants.SP_AUTO_INSTALL, true);
     }
+
     @Provides
     @Singleton
     @Named(Constants.SP_AUTO_OPEN)
@@ -87,6 +90,11 @@ public class AppModule {
         return new BooleanPreference(sp, Constants.SP_AUTO_OPEN, true);
     }
 
+    @Provides
+    @Singleton
+    Authorization provideAuthorization(Context context) {
+        return Authorization.readFromFile(context);
+    }
 
     @Provides
     @Singleton

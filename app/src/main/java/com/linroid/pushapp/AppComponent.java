@@ -5,6 +5,7 @@ import com.linroid.pushapp.module.AppModule;
 import com.linroid.pushapp.module.DataModule;
 import com.linroid.pushapp.module.FileModule;
 import com.linroid.pushapp.receiver.PushReceiver;
+import com.linroid.pushapp.receiver.StatusChangedReceiver;
 import com.linroid.pushapp.service.ApkAutoInstallService;
 import com.linroid.pushapp.service.DownloadService;
 import com.linroid.pushapp.ui.bind.BindActivity;
@@ -26,6 +27,8 @@ public interface AppComponent {
 
     void inject(PushReceiver receiver);
 
+    void inject(StatusChangedReceiver receiver);
+
     void inject(DownloadService service);
 
     void inject(ApkAutoInstallService service);
@@ -37,4 +40,5 @@ public interface AppComponent {
     void inject(BindActivity activity);
 
     void inject(HomeActivity activity);
+
 }
