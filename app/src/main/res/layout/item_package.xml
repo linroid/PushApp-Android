@@ -36,13 +36,6 @@
             tool:text="PushApp"
             android:textAppearance="@style/TextAppearance.AppCompat.Title" />
 
-        <TextView
-            android:id="@+id/package_tv"
-            tool:text="com.linroid.pushapp"
-            android:layout_below="@id/name_tv"
-            android:layout_alignLeft="@id/name_tv"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
 
 
         <TextView
@@ -64,6 +57,13 @@
             android:textSize="12sp"
             android:textAppearance="?android:attr/textAppearanceSmall"
             tool:text="14分钟前" />
+        <TextView
+            android:id="@+id/package_tv"
+            tool:text="com.linroid.pushapp"
+            android:layout_above="@id/version_tv"
+            android:layout_alignLeft="@id/name_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
 
         <ImageButton
             android:id="@+id/action_btn"
