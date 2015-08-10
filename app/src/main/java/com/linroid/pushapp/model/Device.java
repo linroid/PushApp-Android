@@ -347,28 +347,32 @@ public class Device implements Parcelable {
     }
     private static Device fromCursor(Cursor cursor) {
         Device device = new Device();
-        device.id = Db.getInt(cursor, DB.COLUMN_ID);
-        device.alias = Db.getString(cursor, DB.COLUMN_ALIAS);
-        device.sdkLevel = Db.getInt(cursor, DB.COLUMN_SDK_LEVEL);
-        device.height = Db.getInt(cursor, DB.COLUMN_HEIGHT);
-        device.width = Db.getInt(cursor, DB.COLUMN_WIDTH);
-        device.dpi = Db.getInt(cursor, DB.COLUMN_DPI);
-        device.deviceId = Db.getString(cursor, DB.COLUMN_DEVICE_ID);
-        device.pushId = Db.getString(cursor, DB.COLUMN_PUSH_ID);
-        device.memorySize = Db.getInt(cursor, DB.COLUMN_MEMORY_SIZE);
-        device.cpuType = Db.getString(cursor, DB.COLUMN_CPU_TYPE);
-        device.token = Db.getString(cursor, DB.COLUMN_TOKEN);
-        device.networkType = Db.getString(cursor, DB.COLUMN_NETWORK_TYPE);
-        device.userId = Db.getInt(cursor, DB.COLUMN_USER_ID);
-        device.createdAt = Db.getString(cursor, DB.COLUMN_CREATED_AT);
-        device.updatedAt = Db.getString(cursor, DB.COLUMN_UPDATED_AT);
+        device.id           = Db.getInt(cursor, DB.COLUMN_ID);
+        device.model        = Db.getString(cursor, DB.COLUMN_MODEL);
+        device.alias        = Db.getString(cursor, DB.COLUMN_ALIAS);
+        device.sdkLevel     = Db.getInt(cursor, DB.COLUMN_SDK_LEVEL);
+        device.osName       = Db.getString(cursor, DB.COLUMN_OS_NAME);
+        device.height       = Db.getInt(cursor, DB.COLUMN_HEIGHT);
+        device.width        = Db.getInt(cursor, DB.COLUMN_WIDTH);
+        device.dpi          = Db.getInt(cursor, DB.COLUMN_DPI);
+        device.deviceId     = Db.getString(cursor, DB.COLUMN_DEVICE_ID);
+        device.pushId       = Db.getString(cursor, DB.COLUMN_PUSH_ID);
+        device.memorySize   = Db.getInt(cursor, DB.COLUMN_MEMORY_SIZE);
+        device.cpuType      = Db.getString(cursor, DB.COLUMN_CPU_TYPE);
+        device.token        = Db.getString(cursor, DB.COLUMN_TOKEN);
+        device.networkType  = Db.getString(cursor, DB.COLUMN_NETWORK_TYPE);
+        device.userId       = Db.getInt(cursor, DB.COLUMN_USER_ID);
+        device.createdAt    = Db.getString(cursor, DB.COLUMN_CREATED_AT);
+        device.updatedAt    = Db.getString(cursor, DB.COLUMN_UPDATED_AT);
         return device;
     }
     public ContentValues toContentValues() {
         ContentValues values = new ContentValues();
         values.put(DB.COLUMN_ID, id);
         values.put(DB.COLUMN_ALIAS, alias);
+        values.put(DB.COLUMN_MODEL, alias);
         values.put(DB.COLUMN_SDK_LEVEL, sdkLevel);
+        values.put(DB.COLUMN_OS_NAME, osName);
         values.put(DB.COLUMN_HEIGHT, height);
         values.put(DB.COLUMN_WIDTH, width);
         values.put(DB.COLUMN_DPI, dpi);
@@ -584,7 +588,8 @@ public class Device implements Parcelable {
     public static class DB {
         public static final String TABLE_NAME = "devices";
 
-        public static final String COLUMN_ID = "model";
+        public static final String COLUMN_ID = "id";
+        public static final String COLUMN_MODEL = "model";
         public static final String COLUMN_ALIAS = "alias";
         public static final String COLUMN_SDK_LEVEL = "sdk_level";
         public static final String COLUMN_OS_NAME = "os_name";
@@ -606,8 +611,10 @@ public class Device implements Parcelable {
         public static final String SQL_CREATE = ""
                 + "CREATE TABLE " + TABLE_NAME + "("
                 + COLUMN_ID + " INTEGER NOT NULL,"
-                + COLUMN_ALIAS + " TEXT NOT NULL,"
+                + COLUMN_MODEL + " TEXT NOT NULL,"
+                + COLUMN_ALIAS + " COLUMN_MODEL NOT NULL,"
                 + COLUMN_SDK_LEVEL + " INTEGER NOT NULL,"
+                + COLUMN_OS_NAME + " TEXT NOT NULL,"
                 + COLUMN_HEIGHT + " TEXT NOT NULL,"
                 + COLUMN_WIDTH + " INTEGER NOT NULL,"
                 + COLUMN_DPI + " INTEGER NOT NULL,"
