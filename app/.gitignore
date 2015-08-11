@@ -1,3 +1,4 @@
 /build
 
 app.properties
+*.apk

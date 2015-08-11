@@ -1,6 +1,5 @@
 package com.linroid.pushapp.ui.bind;
 
-import android.app.ActionBar;
 import android.app.ActivityManager;
 import android.app.ProgressDialog;
 import android.content.Intent;
@@ -20,19 +19,16 @@ import android.widget.ViewSwitcher;
 
 import com.linroid.pushapp.App;
 import com.linroid.pushapp.BuildConfig;
-import com.linroid.pushapp.Constants;
 import com.linroid.pushapp.R;
-import com.linroid.pushapp.api.DeviceService;
+import com.linroid.pushapp.api.AuthService;
 import com.linroid.pushapp.model.Authorization;
 import com.linroid.pushapp.model.Device;
 import com.linroid.pushapp.model.User;
 import com.linroid.pushapp.ui.base.BaseActivity;
 import com.linroid.pushapp.ui.home.HomeActivity;
 import com.linroid.pushapp.util.DeviceUtil;
-import com.linroid.pushapp.util.StringPreference;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 
 import butterknife.Bind;
 import butterknife.OnClick;
@@ -55,7 +51,7 @@ public class BindActivity extends BaseActivity {
     TextView firstContentTV;
 
     @Inject
-    DeviceService deviceApi;
+    AuthService authApi;
     @Inject
     Authorization auth;
 
@@ -120,7 +116,7 @@ public class BindActivity extends BaseActivity {
     private void checkToken() {
         setProgressVisible(true);
         invalidateOptionsMenu();
-        deviceApi.checkToken(bindToken, DeviceUtil.id(this), new Callback<Device>() {
+        authApi.checkToken(bindToken, DeviceUtil.id(this), new Callback<Device>() {
             @Override
             @DebugLog
             public void success(Device device, Response response) {
@@ -151,7 +147,7 @@ public class BindActivity extends BaseActivity {
         dialog.setMessage(getString(R.string.msg_dialog_bind));
         dialog.setCancelable(false);
         dialog.show();
-        deviceApi.bindDevice(bindToken, queryAndBuildDeviceInfo(), new Callback<Authorization>() {
+        authApi.bindDevice(bindToken, queryAndBuildDeviceInfo(), new Callback<Authorization>() {
             @Override
             @DebugLog
             public void success(Authorization authInfo, Response response) {

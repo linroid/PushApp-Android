@@ -21,12 +21,6 @@ import rx.Observable;
  * Created by linroid on 7/24/15.
  */
 public interface DeviceService {
-    @POST("/device/bind")
-    void bindDevice(@Query("token") String token, @Body Device device, Callback<Authorization> callback);
-
-    @GET("/device/check")
-    void checkToken(@Query("token") String token, @Query("device_id") String deviceId, Callback<Device> callback);
-
     @GET("/device")
     Observable<Pagination<Device>> listDevice(@Query("page") int page);
 

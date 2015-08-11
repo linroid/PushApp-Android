@@ -30,6 +30,9 @@ android {
         buildConfigField "String", "BUILD_TIME", "\"${buildTime}\""
         println(new File("./app/nobug.txt").getText("UTF-8"))
         manifestPlaceholders = [JPUSH_CHANNEL: "default", PACKAGE: applicationId]
+        if (props) {
+            manifestPlaceholders.put("JPUSH_APPKEY", props['JPUSH_APPKEY'] as String)
+        }
     }
     signingConfigs {
         debug {
@@ -40,11 +43,6 @@ android {
         }
     }
     buildTypes {
-        allprojects {
-            if (props) {
-                manifestPlaceholders.put("JPUSH_APPKEY", props['JPUSH_APPKEY'] as String)
-            }
-        }
         debug {
             applicationIdSuffix ".dev"
             versionNameSuffix '-dev'
@@ -59,7 +57,9 @@ android {
         }
         release {
             signingConfig signingConfigs.release
-            minifyEnabled false
+            minifyEnabled true
+            shrinkResources true
+            zipAlignEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
         all { type ->
@@ -72,7 +72,7 @@ android {
                     host = "pushapp.${hostIp}.xip.io"
                     println("You can open the homepage: http://${host}")
                 } else if (type == release) {
-                    host = "pushapp.io"
+                    host = "pushapp.linroid.com"
                 } else {
                     return
                 }

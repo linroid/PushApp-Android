@@ -53,12 +53,14 @@ public class QrcodeActivity extends BaseActivity {
             public void barcodeResult(BarcodeResult barcodeResult) {
                 Timber.d("扫描到信息:%s", barcodeResult.getText());
                 Uri uri = Uri.parse(barcodeResult.getText());
-                String token = uri.getQueryParameter("token");
-                if (!TextUtils.isEmpty(token) && token.length() == 64) {
-                    onScanSuccess(token);
-                } else {
-                    handleUnknownQrcode(barcodeResult.getText());
+                if(BuildConfig.HOST.equals(uri.getHost())){
+                    String token = uri.getQueryParameter("token");
+                    if (!TextUtils.isEmpty(token) && token.length() == 64) {
+                        onScanSuccess(token);
+                        return;
+                    }
                 }
+                handleUnknownQrcode(barcodeResult.getText());
             }
 
             @Override
