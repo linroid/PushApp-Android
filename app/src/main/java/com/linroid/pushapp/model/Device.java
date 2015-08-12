@@ -46,7 +46,7 @@ public class Device implements Parcelable {
     private String pushId;
     @SerializedName("memory_size")
     @Expose
-    private int memorySize;
+    private long memorySize;
     @SerializedName("cpu_type")
     @Expose
     private String cpuType;
@@ -209,14 +209,14 @@ public class Device implements Parcelable {
     /**
      * @return The memorySize
      */
-    public int getMemorySize() {
+    public long getMemorySize() {
         return memorySize;
     }
 
     /**
      * @param memorySize The memory_size
      */
-    public void setMemorySize(int memorySize) {
+    public void setMemorySize(long memorySize) {
         this.memorySize = memorySize;
     }
 
@@ -353,7 +353,7 @@ public class Device implements Parcelable {
         ContentValues values = new ContentValues();
         values.put(DB.COLUMN_ID, id);
         values.put(DB.COLUMN_ALIAS, alias);
-        values.put(DB.COLUMN_MODEL, alias);
+        values.put(DB.COLUMN_MODEL, model);
         values.put(DB.COLUMN_SDK_LEVEL, sdkLevel);
         values.put(DB.COLUMN_OS_NAME, osName);
         values.put(DB.COLUMN_HEIGHT, height);
@@ -381,7 +381,7 @@ public class Device implements Parcelable {
         private int dpi;
         private String deviceId;
         private String pushId;
-        private int memorySize;
+        private long memorySize;
         private String cpuType;
         private String token;
         private String networkType;
@@ -446,7 +446,7 @@ public class Device implements Parcelable {
             return this;
         }
 
-        public DeviceBuilder withMemorySize(int memorySize) {
+        public DeviceBuilder withMemorySize(long memorySize) {
             this.memorySize = memorySize;
             return this;
         }
@@ -524,7 +524,7 @@ public class Device implements Parcelable {
         dest.writeInt(this.dpi);
         dest.writeString(this.deviceId);
         dest.writeString(this.pushId);
-        dest.writeInt(this.memorySize);
+        dest.writeLong(this.memorySize);
         dest.writeString(this.cpuType);
         dest.writeString(this.networkType);
         dest.writeInt(this.userId);
@@ -544,7 +544,7 @@ public class Device implements Parcelable {
         this.dpi = in.readInt();
         this.deviceId = in.readString();
         this.pushId = in.readString();
-        this.memorySize = in.readInt();
+        this.memorySize = in.readLong();
         this.cpuType = in.readString();
         this.networkType = in.readString();
         this.userId = in.readInt();
