@@ -1,6 +1,7 @@
 package com.linroid.pushapp.util;
 
 import android.annotation.TargetApi;
+import android.app.ActivityManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ApplicationInfo;
@@ -15,13 +16,15 @@ import android.os.Bundle;
 import android.provider.Settings;
 import android.text.TextUtils;
 import android.text.format.DateUtils;
-import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.Display;
-import android.view.WindowManager;
 
 import com.linroid.pushapp.BuildConfig;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -202,7 +205,7 @@ public class AndroidUtil {
      * 根据包名打开其他应用
      *
      * @param context
-     * @param packageName
+     * @param packageName 包名
      */
     public static void openApplication(Context context, String packageName) {
         PackageManager pm = context.getPackageManager();
@@ -218,7 +221,8 @@ public class AndroidUtil {
 
     /**
      * 获得屏幕真是高度
-     * @param manager WindowManager
+     *
+     * @param display Display
      * @return
      */
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
@@ -232,5 +236,32 @@ public class AndroidUtil {
             height = display.getHeight();
         }
         return height;
+    }
+
+    /**
+     * 获得设备的内存大小
+     *
+     * @return
+     */
+    public static long totalMemorySize() {
+        String meminfoPath = "/proc/meminfo";
+        String str2;
+        String[] arrayOfString;
+        long initial_memory = 0;
+        try {
+            FileReader localFileReader = new FileReader(meminfoPath);
+            BufferedReader localBufferedReader = new BufferedReader(localFileReader, 8192);
+            str2 = localBufferedReader.readLine();
+            arrayOfString = str2.split("\\s+");
+            for (String num : arrayOfString) {
+                Log.i(str2, num + "\t");
+            }
+            //total Memory
+            initial_memory = Integer.valueOf(arrayOfString[1]) * 1024;
+            localBufferedReader.close();
+            return initial_memory;
+        } catch (IOException e) {
+            return -1;
+        }
     }
 }

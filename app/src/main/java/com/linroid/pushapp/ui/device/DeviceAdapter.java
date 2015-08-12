@@ -38,7 +38,7 @@ public class DeviceAdapter extends DataAdapter<Device, DeviceAdapter.DeviceHolde
         Resources resources = holder.aliasTV.getResources();
 
         Device device = data.get(i);
-        holder.aliasTV.setText(device.getAlias());
+        String aliasText = device.getAlias();
         String screenText =resources.getString(R.string.txt_device_screen,
                                                     device.getWidth(),
                                                     device.getHeight(),
@@ -49,6 +49,7 @@ public class DeviceAdapter extends DataAdapter<Device, DeviceAdapter.DeviceHolde
         String memorySize = resources.getString(R.string.txt_device_memory_size,
                                             Formatter.formatFileSize(holder.aliasTV.getContext(), device.getMemorySize()));
 
+        holder.aliasTV.setText(aliasText);
         holder.modelTV.setText(modelText);
         holder.systemTV.setText(systemText);
         holder.cpuTypeTV.setText(cpuTypeText);

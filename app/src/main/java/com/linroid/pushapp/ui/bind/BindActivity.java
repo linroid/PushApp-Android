@@ -208,7 +208,6 @@ public class BindActivity extends BaseActivity {
 
     private Device queryAndBuildDeviceInfo() {
         DisplayMetrics metrics = getResources().getDisplayMetrics();
-        ActivityManager manager = (ActivityManager) getSystemService(ACTIVITY_SERVICE);
         return Device.DeviceBuilder.aDevice()
                 .withModel(Build.MODEL)
                 .withSdkLevel(Build.VERSION.SDK_INT)
@@ -219,7 +218,7 @@ public class BindActivity extends BaseActivity {
                 .withDpi(metrics.densityDpi)
                 .withHeight(AndroidUtil.getRealHeight(getWindowManager().getDefaultDisplay()))
                 .withWidth(metrics.widthPixels)
-                .withMemorySize(manager.getMemoryClass())
+                .withMemorySize(AndroidUtil.totalMemorySize())
                 .withToken(bindToken)
                 .withDeviceId(DeviceUtil.id(this))
                 .withPushId(JPushInterface.getRegistrationID(this))
