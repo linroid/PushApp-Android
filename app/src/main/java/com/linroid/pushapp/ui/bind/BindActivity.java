@@ -9,6 +9,7 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.view.MenuItemCompat;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Button;
@@ -37,6 +38,7 @@ import hugo.weaving.DebugLog;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
+import timber.log.Timber;
 
 public class BindActivity extends BaseActivity {
     public static final String ARG_BIND_TOKEN = "bind_token";
@@ -151,6 +153,7 @@ public class BindActivity extends BaseActivity {
             @Override
             @DebugLog
             public void success(Authorization authInfo, Response response) {
+                Log.w("bind", authInfo.toString());
                 authInfo.saveToFile(getApplicationContext());
                 Device device = authInfo.getDevice();
                 User user = authInfo.getUser();
@@ -177,6 +180,7 @@ public class BindActivity extends BaseActivity {
         Intent intent = new Intent(this, HomeActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
+        finish();
     }
 
     @Override

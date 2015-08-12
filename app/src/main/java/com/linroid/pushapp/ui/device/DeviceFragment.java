@@ -52,6 +52,7 @@ public class DeviceFragment extends RefreshableFragment {
                         .subscribeOn(Schedulers.io())
                         .subscribe(adapter)
         );
+        refresh();
     }
 
     @Override

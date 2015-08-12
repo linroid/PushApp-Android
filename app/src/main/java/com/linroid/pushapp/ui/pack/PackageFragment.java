@@ -55,6 +55,7 @@ public class PackageFragment extends RefreshableFragment implements PackageAdapt
                         .subscribeOn(Schedulers.io())
                         .subscribe(adapter)
         );
+        refresh();
 //        if (savedInstanceState != null) {
 //            List<Pack> savedPacks = savedInstanceState.getParcelableArrayList(STATE_PACKAGE);
 //            adapter.setData(savedPacks);
