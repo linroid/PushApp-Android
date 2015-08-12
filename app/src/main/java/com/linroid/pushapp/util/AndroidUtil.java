@@ -1,17 +1,23 @@
 package com.linroid.pushapp.util;
 
+import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
+import android.graphics.Point;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.text.TextUtils;
 import android.text.format.DateUtils;
+import android.util.DisplayMetrics;
+import android.view.Display;
+import android.view.WindowManager;
 
 import com.linroid.pushapp.BuildConfig;
 
@@ -208,5 +214,23 @@ public class AndroidUtil {
             Timber.e("未找到包名为[%s]的应用", packageName);
         }
 
+    }
+
+    /**
+     * 获得屏幕真是高度
+     * @param manager WindowManager
+     * @return
+     */
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
+    public static int getRealHeight(Display display) {
+        int height;
+        try {
+            Point size = new Point();
+            display.getRealSize(size);
+            height = size.y;
+        } catch (NoSuchMethodError e) {
+            height = display.getHeight();
+        }
+        return height;
     }
 }

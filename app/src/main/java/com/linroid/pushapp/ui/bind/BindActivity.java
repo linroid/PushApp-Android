@@ -3,6 +3,7 @@ package com.linroid.pushapp.ui.bind;
 import android.app.ActivityManager;
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.graphics.Point;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
@@ -27,6 +28,7 @@ import com.linroid.pushapp.model.Device;
 import com.linroid.pushapp.model.User;
 import com.linroid.pushapp.ui.base.BaseActivity;
 import com.linroid.pushapp.ui.home.HomeActivity;
+import com.linroid.pushapp.util.AndroidUtil;
 import com.linroid.pushapp.util.DeviceUtil;
 
 import javax.inject.Inject;
@@ -207,7 +209,6 @@ public class BindActivity extends BaseActivity {
     private Device queryAndBuildDeviceInfo() {
         DisplayMetrics metrics = getResources().getDisplayMetrics();
         ActivityManager manager = (ActivityManager) getSystemService(ACTIVITY_SERVICE);
-
         return Device.DeviceBuilder.aDevice()
                 .withModel(Build.MODEL)
                 .withSdkLevel(Build.VERSION.SDK_INT)
@@ -216,7 +217,7 @@ public class BindActivity extends BaseActivity {
                 .withCpuType(Build.CPU_ABI)
                 .withAlias(aliasET.getText().toString())
                 .withDpi(metrics.densityDpi)
-                .withHeight(metrics.heightPixels)
+                .withHeight(AndroidUtil.getRealHeight(getWindowManager().getDefaultDisplay()))
                 .withWidth(metrics.widthPixels)
                 .withMemorySize(manager.getMemoryClass())
                 .withToken(bindToken)
