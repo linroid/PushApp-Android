@@ -23,5 +23,14 @@
         <item name="windowNoTitle">true</item>
     </style>
 
+    <style name="Widget.FloatingActionButton" parent="Widget.Design.FloatingActionButton">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_gravity">end|bottom</item>
+        <item name="android:layout_margin">@dimen/fab_margin</item>
+        <item name="borderWidth">0dp</item>
+
+    </style>
+
 
 </resources>

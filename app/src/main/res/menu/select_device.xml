@@ -2,6 +2,13 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="com.linroid.pushapp.ui.device.SelectDeviceActivity">
-    <item android:id="@+id/action_settings" android:title="@string/action_settings"
-        android:orderInCategory="100" app:showAsAction="never" />
+
+    <item android:id="@+id/action_select_all"
+        android:title="全选"
+        android:orderInCategory="0"
+        app:showAsAction="always" />
+    <item android:id="@+id/action_select_none"
+        android:title="全不选"
+        android:orderInCategory="1"
+        app:showAsAction="always" />
 </menu>

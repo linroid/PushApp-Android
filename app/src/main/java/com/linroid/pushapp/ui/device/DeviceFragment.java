@@ -46,7 +46,7 @@ public class DeviceFragment extends RefreshableFragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        adapter = new DeviceAdapter();
+        adapter = new DeviceAdapter(getActivity());
         subscriptions.add(AppObservable.bindSupportFragment(this, db.createQuery(Device.DB.TABLE_NAME, Device.DB.SQL_LIST_QUERY))
                         .map(Device.DB.MAP)
                         .subscribeOn(Schedulers.io())

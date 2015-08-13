@@ -608,6 +608,7 @@ public class Device implements Parcelable {
 
         public static final String SQL_DROP = "DROP TABLE " + TABLE_NAME;
         public static final String SQL_LIST_QUERY = "SELECT * FROM " + TABLE_NAME + " ORDER BY " + COLUMN_CREATED_AT + " DESC";
+        public static final String SQL_IDS_QUERY = "SELECT * FROM " + TABLE_NAME + " WHERE " + COLUMN_ID + " IN (?)";
         public static final String WHERE_ID = COLUMN_ID + "= ?";
         public static final String SQL_ITEM_QUERY = "SELECT * FROM " + TABLE_NAME + " WHERE " + WHERE_ID;
 

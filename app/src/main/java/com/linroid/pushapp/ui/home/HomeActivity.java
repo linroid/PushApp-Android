@@ -51,8 +51,6 @@ public class HomeActivity extends BaseActivity {
     TabLayout tabLayout;
     @Bind(R.id.viewpager)
     ViewPager pager;
-    @Bind(R.id.refresh_fab)
-    FloatingActionButton refreshBtn;
     @Bind(R.id.toolbar)
     protected Toolbar toolbar;
 
@@ -79,13 +77,6 @@ public class HomeActivity extends BaseActivity {
         ButterKnife.bind(this);
         pager.setAdapter(new HomePagerAdapter(getSupportFragmentManager()));
         tabLayout.setupWithViewPager(pager);
-        refreshBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Snackbar.make(v, "刷新", Snackbar.LENGTH_LONG)
-                        .show();
-            }
-        });
 
 //        if(Build.VERSION.SDK_INT >= 21) {
 //            setTaskDescriptionColor();
@@ -115,7 +106,7 @@ public class HomeActivity extends BaseActivity {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             preferences.edit().putBoolean(Constants.SP_AUTO_INSTALL_CONFIRMED, true).apply();
-                            Snackbar.make(refreshBtn, R.string.msg_auto_install_confirm_cancel, Snackbar.LENGTH_LONG);
+                            Snackbar.make(pager, R.string.msg_auto_install_confirm_cancel, Snackbar.LENGTH_LONG);
                         }
                     }).show();
         }
@@ -155,20 +146,5 @@ public class HomeActivity extends BaseActivity {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.home, menu);
         return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
     }
 }

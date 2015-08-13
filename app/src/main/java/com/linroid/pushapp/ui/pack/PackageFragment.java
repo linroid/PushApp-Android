@@ -13,6 +13,7 @@ import com.linroid.pushapp.model.Pagination;
 import com.linroid.pushapp.service.ApkAutoInstallService;
 import com.linroid.pushapp.service.DownloadService;
 import com.linroid.pushapp.ui.base.RefreshableFragment;
+import com.linroid.pushapp.ui.device.SelectDeviceActivity;
 import com.linroid.pushapp.util.AndroidUtil;
 import com.squareup.picasso.Picasso;
 import com.squareup.sqlbrite.BriteDatabase;
@@ -178,7 +179,7 @@ public class PackageFragment extends RefreshableFragment implements PackageAdapt
 
     @Override
     public void onSend(Pack pack) {
-
+        SelectDeviceActivity.selectForPackage(getActivity(), pack);
     }
 
     @Override

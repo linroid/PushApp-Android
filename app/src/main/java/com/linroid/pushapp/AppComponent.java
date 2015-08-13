@@ -10,6 +10,7 @@ import com.linroid.pushapp.service.ApkAutoInstallService;
 import com.linroid.pushapp.service.DownloadService;
 import com.linroid.pushapp.ui.bind.BindActivity;
 import com.linroid.pushapp.ui.device.DeviceFragment;
+import com.linroid.pushapp.ui.device.SelectDeviceActivity;
 import com.linroid.pushapp.ui.home.HomeActivity;
 import com.linroid.pushapp.ui.pack.PackageFragment;
 
@@ -41,4 +42,5 @@ public interface AppComponent {
 
     void inject(HomeActivity activity);
 
+    void inject(SelectDeviceActivity activity);
 }
