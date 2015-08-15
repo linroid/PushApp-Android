@@ -38,9 +38,9 @@ public class Device implements Parcelable {
     private int width;
     @Expose
     private int dpi;
-    @SerializedName("device_id")
+    @SerializedName("unique_id")
     @Expose
-    private String deviceId;
+    private String uniqueId;
     @SerializedName("push_id")
     @Expose
     private String pushId;
@@ -179,17 +179,17 @@ public class Device implements Parcelable {
     }
 
     /**
-     * @return The deviceId
+     * @return The uniqueId
      */
-    public String getDeviceId() {
-        return deviceId;
+    public String getUniqueId() {
+        return uniqueId;
     }
 
     /**
-     * @param deviceId The device_id
+     * @param uniqueId The device_id
      */
-    public void setDeviceId(String deviceId) {
-        this.deviceId = deviceId;
+    public void setUniqueId(String uniqueId) {
+        this.uniqueId = uniqueId;
     }
 
     /**
@@ -315,7 +315,7 @@ public class Device implements Parcelable {
                 ", height=" + height +
                 ", width=" + width +
                 ", dpi=" + dpi +
-                ", deviceId='" + deviceId + '\'' +
+                ", uniqueId='" + uniqueId + '\'' +
                 ", pushId='" + pushId + '\'' +
                 ", memorySize=" + memorySize +
                 ", cpuType='" + cpuType + '\'' +
@@ -339,7 +339,7 @@ public class Device implements Parcelable {
         device.height       = Db.getInt(cursor, DB.COLUMN_HEIGHT);
         device.width        = Db.getInt(cursor, DB.COLUMN_WIDTH);
         device.dpi          = Db.getInt(cursor, DB.COLUMN_DPI);
-        device.deviceId     = Db.getString(cursor, DB.COLUMN_DEVICE_ID);
+        device.uniqueId = Db.getString(cursor, DB.COLUMN_UNIQUE_ID);
         device.pushId       = Db.getString(cursor, DB.COLUMN_PUSH_ID);
         device.memorySize   = Db.getInt(cursor, DB.COLUMN_MEMORY_SIZE);
         device.cpuType      = Db.getString(cursor, DB.COLUMN_CPU_TYPE);
@@ -359,7 +359,7 @@ public class Device implements Parcelable {
         values.put(DB.COLUMN_HEIGHT, height);
         values.put(DB.COLUMN_WIDTH, width);
         values.put(DB.COLUMN_DPI, dpi);
-        values.put(DB.COLUMN_DEVICE_ID, deviceId);
+        values.put(DB.COLUMN_UNIQUE_ID, uniqueId);
         values.put(DB.COLUMN_PUSH_ID, pushId);
         values.put(DB.COLUMN_MEMORY_SIZE, memorySize);
         values.put(DB.COLUMN_CPU_TYPE, cpuType);
@@ -379,7 +379,7 @@ public class Device implements Parcelable {
         private int height;
         private int width;
         private int dpi;
-        private String deviceId;
+        private String uniqueId;
         private String pushId;
         private long memorySize;
         private String cpuType;
@@ -436,8 +436,8 @@ public class Device implements Parcelable {
             return this;
         }
 
-        public DeviceBuilder withDeviceId(String deviceId) {
-            this.deviceId = deviceId;
+        public DeviceBuilder withUniqueId(String uniqueId) {
+            this.uniqueId = uniqueId;
             return this;
         }
 
@@ -482,7 +482,7 @@ public class Device implements Parcelable {
         }
 
         public DeviceBuilder but() {
-            return aDevice().withId(id).withModel(model).withAlias(alias).withSdkLevel(sdkLevel).withOsName(osName).withHeight(height).withWidth(width).withDpi(dpi).withDeviceId(deviceId).withMemorySize(memorySize).withCpuType(cpuType).withToken(token).withNetworkType(networkType).withUserId(userId).withCreatedAt(createdAt).withUpdatedAt(updatedAt);
+            return aDevice().withId(id).withModel(model).withAlias(alias).withSdkLevel(sdkLevel).withOsName(osName).withHeight(height).withWidth(width).withDpi(dpi).withUniqueId(uniqueId).withMemorySize(memorySize).withCpuType(cpuType).withToken(token).withNetworkType(networkType).withUserId(userId).withCreatedAt(createdAt).withUpdatedAt(updatedAt);
         }
 
         public Device build() {
@@ -495,7 +495,7 @@ public class Device implements Parcelable {
             device.setHeight(height);
             device.setWidth(width);
             device.setDpi(dpi);
-            device.setDeviceId(deviceId);
+            device.setUniqueId(uniqueId);
             device.setPushId(pushId);
             device.setMemorySize(memorySize);
             device.setCpuType(cpuType);
@@ -522,7 +522,7 @@ public class Device implements Parcelable {
         dest.writeInt(this.height);
         dest.writeInt(this.width);
         dest.writeInt(this.dpi);
-        dest.writeString(this.deviceId);
+        dest.writeString(this.uniqueId);
         dest.writeString(this.pushId);
         dest.writeLong(this.memorySize);
         dest.writeString(this.cpuType);
@@ -542,7 +542,7 @@ public class Device implements Parcelable {
         this.height = in.readInt();
         this.width = in.readInt();
         this.dpi = in.readInt();
-        this.deviceId = in.readString();
+        this.uniqueId = in.readString();
         this.pushId = in.readString();
         this.memorySize = in.readLong();
         this.cpuType = in.readString();
@@ -575,9 +575,7 @@ public class Device implements Parcelable {
         public static final String COLUMN_HEIGHT = "height";
         public static final String COLUMN_WIDTH = "width";
         public static final String COLUMN_DPI = "dpi";
-        //TODO rename for conflict
-        public static final String COLUMN_DEVICE_ID = "device_id";
-        //TODO rename for conflict
+        public static final String COLUMN_UNIQUE_ID = "unique_id";
         public static final String COLUMN_PUSH_ID = "push_id";
         public static final String COLUMN_MEMORY_SIZE = "memory_size";
         public static final String COLUMN_CPU_TYPE = "cpu_type";
@@ -596,7 +594,7 @@ public class Device implements Parcelable {
                 + COLUMN_HEIGHT + " TEXT NOT NULL,"
                 + COLUMN_WIDTH + " INTEGER NOT NULL,"
                 + COLUMN_DPI + " INTEGER NOT NULL,"
-                + COLUMN_DEVICE_ID + " TEXT NOT NULL,"
+                + COLUMN_UNIQUE_ID + " TEXT NOT NULL,"
                 + COLUMN_PUSH_ID + " TEXT NOT NULL,"
                 + COLUMN_MEMORY_SIZE + " INTEGER NOT NULL,"
                 + COLUMN_CPU_TYPE + " TEXT NOT NULL,"

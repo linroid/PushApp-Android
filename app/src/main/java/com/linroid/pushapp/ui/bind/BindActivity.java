@@ -1,16 +1,13 @@
 package com.linroid.pushapp.ui.bind;
 
-import android.app.ActivityManager;
 import android.app.ProgressDialog;
 import android.content.Intent;
-import android.graphics.Point;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v4.view.MenuItemCompat;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Button;
@@ -40,7 +37,6 @@ import hugo.weaving.DebugLog;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
-import timber.log.Timber;
 
 public class BindActivity extends BaseActivity {
     public static final String ARG_BIND_TOKEN = "bind_token";
@@ -219,7 +215,7 @@ public class BindActivity extends BaseActivity {
                 .withWidth(metrics.widthPixels)
                 .withMemorySize(AndroidUtil.totalMemorySize())
                 .withToken(bindToken)
-                .withDeviceId(DeviceUtil.id(this))
+                .withUniqueId(DeviceUtil.id(this))
                 .withPushId(JPushInterface.getRegistrationID(this))
                 .build();
     }
