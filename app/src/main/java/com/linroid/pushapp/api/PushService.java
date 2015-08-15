@@ -16,11 +16,11 @@ import retrofit.mime.TypedString;
 /**
  * Created by linroid on 8/14/15.
  */
-public interface InstallService {
-    @POST("/install")
+public interface PushService {
+    @POST("/push")
     @FormUrlEncoded
-    void pushPackage(@Field("devices") String deviceIds, Callback<Push> callback);
+    void installPackage(@Field("devices") String deviceIds, Callback<Push> callback);
     @Multipart
-    @PUT("/install")
-    User pushInstalledApplication( @Part("devices") TypedString deviceIds, @Part("file") TypedFile apk, Callback<Push> callback);
+    @PUT("/push")
+    User installLocal(@Part("devices") TypedString deviceIds, @Part("file") TypedFile apk, Callback<Push> callback);
 }

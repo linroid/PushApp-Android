@@ -12,7 +12,7 @@ import android.widget.Toast;
 
 import com.linroid.pushapp.App;
 import com.linroid.pushapp.R;
-import com.linroid.pushapp.api.InstallService;
+import com.linroid.pushapp.api.PushService;
 import com.linroid.pushapp.model.Pack;
 import com.linroid.pushapp.model.Push;
 import com.linroid.pushapp.ui.base.BaseActivity;
@@ -34,7 +34,7 @@ public class SelectDeviceActivity extends BaseActivity {
     @Inject
     BriteDatabase db;
     @Inject
-    InstallService installApi;
+    PushService installApi;
 
     public static void selectForPackage(Activity source, Pack pack) {
         Intent intent = new Intent(source, SelectDeviceActivity.class);
@@ -101,7 +101,7 @@ public class SelectDeviceActivity extends BaseActivity {
             return;
         }
         Snackbar.make(btn, getString(R.string.msg_push_install_package, selectedIds.size()), Snackbar.LENGTH_SHORT).show();
-        installApi.pushPackage(TextUtils.join(",", selectedIds.toArray()), new Callback<Push>() {
+        installApi.installPackage(TextUtils.join(",", selectedIds.toArray()), new Callback<Push>() {
 
             @Override
             public void success(Push push, Response response) {

@@ -2,7 +2,7 @@ package com.linroid.pushapp.module;
 
 import com.linroid.pushapp.api.AuthService;
 import com.linroid.pushapp.api.DeviceService;
-import com.linroid.pushapp.api.InstallService;
+import com.linroid.pushapp.api.PushService;
 import com.linroid.pushapp.api.PackageService;
 
 import dagger.Module;
@@ -27,7 +27,7 @@ public class ApiModule {
         return adapter.create(AuthService.class);
     }
     @Provides
-    InstallService provideInstall(RestAdapter adapter) {
-        return adapter.create(InstallService.class);
+    PushService provideInstall(RestAdapter adapter) {
+        return adapter.create(PushService.class);
     }
 }
