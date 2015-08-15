@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 
 import com.linroid.pushapp.ui.base.RefreshableFragment;
+import com.linroid.pushapp.ui.push.PushActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,13 +16,24 @@ import java.util.List;
 /**
  * 显示本地的App列表,Debuggable 模式的App的将会显示在前面
  */
-public class AppFragment extends RefreshableFragment {
+public class AppFragment extends RefreshableFragment implements AppAdapter.OnActionListener {
     AppAdapter adapter;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         adapter = new AppAdapter();
+        adapter.setListener(this);
+        refresh();
+    }
+
+    @Override
+    public RecyclerView.Adapter<? extends RecyclerView.ViewHolder> getAdapter() {
+        return adapter;
+    }
+
+    @Override
+    public void loadData(int page) {
         PackageManager pm = getActivity().getPackageManager();
         List<ApplicationInfo> packages = pm.getInstalledApplications(PackageManager.GET_META_DATA);
 
@@ -40,15 +52,9 @@ public class AppFragment extends RefreshableFragment {
         adapter.setData(debuggablePackages);
     }
 
-    @Override
-    public RecyclerView.Adapter<? extends RecyclerView.ViewHolder> getAdapter() {
-        return adapter;
-    }
 
     @Override
-    public void loadData(int page) {
-
+    public void onSend(ApplicationInfo info) {
+        PushActivity.selectForPackage(getActivity(), info);
     }
-
-
 }

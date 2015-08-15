@@ -1,7 +1,9 @@
 package com.linroid.pushapp.ui.base;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 
@@ -18,6 +20,12 @@ public abstract class BaseActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(provideContentViewId());
         ButterKnife.bind(this);
+        ActionBar actionBar = getSupportActionBar();
+        Intent parent = NavUtils.getParentActivityIntent(this);
+        if (parent != null) {
+            actionBar.setDisplayHomeAsUpEnabled(true);
+            actionBar.setDisplayShowHomeEnabled(true);
+        }
     }
 
     protected abstract int provideContentViewId();

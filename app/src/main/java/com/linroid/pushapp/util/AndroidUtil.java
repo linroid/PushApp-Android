@@ -18,6 +18,7 @@ import android.text.TextUtils;
 import android.text.format.DateUtils;
 import android.util.Log;
 import android.view.Display;
+import android.webkit.MimeTypeMap;
 
 import com.linroid.pushapp.BuildConfig;
 
@@ -263,5 +264,19 @@ public class AndroidUtil {
         } catch (IOException e) {
             return -1;
         }
+    }
+
+    /**
+     * 获得文件MimeType
+     * @param filePath
+     * @return
+     */
+    public static String getMimeType(String filePath) {
+        String type = null;
+        String extension = MimeTypeMap.getFileExtensionFromUrl(filePath);
+        if (extension != null) {
+            type = MimeTypeMap.getSingleton().getMimeTypeFromExtension(extension);
+        }
+        return type;
     }
 }

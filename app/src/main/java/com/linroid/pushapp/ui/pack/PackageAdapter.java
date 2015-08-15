@@ -142,7 +142,7 @@ public class PackageAdapter extends DataAdapter<Pack, PackageAdapter.PackageHold
                                     case R.id.action_uninstall:
                                         listener.onUninstall(pack);
                                         break;
-                                    case R.id.action_send_to_others:
+                                    case R.id.action_send_package:
                                         listener.onSend(pack);
                                         break;
                                     case R.id.action_download:

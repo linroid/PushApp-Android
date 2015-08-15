@@ -5,13 +5,17 @@ import android.content.pm.PackageManager;
 import android.graphics.drawable.Drawable;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.PopupMenu;
 import android.widget.TextView;
 
 import com.linroid.pushapp.R;
 import com.linroid.pushapp.ui.base.DataAdapter;
+import com.linroid.pushapp.ui.pack.PackageAdapter;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -20,6 +24,11 @@ import butterknife.ButterKnife;
  * Created by linroid on 7/20/15.
  */
 public class AppAdapter extends DataAdapter<ApplicationInfo, AppAdapter.AppHolder> {
+    OnActionListener listener;
+
+    public void setListener(OnActionListener listener) {
+        this.listener = listener;
+    }
 
     @Override
     public AppHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
@@ -51,6 +60,24 @@ public class AppAdapter extends DataAdapter<ApplicationInfo, AppAdapter.AppHolde
 
         @Override
         public void onClick(View v) {
+            final PopupMenu popupMenu = new PopupMenu(v.getContext(), appNameTV);
+            Menu menu = popupMenu.getMenu();
+            popupMenu.getMenuInflater().inflate(R.menu.item_app, menu);
+            popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                @Override
+                public boolean onMenuItemClick(MenuItem item) {
+                    if (listener != null && item.getItemId()==R.id.action_send_app) {
+                        ApplicationInfo info = data.get(getAdapterPosition());
+                        listener.onSend(info);
+                        return true;
+                    }
+                    return false;
+                }
+            });
+            popupMenu.show();
         }
+    }
+    public interface OnActionListener {
+        void onSend(ApplicationInfo info);
     }
 }

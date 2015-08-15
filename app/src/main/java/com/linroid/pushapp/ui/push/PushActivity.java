@@ -1,11 +1,14 @@
-package com.linroid.pushapp.ui.device;
+package com.linroid.pushapp.ui.push;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Intent;
+import android.content.pm.ApplicationInfo;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.text.TextUtils;
+import android.text.format.Formatter;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -15,32 +18,50 @@ import com.linroid.pushapp.api.PushService;
 import com.linroid.pushapp.model.Pack;
 import com.linroid.pushapp.model.Push;
 import com.linroid.pushapp.ui.base.BaseActivity;
+import com.linroid.pushapp.ui.device.DeviceFragment;
 import com.linroid.pushapp.ui.home.HomeActivity;
+import com.linroid.pushapp.util.AndroidUtil;
+import com.linroid.pushapp.util.CountingTypedFile;
 import com.squareup.sqlbrite.BriteDatabase;
 
+import java.io.File;
 import java.util.List;
 
 import javax.inject.Inject;
 
+import butterknife.Bind;
 import butterknife.OnClick;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
+import retrofit.mime.TypedFile;
+import retrofit.mime.TypedString;
 
-public class SelectDeviceActivity extends BaseActivity {
+public class PushActivity extends BaseActivity
+        implements Callback<Push>,CountingTypedFile.ProgressListener {
     public static final String EXTRA_PACKAGE = "package";
-    public static final String EXTRA_APPLICATION = "application";
+    public static final String EXTRA_APPLICATION_INFO = "application";
     public static final int REQUEST_PUSH = 0x9999;
     private OnSelectListener selectListener;
     @Inject
-    BriteDatabase db;
-    @Inject
     PushService installApi;
+    @Bind(R.id.fab_complete)
+    FloatingActionButton completeBtn;
+
     Pack pack;
+    ApplicationInfo appInfo;
+
+    ProgressDialog dialog;
+
 
     public static void selectForPackage(Activity source, Pack pack) {
-        Intent intent = new Intent(source, SelectDeviceActivity.class);
+        Intent intent = new Intent(source, PushActivity.class);
         intent.putExtra(EXTRA_PACKAGE, pack);
+        source.startActivityForResult(intent, REQUEST_PUSH);
+    }
+    public static void selectForPackage(Activity source, ApplicationInfo info) {
+        Intent intent = new Intent(source, PushActivity.class);
+        intent.putExtra(EXTRA_APPLICATION_INFO, info);
         source.startActivityForResult(intent, REQUEST_PUSH);
     }
 
@@ -50,7 +71,15 @@ public class SelectDeviceActivity extends BaseActivity {
         Intent intent = getIntent();
         if (intent.hasExtra(EXTRA_PACKAGE)) {
             this.pack = intent.getParcelableExtra(EXTRA_PACKAGE);
+        } else if(intent.hasExtra(EXTRA_APPLICATION_INFO)) {
+            this.appInfo = intent.getParcelableExtra(EXTRA_APPLICATION_INFO);
+        } else {
+            throw new IllegalArgumentException("EXTRA_PACKAGE or EXTRA_APPLICATION_INFO extra data required");
         }
+        dialog = new ProgressDialog(this);
+        dialog.setMessage(getString(R.string.msg_upload_progress));
+        dialog.setMax(100);
+        dialog.setCancelable(false);
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.container, new DeviceFragment())
                 .commit();
@@ -107,24 +136,40 @@ public class SelectDeviceActivity extends BaseActivity {
         }
         Snackbar.make(btn, getString(R.string.msg_push_install_package, selectedIds.size()), Snackbar.LENGTH_SHORT).show();
 
-        Callback<Push> callback = new Callback<Push>() {
-
-            @Override
-            public void success(Push push, Response response) {
-                Intent intent = getIntent();
-                intent.putExtra(HomeActivity.EXTRA_MESSAGE, "推送成功!");
-                setResult(RESULT_OK, intent);
-                finish();
-            }
-
-            @Override
-            public void failure(RetrofitError error) {
-                Snackbar.make(btn, error.getMessage(), Snackbar.LENGTH_SHORT).show();
-            }
-        };
+        String deviceIds = TextUtils.join(",", selectedIds.toArray());
         if (pack != null) {
-            installApi.installPackage(TextUtils.join(",", selectedIds.toArray()), pack.getId(), callback);
+            installApi.installPackage(deviceIds, pack.getId(), this);
+        } else {
+            File apkFile = new File(appInfo.sourceDir);
+            TypedFile typedFile = new CountingTypedFile(AndroidUtil.getMimeType(appInfo.sourceDir),
+                    apkFile,
+                    this);
+            dialog.setIndeterminate(false);
+            dialog.show();
+            installApi.installLocal(new TypedString(deviceIds), typedFile, this);
         }
+    }
+
+    @Override
+    public void success(Push push, Response response) {
+        Intent intent = getIntent();
+        intent.putExtra(HomeActivity.EXTRA_MESSAGE, getString(R.string.msg_push_success));
+        setResult(RESULT_OK, intent);
+        dialog.dismiss();
+        finish();
+    }
+
+    @Override
+    public void failure(RetrofitError error) {
+        dialog.dismiss();
+        Snackbar.make(completeBtn, error.getMessage(), Snackbar.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onProgress(long total, long uploaded) {
+        dialog.setMessage(getString(R.string.msg_upload_progress,
+                Formatter.formatShortFileSize(this, uploaded),
+                Formatter.formatShortFileSize(this, total)));
     }
 
     public interface OnSelectListener {

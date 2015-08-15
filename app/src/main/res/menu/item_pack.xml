@@ -4,6 +4,6 @@
     <item android:title="@string/action_download" android:id="@+id/action_download"/>
     <item android:title="@string/action_install" android:id="@+id/action_install"/>
     <item android:title="@string/action_uninstall" android:id="@+id/action_uninstall"/>
-    <item android:title="@string/action_send_to_others" android:id="@+id/action_send_to_others"/>
+    <item android:title="@string/action_send_to_others" android:id="@+id/action_send_package"/>
     <item android:title="@android:string/cancel" android:id="@+id/action_cancel"/>
 </menu>

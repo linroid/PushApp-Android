@@ -15,6 +15,7 @@ import android.widget.TextView;
 import com.linroid.pushapp.R;
 import com.linroid.pushapp.model.Device;
 import com.linroid.pushapp.ui.base.DataAdapter;
+import com.linroid.pushapp.ui.push.PushActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,14 +26,14 @@ import butterknife.ButterKnife;
 /**
  * Created by linroid on 7/20/15.
  */
-public class DeviceAdapter extends DataAdapter<Device, DeviceAdapter.DeviceHolder> implements SelectDeviceActivity.OnSelectListener {
+public class DeviceAdapter extends DataAdapter<Device, DeviceAdapter.DeviceHolder> implements PushActivity.OnSelectListener {
     SparseArray<Boolean> deviceSelectStatus;
     boolean selectMode = false;
 
     public DeviceAdapter(Activity activity) {
         deviceSelectStatus = new SparseArray<>();
-        if (activity instanceof SelectDeviceActivity) {
-            ((SelectDeviceActivity) activity).setSelectListener(this);
+        if (activity instanceof PushActivity) {
+            ((PushActivity) activity).setSelectListener(this);
             selectMode = true;
         }
     }

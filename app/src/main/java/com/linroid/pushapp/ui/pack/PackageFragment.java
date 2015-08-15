@@ -13,7 +13,7 @@ import com.linroid.pushapp.model.Pagination;
 import com.linroid.pushapp.service.ApkAutoInstallService;
 import com.linroid.pushapp.service.DownloadService;
 import com.linroid.pushapp.ui.base.RefreshableFragment;
-import com.linroid.pushapp.ui.device.SelectDeviceActivity;
+import com.linroid.pushapp.ui.push.PushActivity;
 import com.linroid.pushapp.util.AndroidUtil;
 import com.squareup.picasso.Picasso;
 import com.squareup.sqlbrite.BriteDatabase;
@@ -30,7 +30,6 @@ import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
-import timber.log.Timber;
 
 public class PackageFragment extends RefreshableFragment implements PackageAdapter.OnActionListener {
     public static final String STATE_PACKAGE = "package";
@@ -179,7 +178,7 @@ public class PackageFragment extends RefreshableFragment implements PackageAdapt
 
     @Override
     public void onSend(Pack pack) {
-        SelectDeviceActivity.selectForPackage(getActivity(), pack);
+        PushActivity.selectForPackage(getActivity(), pack);
     }
 
     @Override

@@ -46,8 +46,8 @@ import butterknife.ButterKnife;
 import timber.log.Timber;
 
 public class HomeActivity extends BaseActivity {
-
     public static final String EXTRA_MESSAGE = "message";
+    private static final String STATE_PAGER_POSITION = "pager_position";
     @Bind(R.id.tabLayout)
     TabLayout tabLayout;
     @Bind(R.id.viewpager)
@@ -68,20 +68,24 @@ public class HomeActivity extends BaseActivity {
         if (toolbar != null) {
             setSupportActionBar(toolbar);
             ViewCompat.setElevation(toolbar, 0);
-            ActionBar actionBar = getSupportActionBar();
-            Intent parent = NavUtils.getParentActivityIntent(this);
-            if (parent != null) {
-                actionBar.setDisplayHomeAsUpEnabled(true);
-                actionBar.setDisplayShowHomeEnabled(true);
-            }
         }
         ButterKnife.bind(this);
         pager.setAdapter(new HomePagerAdapter(getSupportFragmentManager()));
         tabLayout.setupWithViewPager(pager);
+        if(savedInstanceState!=null){
+            int pagerPosition = savedInstanceState.getInt(STATE_PAGER_POSITION);
+            pager.setCurrentItem(pagerPosition);
+        }
 
 //        if(Build.VERSION.SDK_INT >= 21) {
 //            setTaskDescriptionColor();
 //        }
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putInt(STATE_PAGER_POSITION, pager.getCurrentItem());
     }
 
     private void checkAutoInstall() {
@@ -133,8 +137,10 @@ public class HomeActivity extends BaseActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(data.hasExtra(EXTRA_MESSAGE)) {
-            Snackbar.make(pager, data.getStringExtra(EXTRA_MESSAGE), Snackbar.LENGTH_SHORT).show();
+        if(resultCode==RESULT_OK ) {
+            if (data!=null && data.hasExtra(EXTRA_MESSAGE)) {
+                Snackbar.make(pager, data.getStringExtra(EXTRA_MESSAGE), Snackbar.LENGTH_SHORT).show();
+            }
         }
     }
 
