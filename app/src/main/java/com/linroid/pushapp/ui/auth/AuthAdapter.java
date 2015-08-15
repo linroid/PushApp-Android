@@ -1,6 +1,8 @@
 package com.linroid.pushapp.ui.auth;
 
+import android.content.DialogInterface;
 import android.content.res.Resources;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,7 +13,6 @@ import android.widget.TextView;
 
 import com.linroid.pushapp.R;
 import com.linroid.pushapp.model.Auth;
-import com.linroid.pushapp.model.User;
 import com.linroid.pushapp.ui.base.DataAdapter;
 import com.linroid.pushapp.util.AndroidUtil;
 import com.squareup.picasso.Picasso;
@@ -24,11 +25,15 @@ import butterknife.OnClick;
  * Created by linroid on 8/15/15.
  */
 public class AuthAdapter extends DataAdapter<Auth, AuthAdapter.AuthHolder> {
-
     Picasso picasso;
+    OnActionListener listener;
 
     public AuthAdapter(Picasso picasso) {
         this.picasso = picasso;
+    }
+
+    public void setListener(OnActionListener listener) {
+        this.listener = listener;
     }
 
     @Override
@@ -63,10 +68,28 @@ public class AuthAdapter extends DataAdapter<Auth, AuthAdapter.AuthHolder> {
             super(itemView);
             ButterKnife.bind(this, itemView);
         }
+
         @OnClick(R.id.revoke_btn)
         void onRevokeBtnClicked(Button btn) {
-
+            if (listener != null) {
+                final Auth auth = data.get(getAdapterPosition());
+                new AlertDialog.Builder(btn.getContext())
+                        .setTitle(btn.getResources().getString(R.string.msg_dialog_title_revoke))
+                        .setMessage(btn.getResources().getString(R.string.msg_dialog_content_revoke, auth.getUser().getNickname()))
+                        .setNegativeButton(android.R.string.cancel, null)
+                        .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                                listener.onRevoke(getAdapterPosition(), auth);
+                            }
+                        }).show();
+            }
         }
+    }
+
+    public interface OnActionListener {
+        void onRevoke(int position, Auth auth);
     }
 
 }

@@ -1,9 +1,6 @@
 package com.linroid.pushapp.ui.base;
 
 import android.support.v7.widget.RecyclerView;
-import android.view.ViewGroup;
-
-import com.linroid.pushapp.model.Push;
 
 import java.util.List;
 
@@ -17,24 +14,37 @@ public abstract class DataAdapter<T, VH extends RecyclerView.ViewHolder> extends
     protected List<T> data;
 
 
-    public void setData(List<T> data){
+    public void setData(List<T> data) {
         this.data = data;
         notifyDataSetChanged();
     }
-    public void insertItem(int location, T item){
+
+    public void insertItem(int location, T item) {
         data.add(location, item);
         notifyItemInserted(location);
     }
-    public void insertItem(T item){
+
+    public void insertItem(T item) {
         data.add(this.data.size(), item);
     }
-    public void set(int location, T item){
+
+    public void set(int location, T item) {
         data.set(location, item);
         notifyItemChanged(location);
     }
-    public void delete(int location){
-        data.remove(location);
-        notifyItemRemoved(location);
+
+    public void remove(int position) {
+        data.remove(position);
+        notifyItemRemoved(position);
+    }
+
+    public void removeItem(T item) {
+        for (int i=0; i<=this.data.size(); i++) {
+            if(data.get(i)==item) {
+                data.remove(i);
+                notifyItemRemoved(i);
+            }
+        }
     }
 
     @Override
@@ -46,7 +56,7 @@ public abstract class DataAdapter<T, VH extends RecyclerView.ViewHolder> extends
 
     @Override
     public int getItemCount() {
-        return data==null ? 0 : data.size();
+        return data == null ? 0 : data.size();
     }
 
     public List<T> getData() {

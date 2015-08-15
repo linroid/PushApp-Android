@@ -4,11 +4,14 @@ import com.linroid.pushapp.model.Auth;
 import com.linroid.pushapp.model.Binding;
 import com.linroid.pushapp.model.Device;
 import com.linroid.pushapp.model.Pagination;
+import com.squareup.okhttp.Call;
 
 import retrofit.Callback;
 import retrofit.http.Body;
+import retrofit.http.DELETE;
 import retrofit.http.GET;
 import retrofit.http.POST;
+import retrofit.http.Path;
 import retrofit.http.Query;
 import rx.Observable;
 
@@ -27,4 +30,7 @@ public interface AuthService {
 
     @GET("/auth")
     Observable<Pagination<Auth>> listAuth(@Query("page") int page);
+
+    @DELETE("/auth/{id}")
+    void revoke(@Path("id") int id, Callback<Void> callback);
 }

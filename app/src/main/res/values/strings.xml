@@ -48,4 +48,7 @@
     <string name="msg_install_complete">%s 安装完成</string>
     <string name="msg_upload_complete">请稍等…</string>
     <string name="txt_auth_time">授权时间: %s</string>
+    <string name="msg_revoke_progress">请求中...</string>
+    <string name="msg_dialog_content_revoke">收回后,%s将无法再向本设备安装应用</string>
+    <string name="msg_dialog_title_revoke">确定要收回吗？</string>
 </resources>
