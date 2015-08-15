@@ -36,7 +36,6 @@ import retrofit.client.Response;
 import retrofit.mime.TypedString;
 import rx.Subscriber;
 import rx.Subscription;
-import rx.android.app.AppObservable;
 
 public class PushActivity extends BaseActivity
         implements Callback<Push> {
@@ -148,7 +147,7 @@ public class PushActivity extends BaseActivity
             typedFile.subscribe(new Subscriber<Pair<Long, Long>>() {
                 @Override
                 public void onCompleted() {
-                    dialog.setMessage(getString(R.string.msg_upload_compelete));
+                    dialog.setMessage(getString(R.string.msg_upload_complete));
                 }
 
                 @Override

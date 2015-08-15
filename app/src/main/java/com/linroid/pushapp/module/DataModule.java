@@ -6,7 +6,6 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.net.Uri;
-import android.text.TextUtils;
 
 import com.facebook.stetho.okhttp.StethoInterceptor;
 import com.google.gson.Gson;
@@ -14,11 +13,10 @@ import com.linroid.pushapp.BuildConfig;
 import com.linroid.pushapp.Constants;
 import com.linroid.pushapp.R;
 import com.linroid.pushapp.database.DbOpenHelper;
-import com.linroid.pushapp.model.Authorization;
+import com.linroid.pushapp.model.Binding;
 import com.linroid.pushapp.model.Error;
 import com.linroid.pushapp.module.identifier.DataCacheDir;
 import com.linroid.pushapp.module.identifier.HttpCacheDir;
-import com.linroid.pushapp.util.StringPreference;
 import com.squareup.okhttp.Cache;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.internal.DiskLruCache;
@@ -32,7 +30,6 @@ import com.squareup.sqlbrite.SqlBrite;
 import java.io.File;
 import java.util.concurrent.TimeUnit;
 
-import javax.inject.Named;
 import javax.inject.Singleton;
 
 import dagger.Module;
@@ -97,7 +94,7 @@ public class DataModule {
     @Provides
     @Singleton
     RestAdapter provideRestAdapter(Gson gson, OkHttpClient okHttpClient,
-                                   final Authorization auth,
+                                   final Binding auth,
                                    ErrorHandler errorHandler) {
         return new RestAdapter.Builder()
                 .setErrorHandler(errorHandler)

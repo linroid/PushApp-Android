@@ -21,7 +21,7 @@ import timber.log.Timber;
 /**
  * Created by linroid on 7/25/15.
  */
-public class Authorization implements Parcelable {
+public class Binding implements Parcelable {
     @Expose
     private Device device;
     @Expose
@@ -78,13 +78,13 @@ public class Authorization implements Parcelable {
         return true;
     }
 
-    public static Authorization readFromFile(Context context) {
+    public static Binding readFromFile(Context context) {
         File saveFile = new File(context.getFilesDir(), "auth.json");
-        Authorization auth = null;
+        Binding auth = null;
         try {
             Reader reader = new FileReader(saveFile);
             Gson gson = new Gson();
-            auth = gson.fromJson(reader, Authorization.class);
+            auth = gson.fromJson(reader, Binding.class);
         } catch (FileNotFoundException e) {
             Timber.e("read auth info from file fail", e);
         }
@@ -93,14 +93,14 @@ public class Authorization implements Parcelable {
 
     @Override
     public String toString() {
-        return "Authorization{" +
+        return "Binding{" +
                 "device=" + device +
                 ", user=" + user +
                 ", token='" + token + '\'' +
                 '}';
     }
 
-    public Authorization() {
+    public Binding() {
     }
 
     @Override
@@ -115,19 +115,19 @@ public class Authorization implements Parcelable {
         dest.writeString(this.token);
     }
 
-    protected Authorization(Parcel in) {
+    protected Binding(Parcel in) {
         this.device = in.readParcelable(Device.class.getClassLoader());
         this.user = in.readParcelable(User.class.getClassLoader());
         this.token = in.readString();
     }
 
-    public static final Creator<Authorization> CREATOR = new Creator<Authorization>() {
-        public Authorization createFromParcel(Parcel source) {
-            return new Authorization(source);
+    public static final Creator<Binding> CREATOR = new Creator<Binding>() {
+        public Binding createFromParcel(Parcel source) {
+            return new Binding(source);
         }
 
-        public Authorization[] newArray(int size) {
-            return new Authorization[size];
+        public Binding[] newArray(int size) {
+            return new Binding[size];
         }
     };
 }

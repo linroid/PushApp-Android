@@ -5,6 +5,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
 import com.linroid.pushapp.ui.app.AppFragment;
+import com.linroid.pushapp.ui.auth.AuthFragment;
 import com.linroid.pushapp.ui.device.DeviceFragment;
 import com.linroid.pushapp.ui.pack.PackageFragment;
 
@@ -28,7 +29,7 @@ public class HomePagerAdapter extends FragmentPagerAdapter {
                 break;
             case 2:
             default:
-                fragment = new DeviceFragment();
+                fragment = new AuthFragment();
                 break;
         }
         return fragment;
@@ -51,7 +52,7 @@ public class HomePagerAdapter extends FragmentPagerAdapter {
                 break;
             case 2:
             default:
-                title = "设备";
+                title = "授权";
                 break;
         }
         return title;

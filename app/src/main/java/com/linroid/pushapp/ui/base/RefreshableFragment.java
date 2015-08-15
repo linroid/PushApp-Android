@@ -59,7 +59,10 @@ public abstract class RefreshableFragment extends Fragment
 
     public abstract void loadData(int page);
 
-    protected void refresh() {
+    /**
+     * 强制刷新
+     */
+    protected void forceRefresh() {
         onRefresh(false);
     }
 }

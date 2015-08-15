@@ -20,7 +20,7 @@ import com.linroid.pushapp.App;
 import com.linroid.pushapp.BuildConfig;
 import com.linroid.pushapp.R;
 import com.linroid.pushapp.api.AuthService;
-import com.linroid.pushapp.model.Authorization;
+import com.linroid.pushapp.model.Binding;
 import com.linroid.pushapp.model.Device;
 import com.linroid.pushapp.model.User;
 import com.linroid.pushapp.ui.base.BaseActivity;
@@ -53,7 +53,7 @@ public class BindActivity extends BaseActivity {
     @Inject
     AuthService authApi;
     @Inject
-    Authorization auth;
+    Binding auth;
 
     private String bindToken;
     private boolean showProgress = false;
@@ -147,10 +147,10 @@ public class BindActivity extends BaseActivity {
         dialog.setMessage(getString(R.string.msg_dialog_bind));
         dialog.setCancelable(false);
         dialog.show();
-        authApi.bindDevice(bindToken, queryAndBuildDeviceInfo(), new Callback<Authorization>() {
+        authApi.bindDevice(bindToken, queryAndBuildDeviceInfo(), new Callback<Binding>() {
             @Override
             @DebugLog
-            public void success(Authorization authInfo, Response response) {
+            public void success(Binding authInfo, Response response) {
                 authInfo.saveToFile(getApplicationContext());
                 Device device = authInfo.getDevice();
                 User user = authInfo.getUser();

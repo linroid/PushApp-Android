@@ -24,7 +24,7 @@ public class AppFragment extends RefreshableFragment implements AppAdapter.OnAct
         super.onCreate(savedInstanceState);
         adapter = new AppAdapter();
         adapter.setListener(this);
-        refresh();
+        forceRefresh();
     }
 
     @Override

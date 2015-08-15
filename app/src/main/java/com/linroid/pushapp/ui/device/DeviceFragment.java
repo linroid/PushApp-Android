@@ -11,9 +11,7 @@ import android.widget.Toast;
 import com.linroid.pushapp.App;
 import com.linroid.pushapp.api.DeviceService;
 import com.linroid.pushapp.model.Device;
-import com.linroid.pushapp.model.Pack;
 import com.linroid.pushapp.model.Pagination;
-import com.linroid.pushapp.ui.base.DataAdapter;
 import com.linroid.pushapp.ui.base.RefreshableFragment;
 import com.squareup.sqlbrite.BriteDatabase;
 
@@ -29,7 +27,6 @@ import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
-import timber.log.Timber;
 
 
 public class DeviceFragment extends RefreshableFragment {
@@ -52,7 +49,7 @@ public class DeviceFragment extends RefreshableFragment {
                         .subscribeOn(Schedulers.io())
                         .subscribe(adapter)
         );
-        refresh();
+        forceRefresh();
     }
 
     @Override

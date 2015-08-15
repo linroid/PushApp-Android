@@ -1,17 +1,14 @@
 package com.linroid.pushapp.api;
 
-import com.linroid.pushapp.model.Authorization;
 import com.linroid.pushapp.model.Device;
 import com.linroid.pushapp.model.Pagination;
 
 import java.util.Map;
 
 import retrofit.Callback;
-import retrofit.http.Body;
 import retrofit.http.FieldMap;
 import retrofit.http.FormUrlEncoded;
 import retrofit.http.GET;
-import retrofit.http.POST;
 import retrofit.http.PUT;
 import retrofit.http.Path;
 import retrofit.http.Query;

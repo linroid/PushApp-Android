@@ -8,7 +8,7 @@ import android.content.res.Resources;
 
 import com.linroid.pushapp.App;
 import com.linroid.pushapp.Constants;
-import com.linroid.pushapp.model.Authorization;
+import com.linroid.pushapp.model.Binding;
 import com.linroid.pushapp.util.BooleanPreference;
 import com.linroid.pushapp.util.StringPreference;
 import com.squareup.leakcanary.LeakCanary;
@@ -92,10 +92,10 @@ public class AppModule {
 
     @Provides
     @Singleton
-    Authorization provideAuthorization(Context context) {
-        Authorization auth = Authorization.readFromFile(context);
+    Binding provideAuthorization(Context context) {
+        Binding auth = Binding.readFromFile(context);
         if(auth == null){
-            auth = new Authorization();
+            auth = new Binding();
         }
         return auth;
     }

@@ -8,6 +8,7 @@ import com.linroid.pushapp.receiver.PushReceiver;
 import com.linroid.pushapp.receiver.StatusChangedReceiver;
 import com.linroid.pushapp.service.ApkAutoInstallService;
 import com.linroid.pushapp.service.DownloadService;
+import com.linroid.pushapp.ui.auth.AuthFragment;
 import com.linroid.pushapp.ui.bind.BindActivity;
 import com.linroid.pushapp.ui.device.DeviceFragment;
 import com.linroid.pushapp.ui.push.PushActivity;
@@ -43,4 +44,6 @@ public interface AppComponent {
     void inject(HomeActivity activity);
 
     void inject(PushActivity activity);
+
+    void inject(AuthFragment fragment);
 }
