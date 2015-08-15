@@ -44,4 +44,5 @@
     <string name="msg_push_install_package">正在向%d台设备推送安装…</string>
     <string name="msg_push_success">推送成功!</string>
     <string name="msg_upload_progress" formatted="false">上传中…(%s/%s)</string>
+    <string name="msg_upload_prepare">准备上传中…</string>
 </resources>

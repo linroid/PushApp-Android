@@ -7,6 +7,7 @@ import android.content.pm.ApplicationInfo;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.util.Pair;
 import android.text.TextUtils;
 import android.text.format.Formatter;
 import android.view.Menu;
@@ -20,9 +21,7 @@ import com.linroid.pushapp.model.Push;
 import com.linroid.pushapp.ui.base.BaseActivity;
 import com.linroid.pushapp.ui.device.DeviceFragment;
 import com.linroid.pushapp.ui.home.HomeActivity;
-import com.linroid.pushapp.util.AndroidUtil;
 import com.linroid.pushapp.util.CountingTypedFile;
-import com.squareup.sqlbrite.BriteDatabase;
 
 import java.io.File;
 import java.util.List;
@@ -34,11 +33,13 @@ import butterknife.OnClick;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
-import retrofit.mime.TypedFile;
 import retrofit.mime.TypedString;
+import rx.Subscriber;
+import rx.Subscription;
+import rx.android.app.AppObservable;
 
 public class PushActivity extends BaseActivity
-        implements Callback<Push>,CountingTypedFile.ProgressListener {
+        implements Callback<Push> {
     public static final String EXTRA_PACKAGE = "package";
     public static final String EXTRA_APPLICATION_INFO = "application";
     public static final int REQUEST_PUSH = 0x9999;
@@ -52,13 +53,14 @@ public class PushActivity extends BaseActivity
     ApplicationInfo appInfo;
 
     ProgressDialog dialog;
-
+    Subscription subscription;
 
     public static void selectForPackage(Activity source, Pack pack) {
         Intent intent = new Intent(source, PushActivity.class);
         intent.putExtra(EXTRA_PACKAGE, pack);
         source.startActivityForResult(intent, REQUEST_PUSH);
     }
+
     public static void selectForPackage(Activity source, ApplicationInfo info) {
         Intent intent = new Intent(source, PushActivity.class);
         intent.putExtra(EXTRA_APPLICATION_INFO, info);
@@ -71,15 +73,16 @@ public class PushActivity extends BaseActivity
         Intent intent = getIntent();
         if (intent.hasExtra(EXTRA_PACKAGE)) {
             this.pack = intent.getParcelableExtra(EXTRA_PACKAGE);
-        } else if(intent.hasExtra(EXTRA_APPLICATION_INFO)) {
+        } else if (intent.hasExtra(EXTRA_APPLICATION_INFO)) {
             this.appInfo = intent.getParcelableExtra(EXTRA_APPLICATION_INFO);
         } else {
             throw new IllegalArgumentException("EXTRA_PACKAGE or EXTRA_APPLICATION_INFO extra data required");
         }
         dialog = new ProgressDialog(this);
-        dialog.setMessage(getString(R.string.msg_upload_progress));
+        dialog.setMessage(getString(R.string.msg_upload_prepare));
         dialog.setMax(100);
         dialog.setCancelable(false);
+        dialog.setIndeterminate(true);
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.container, new DeviceFragment())
                 .commit();
@@ -135,17 +138,31 @@ public class PushActivity extends BaseActivity
             return;
         }
         Snackbar.make(btn, getString(R.string.msg_push_install_package, selectedIds.size()), Snackbar.LENGTH_SHORT).show();
-
         String deviceIds = TextUtils.join(",", selectedIds.toArray());
         if (pack != null) {
             installApi.installPackage(deviceIds, pack.getId(), this);
         } else {
             File apkFile = new File(appInfo.sourceDir);
-            TypedFile typedFile = new CountingTypedFile(AndroidUtil.getMimeType(appInfo.sourceDir),
-                    apkFile,
-                    this);
-            dialog.setIndeterminate(false);
+            CountingTypedFile typedFile = new CountingTypedFile(apkFile);
             dialog.show();
+            typedFile.subscribe(new Subscriber<Pair<Long, Long>>() {
+                @Override
+                public void onCompleted() {
+                    dialog.dismiss();
+                }
+
+                @Override
+                public void onError(Throwable e) {
+                    dialog.dismiss();
+                }
+
+                @Override
+                public void onNext(Pair<Long, Long> pair) {
+                    dialog.setMessage(getString(R.string.msg_upload_progress,
+                            Formatter.formatShortFileSize(PushActivity.this, pair.second),
+                            Formatter.formatShortFileSize(PushActivity.this, pair.first)));
+                }
+            });
             installApi.installLocal(new TypedString(deviceIds), typedFile, this);
         }
     }
@@ -161,15 +178,15 @@ public class PushActivity extends BaseActivity
 
     @Override
     public void failure(RetrofitError error) {
-        dialog.dismiss();
         Snackbar.make(completeBtn, error.getMessage(), Snackbar.LENGTH_SHORT).show();
     }
 
     @Override
-    public void onProgress(long total, long uploaded) {
-        dialog.setMessage(getString(R.string.msg_upload_progress,
-                Formatter.formatShortFileSize(this, uploaded),
-                Formatter.formatShortFileSize(this, total)));
+    public void onDestroy() {
+        super.onDestroy();
+        if(subscription!=null && !subscription.isUnsubscribed()) {
+            subscription.unsubscribe();
+        }
     }
 
     public interface OnSelectListener {
