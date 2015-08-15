@@ -219,6 +219,23 @@ public class AndroidUtil {
         }
 
     }
+    /**
+     * 根据包名获得打开其他应用的Intent
+     *
+     * @param context
+     * @param packageName 包名
+     */
+    public static Intent getOpenAppIntent(Context context, String packageName) {
+        PackageManager pm = context.getPackageManager();
+        Intent intent = pm.getLaunchIntentForPackage(packageName);
+        if (intent != null) {
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        } else {
+            Timber.e("未找到包名为[%s]的应用", packageName);
+            return null;
+        }
+        return intent;
+    }
 
     /**
      * 获得屏幕真是高度

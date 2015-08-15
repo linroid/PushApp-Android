@@ -3,8 +3,13 @@ package com.linroid.pushapp.service;
 
 import android.accessibilityservice.AccessibilityService;
 import android.annotation.TargetApi;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Build.VERSION;
+import android.support.v4.app.NotificationCompat;
 import android.util.SparseArray;
 import android.view.KeyEvent;
 import android.view.accessibility.AccessibilityEvent;
@@ -15,9 +20,11 @@ import com.linroid.pushapp.BuildConfig;
 import com.linroid.pushapp.Constants;
 import com.linroid.pushapp.R;
 import com.linroid.pushapp.model.Pack;
+import com.linroid.pushapp.util.AndroidUtil;
 import com.linroid.pushapp.util.BooleanPreference;
 import com.linroid.pushapp.util.DeviceUtil;
 
+import java.io.File;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -57,6 +64,8 @@ public class ApkAutoInstallService extends AccessibilityService {
     @Inject
     @Named(Constants.SP_AUTO_OPEN)
     public BooleanPreference autoOpen;
+    @Inject
+    NotificationManager notificationManager;
 
     @Override
     public void onCreate() {
@@ -325,27 +334,53 @@ public class ApkAutoInstallService extends AccessibilityService {
                 Timber.d("成功打开？%s", openSuccess);
             }
             String label = validInfo.getText().toString();
-            removePackFromListByAppName(sInstallList, label);
+            removePackFromListByAppName(sInstallList, label, true);
             validInfo.recycle();
         }
+    }
+
+    private void removePackFromListByAppName(SparseArray<Pack> sInstallList, String label) {
+        removePackFromListByAppName(sInstallList, label, false);
     }
 
     /**
      * 通过应用名称从列表中移除
      * @param list 保存的列表
      * @param appName 应用名称
+     * @param becauseInstalled 是因为安装完成了才移除的
      */
-    private void removePackFromListByAppName(SparseArray<Pack> list, String appName) {
+    private void removePackFromListByAppName(SparseArray<Pack> list, String appName, boolean becauseInstalled) {
         for (int i = 0; i < list.size(); i++) {
             int key = list.keyAt(i);
             Pack pack = list.get(key);
             if (pack.getAppName().equals(appName)) {
                 sInstallList.remove(key);
+                if (becauseInstalled) {
+                    showInstalledNotification(pack);
+                }
+                break;
             }
         }
         if (sInstallList.size() == 0 && sUninstallList.size()==0) {
             enable = false;
         }
+    }
+
+    /**
+     * 显示安装完成的通知
+     * @param pack
+     */
+    private void showInstalledNotification(Pack pack) {
+        PendingIntent intent = PendingIntent.getActivity(this, 0, AndroidUtil.getOpenAppIntent(this, pack.getPackageName()), 0);
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this)
+                .setContentTitle(getString(R.string.msg_install_complete, pack.getAppName()))
+                .setSmallIcon(R.mipmap.ic_launcher)
+                .setAutoCancel(true)
+                .setContentIntent(intent)
+                .setContentText("v" + pack.getVersionName());
+
+        AndroidUtil.openApplication(this, pack.getPackageName());
+        notificationManager.notify(pack.getId(), builder.build());
     }
 
     /**

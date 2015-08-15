@@ -148,12 +148,11 @@ public class PushActivity extends BaseActivity
             typedFile.subscribe(new Subscriber<Pair<Long, Long>>() {
                 @Override
                 public void onCompleted() {
-                    dialog.dismiss();
+                    dialog.setMessage(getString(R.string.msg_upload_compelete));
                 }
 
                 @Override
                 public void onError(Throwable e) {
-                    dialog.dismiss();
                 }
 
                 @Override

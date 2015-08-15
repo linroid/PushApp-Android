@@ -52,7 +52,7 @@ public class CountingTypedFile extends TypedFile {
      * @return
      */
     public Subscription subscribe(Subscriber<Pair<Long, Long>> subscriber) {
-        return subject.debounce(200, TimeUnit.MILLISECONDS)
+        return subject.debounce(100, TimeUnit.MILLISECONDS)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(subscriber);

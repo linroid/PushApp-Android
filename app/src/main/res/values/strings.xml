@@ -45,4 +45,6 @@
     <string name="msg_push_success">推送成功!</string>
     <string name="msg_upload_progress" formatted="false">上传中…(%s/%s)</string>
     <string name="msg_upload_prepare">准备上传中…</string>
+    <string name="msg_install_complete">%s 安装完成</string>
+    <string name="msg_upload_compelete">请稍等...</string>
 </resources>
