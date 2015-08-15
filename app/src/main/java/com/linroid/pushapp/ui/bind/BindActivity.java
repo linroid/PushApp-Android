@@ -155,7 +155,6 @@ public class BindActivity extends BaseActivity {
             @Override
             @DebugLog
             public void success(Authorization authInfo, Response response) {
-                Log.w("bind", authInfo.toString());
                 authInfo.saveToFile(getApplicationContext());
                 Device device = authInfo.getDevice();
                 User user = authInfo.getUser();
