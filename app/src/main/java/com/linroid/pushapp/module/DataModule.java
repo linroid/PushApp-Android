@@ -131,7 +131,12 @@ public class DataModule {
                         Error error = (Error) retrofitError.getBodyAs(Error.class);
                         message = error.getMessage();
                     } catch (RuntimeException e) {
-                        message = res.getString(R.string.server_error);
+                        int status = retrofitError.getResponse().getStatus();
+                        if(status/100 == 5) {
+                            message = res.getString(R.string.server_error, status);
+                        } else {
+                            message = retrofitError.getMessage();
+                        }
                     }
                 } else {
                     if (RetrofitError.Kind.NETWORK.equals(kind)) {

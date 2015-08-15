@@ -5,7 +5,7 @@
     <string name="btn_empty_retry">再试试</string>
     <string name="empty_message">什么也没有</string>
     <string name="network_error">请检查您的网络</string>
-    <string name="server_error">请检查您的网络</string>
+    <string name="server_error" formatted="false">服务器出现异常，稍后再试试(%d)</string>
     <string name="http_error">请求过程中出现错误</string>
     <string name="conversion_error">数据解析出错</string>
     <string name="unexpected_error">发生未知错误</string>
