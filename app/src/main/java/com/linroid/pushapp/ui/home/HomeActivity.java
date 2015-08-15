@@ -47,6 +47,7 @@ import timber.log.Timber;
 
 public class HomeActivity extends BaseActivity {
 
+    public static final String EXTRA_MESSAGE = "message";
     @Bind(R.id.tabLayout)
     TabLayout tabLayout;
     @Bind(R.id.viewpager)
@@ -127,6 +128,14 @@ public class HomeActivity extends BaseActivity {
     protected void onResume() {
         super.onResume();
         checkAutoInstall();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(data.hasExtra(EXTRA_MESSAGE)) {
+            Snackbar.make(pager, data.getStringExtra(EXTRA_MESSAGE), Snackbar.LENGTH_SHORT).show();
+        }
     }
 
     @Override

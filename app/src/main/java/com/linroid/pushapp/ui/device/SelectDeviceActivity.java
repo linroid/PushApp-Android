@@ -8,7 +8,6 @@ import android.support.design.widget.Snackbar;
 import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.Toast;
 
 import com.linroid.pushapp.App;
 import com.linroid.pushapp.R;
@@ -16,6 +15,7 @@ import com.linroid.pushapp.api.PushService;
 import com.linroid.pushapp.model.Pack;
 import com.linroid.pushapp.model.Push;
 import com.linroid.pushapp.ui.base.BaseActivity;
+import com.linroid.pushapp.ui.home.HomeActivity;
 import com.squareup.sqlbrite.BriteDatabase;
 
 import java.util.List;
@@ -30,22 +30,27 @@ import retrofit.client.Response;
 public class SelectDeviceActivity extends BaseActivity {
     public static final String EXTRA_PACKAGE = "package";
     public static final String EXTRA_APPLICATION = "application";
+    public static final int REQUEST_PUSH = 0x9999;
     private OnSelectListener selectListener;
     @Inject
     BriteDatabase db;
     @Inject
     PushService installApi;
+    Pack pack;
 
     public static void selectForPackage(Activity source, Pack pack) {
         Intent intent = new Intent(source, SelectDeviceActivity.class);
         intent.putExtra(EXTRA_PACKAGE, pack);
-        source.startActivity(intent);
+        source.startActivityForResult(intent, REQUEST_PUSH);
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        Intent intent = getIntent();
+        if (intent.hasExtra(EXTRA_PACKAGE)) {
+            this.pack = intent.getParcelableExtra(EXTRA_PACKAGE);
+        }
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.container, new DeviceFragment())
                 .commit();
@@ -101,11 +106,14 @@ public class SelectDeviceActivity extends BaseActivity {
             return;
         }
         Snackbar.make(btn, getString(R.string.msg_push_install_package, selectedIds.size()), Snackbar.LENGTH_SHORT).show();
-        installApi.installPackage(TextUtils.join(",", selectedIds.toArray()), new Callback<Push>() {
+
+        Callback<Push> callback = new Callback<Push>() {
 
             @Override
             public void success(Push push, Response response) {
-                Toast.makeText(SelectDeviceActivity.this, "推送成功", Toast.LENGTH_SHORT).show();
+                Intent intent = getIntent();
+                intent.putExtra(HomeActivity.EXTRA_MESSAGE, "推送成功!");
+                setResult(RESULT_OK, intent);
                 finish();
             }
 
@@ -113,32 +121,10 @@ public class SelectDeviceActivity extends BaseActivity {
             public void failure(RetrofitError error) {
                 Snackbar.make(btn, error.getMessage(), Snackbar.LENGTH_SHORT).show();
             }
-        });
-//        db.createQuery(Device.DB.TABLE_NAME, Device.DB.SQL_IDS_QUERY, TextUtils.join(",", selectedIds.toArray()))
-//                .map(Device.DB.MAP)
-//                .subscribeOn(Schedulers.io())
-//                .flatMap(new Func1<List<Device>, Observable<Push>>() {
-//                    @Override
-//                    public Observable<Push> call(List<Device> devices) {
-//
-//                        return null;
-//                    }
-//                }).subscribe(new Subscriber<Push>() {
-//                    @Override
-//                    public void onCompleted() {
-//
-//                    }
-//
-//                    @Override
-//                    public void onError(Throwable e) {
-//
-//                    }
-//
-//                    @Override
-//                    public void onNext(Push push) {
-//
-//                    }
-//                });
+        };
+        if (pack != null) {
+            installApi.installPackage(TextUtils.join(",", selectedIds.toArray()), pack.getId(), callback);
+        }
     }
 
     public interface OnSelectListener {

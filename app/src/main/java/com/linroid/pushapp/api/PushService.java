@@ -19,7 +19,7 @@ import retrofit.mime.TypedString;
 public interface PushService {
     @POST("/push")
     @FormUrlEncoded
-    void installPackage(@Field("devices") String deviceIds, Callback<Push> callback);
+    void installPackage(@Field("devices") String deviceIds, @Field("package") int packId, Callback<Push> callback);
     @Multipart
     @PUT("/push")
     User installLocal(@Part("devices") TypedString deviceIds, @Part("file") TypedFile apk, Callback<Push> callback);
