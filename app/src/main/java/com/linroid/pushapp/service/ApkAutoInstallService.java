@@ -250,7 +250,7 @@ public class ApkAutoInstallService extends AccessibilityService {
         if (eventText.contains(getString(R.string.str_accessibility_error))) {
             onInstallFail(event);
         } else if (!eventText.contains(getString(R.string.str_accessibility_uninstall))) {
-            AccessibilityNodeInfo nodeInfo = getAccessibilityNodeInfoByText(event, CLASS_NAME_WIDGET_BUTTON, getString(R.string.btn_accessibility_ok));
+            AccessibilityNodeInfo nodeInfo = getAccessibilityNodeInfoByText(event, getString(R.string.btn_accessibility_ok));
             if (nodeInfo != null) {
                 performClick(nodeInfo);
                 nodeInfo.recycle();
@@ -299,19 +299,19 @@ public class ApkAutoInstallService extends AccessibilityService {
     private void onApplicationInstall(AccessibilityEvent event, String nodeClassName, boolean maybeValidate) {
         Timber.d("准备安装");
         if (!maybeValidate || isValidPackageEvent(event, sInstallList)) {
-            AccessibilityNodeInfo nodeInfo = getAccessibilityNodeInfoByText(event, nodeClassName, getString(R.string.btn_accessibility_install));
+            AccessibilityNodeInfo nodeInfo = getAccessibilityNodeInfoByText(event, getString(R.string.btn_accessibility_install));
             if (nodeInfo != null) {
                 performClick(nodeInfo);
                 nodeInfo.recycle();
                 return;
             }
-            nodeInfo = getAccessibilityNodeInfoByText(event, nodeClassName, getString(R.string.btn_accessibility_allow_once));
+            nodeInfo = getAccessibilityNodeInfoByText(event, getString(R.string.btn_accessibility_allow_once));
             if (nodeInfo != null) {
                 performClick(nodeInfo);
                 nodeInfo.recycle();
                 return;
             }
-            nodeInfo = getAccessibilityNodeInfoByText(event, nodeClassName, getString(R.string.btn_accessibility_next));
+            nodeInfo = getAccessibilityNodeInfoByText(event, getString(R.string.btn_accessibility_next));
             if (nodeInfo != null) {
                 performClick(nodeInfo);
                 onApplicationInstall(event);
@@ -398,8 +398,8 @@ public class ApkAutoInstallService extends AccessibilityService {
         }
         boolean success = false;
         if (eventInfo != null) {
-            success = performEventAction(eventInfo, null, getString(R.string.btn_accessibility_run), false)
-                    || performEventAction(eventInfo, null, getString(R.string.btn_accessibility_open), false);
+            success = performEventAction(eventInfo, getString(R.string.btn_accessibility_run), false)
+                    || performEventAction(eventInfo, getString(R.string.btn_accessibility_open), false);
             eventInfo.recycle();
         }
         return success;
@@ -420,13 +420,13 @@ public class ApkAutoInstallService extends AccessibilityService {
         boolean success = false;
         if (eventInfo != null) {
             success =
-                    performEventAction(eventInfo, null, getString(R.string.btn_accessibility_ok), false)
-                    || performEventAction(eventInfo, null, getString(R.string.btn_accessibility_done), false)
-                    || performEventAction(eventInfo, null, getString(R.string.btn_accessibility_complete), false)
-                    || performEventAction(eventInfo, null, getString(R.string.btn_accessibility_know), false)
-                    || performEventAction(eventInfo, null, getString(R.string.btn_accessibility_know), false)
-                    || performEventAction(eventInfo, null, getString(R.string.btn_accessibility_run), true)
-                    || performEventAction(eventInfo, null, getString(R.string.btn_accessibility_open), true);
+                    performEventAction(eventInfo, getString(R.string.btn_accessibility_ok), false)
+                    || performEventAction(eventInfo, getString(R.string.btn_accessibility_done), false)
+                    || performEventAction(eventInfo, getString(R.string.btn_accessibility_complete), false)
+                    || performEventAction(eventInfo, getString(R.string.btn_accessibility_know), false)
+                    || performEventAction(eventInfo, getString(R.string.btn_accessibility_know), false)
+                    || performEventAction(eventInfo, getString(R.string.btn_accessibility_run), true)
+                    || performEventAction(eventInfo, getString(R.string.btn_accessibility_open), true);
             eventInfo.recycle();
         }
         return success;
@@ -438,18 +438,14 @@ public class ApkAutoInstallService extends AccessibilityService {
      * @param event
      */
     private void onApplicationUninstall(AccessibilityEvent event) {
-        onApplicationUninstall(event, DeviceUtil.isFlyme() ? CLASS_NAME_WIDGET_TEXTVIEW : CLASS_NAME_WIDGET_BUTTON);
-    }
-
-    private void onApplicationUninstall(AccessibilityEvent event, String nodeClassName) {
         Timber.d("准备卸载");
         if (isValidPackageEvent(event, sUninstallList)) {
-            AccessibilityNodeInfo nodeInfo = getAccessibilityNodeInfoByText(event, nodeClassName, getString(R.string.btn_accessibility_uninstall));
+            AccessibilityNodeInfo nodeInfo = getAccessibilityNodeInfoByText(event, getString(R.string.btn_accessibility_uninstall));
             if (nodeInfo != null) {
                 performClick(nodeInfo);
                 return;
             }
-            nodeInfo = getAccessibilityNodeInfoByText(event, nodeClassName, getString(R.string.btn_accessibility_ok));
+            nodeInfo = getAccessibilityNodeInfoByText(event, getString(R.string.btn_accessibility_ok));
             if (nodeInfo != null) {
                 performClick(nodeInfo);
                 nodeInfo.recycle();
@@ -489,8 +485,8 @@ public class ApkAutoInstallService extends AccessibilityService {
         }
         boolean success = false;
         if (eventInfo != null) {
-            success = performEventAction(eventInfo, null, getString(R.string.btn_accessibility_ok), false)
-                    || performEventAction(eventInfo, null, getString(R.string.btn_accessibility_know), false);
+            success = performEventAction(eventInfo, getString(R.string.btn_accessibility_ok), false)
+                    || performEventAction(eventInfo, getString(R.string.btn_accessibility_know), false);
             eventInfo.recycle();
         }
         return success;
@@ -543,7 +539,7 @@ public class ApkAutoInstallService extends AccessibilityService {
             for (int i = 0; i < validPackageList.size(); i++) {
                 int key = validPackageList.keyAt(i);
                 Pack pack = validPackageList.get(key);
-                AccessibilityNodeInfo nodeInfo = getAccessibilityNodeInfoByText(event, CLASS_NAME_WIDGET_TEXTVIEW, pack.getAppName());
+                AccessibilityNodeInfo nodeInfo = getAccessibilityNodeInfoByText(event, pack.getAppName());
                 if (nodeInfo != null) {
                     return nodeInfo;
                 }
@@ -556,11 +552,10 @@ public class ApkAutoInstallService extends AccessibilityService {
      * 通过文本获取AccessibilityNodeInfo 对象
      *
      * @param event
-     * @param className
      * @param text
      * @return
      */
-    private AccessibilityNodeInfo getAccessibilityNodeInfoByText(AccessibilityEvent event, String className, String text) {
+    private AccessibilityNodeInfo getAccessibilityNodeInfoByText(AccessibilityEvent event, String text) {
         List<AccessibilityNodeInfo> nodes = null;
         if (event != null && event.getSource() != null) {
             nodes = event.getSource().findAccessibilityNodeInfosByText(text);
@@ -573,7 +568,8 @@ public class ApkAutoInstallService extends AccessibilityService {
         if (nodes != null && nodes.size() > 0) {
             for (AccessibilityNodeInfo nodeInfo : nodes) {
                 String nodeText = nodeInfo.getText() == null ? BuildConfig.VERSION_NAME : nodeInfo.getText().toString();
-                if (nodeInfo.getClassName().equals(className) && nodeText.equalsIgnoreCase(text)) {
+                //nodeInfo.getClassName().equals(className) &&
+                if (nodeText.equalsIgnoreCase(text)) {
                     return nodeInfo;
                 }
                 nodeInfo.recycle();
@@ -586,12 +582,11 @@ public class ApkAutoInstallService extends AccessibilityService {
      * 进行动作事件操作
      *
      * @param info
-     * @param className
      * @param text
      * @param isGlobalAction 是否是全局动作
      * @return 是否执行成功
      */
-    private boolean performEventAction(AccessibilityNodeInfo info, String className, String text, boolean isGlobalAction) {
+    private boolean performEventAction(AccessibilityNodeInfo info, String text, boolean isGlobalAction) {
         if (info == null) {
             return false;
         }
@@ -599,11 +594,7 @@ public class ApkAutoInstallService extends AccessibilityService {
         if (nodes != null && nodes.size() > 0) {
             for (AccessibilityNodeInfo nodeInfo : nodes) {
                 String nodeText = nodeInfo.getText() == null ? null : nodeInfo.getText().toString();
-                boolean isValidClassName = true;
-                if (className != null) {
-                    isValidClassName = className.equalsIgnoreCase(nodeInfo.getClassName() == null ? null : nodeInfo.getClassName().toString());
-                }
-                if (isValidClassName && text.equalsIgnoreCase(nodeText)) {
+                if (text.equalsIgnoreCase(nodeText)) {
                     if (isGlobalAction) {
                         //返回
                         performGlobalAction(GLOBAL_ACTION_BACK);

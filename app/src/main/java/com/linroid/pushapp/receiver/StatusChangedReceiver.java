@@ -49,16 +49,19 @@ public class StatusChangedReceiver extends BroadcastReceiver {
     private void onNetworkChanged(Context context, Intent intent) {
         Map<String, String> params = new HashMap<>();
         params.put("network_type", DeviceUtil.networkType(context));
-        deviceApi.updateDevice(auth.getDevice().getId(), params, new Callback<Device>() {
-            @Override
-            public void success(Device device, Response response) {
-                Timber.d("设备网络状态上报成功:)");
-            }
+        if (auth.isValid()) {
 
-            @Override
-            public void failure(RetrofitError error) {
-                Timber.d("设备网络状态上报失败:(", error);
-            }
-        });
+            deviceApi.updateDevice(auth.getDevice().getId(), params, new Callback<Device>() {
+                @Override
+                public void success(Device device, Response response) {
+                    Timber.d("设备网络状态上报成功:)");
+                }
+
+                @Override
+                public void failure(RetrofitError error) {
+                    Timber.d("设备网络状态上报失败:(", error);
+                }
+            });
+        }
     }
 }

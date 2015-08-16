@@ -58,7 +58,6 @@ public class DownloadService extends Service {
     SharedPreferences preferences;
     @Inject
     BriteDatabase db;
-    Handler handler = new Handler(Looper.getMainLooper());
 
 
     private ThinDownloadManager downloadManager;
@@ -179,10 +178,10 @@ public class DownloadService extends Service {
                 wakeLock.acquire();
                 wakeLock.release();
                 KeyguardManager keyguardManager = (KeyguardManager) getSystemService(Context.KEYGUARD_SERVICE);
-                if(keyguardManager.isDeviceLocked()) {
+//                if(keyguardManager.isDeviceLocked()) {
                     final KeyguardManager.KeyguardLock keyguardLock = keyguardManager.newKeyguardLock("unLock");
                     keyguardLock.disableKeyguard();
-                }
+//                }
                 ApkAutoInstallService.addInstallPackage(pack);
             }
         }
