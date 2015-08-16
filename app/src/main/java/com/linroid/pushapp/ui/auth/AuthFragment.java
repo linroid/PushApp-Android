@@ -28,9 +28,12 @@ import javax.inject.Inject;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
+import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
+import rx.subscriptions.CompositeSubscription;
 
 /**
  * TODO 添加数据库支持
@@ -41,9 +44,11 @@ public class AuthFragment extends RefreshableFragment implements AuthAdapter.OnA
     Picasso picasso;
     @Inject
     AuthService authApi;
-
     AuthAdapter adapter;
     FloatingActionButton fab;
+
+    CompositeSubscription subscriptions;
+
     public AuthFragment() {
     }
 
@@ -64,13 +69,19 @@ public class AuthFragment extends RefreshableFragment implements AuthAdapter.OnA
     }
 
     @Override
+    public void onDestroy() {
+        super.onDestroy();
+        subscriptions.unsubscribe();
+    }
+
+    @Override
     public RecyclerView.Adapter<? extends RecyclerView.ViewHolder> getAdapter() {
         return adapter;
     }
 
     @Override
     public void loadData(int page) {
-        authApi.listAuth(page)
+        subscriptions.add(authApi.listAuth(page)
                 .map(new Func1<Pagination<Auth>, List<Auth>>() {
                     @Override
                     public List<Auth> call(Pagination<Auth> pagination) {
@@ -80,7 +91,12 @@ public class AuthFragment extends RefreshableFragment implements AuthAdapter.OnA
                 })
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(adapter);
+                .subscribe(adapter, new Action1<Throwable>() {
+                    @Override
+                    public void call(Throwable throwable) {
+                        Snackbar.make(fab, throwable.getMessage(), Snackbar.LENGTH_LONG).show();
+                    }
+                }));
     }
 
     @Override
