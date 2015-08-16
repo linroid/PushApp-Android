@@ -9,6 +9,8 @@ import com.squareup.okhttp.Call;
 import retrofit.Callback;
 import retrofit.http.Body;
 import retrofit.http.DELETE;
+import retrofit.http.Field;
+import retrofit.http.FormUrlEncoded;
 import retrofit.http.GET;
 import retrofit.http.POST;
 import retrofit.http.Path;
@@ -25,8 +27,9 @@ public interface AuthService {
     @GET("/auth/check")
     void checkToken(@Query("token") String token, @Query("device_id") String deviceId, Callback<Device> callback);
 
+    @FormUrlEncoded
     @POST("/auth")
-    void authUser(@Query("token") String token, Callback<Auth> callback);
+    void authUser(@Field("token") String token, Callback<Auth> callback);
 
     @GET("/auth")
     Observable<Pagination<Auth>> listAuth(@Query("page") int page);

@@ -27,7 +27,7 @@ import com.linroid.pushapp.ui.base.BaseActivity;
 import com.linroid.pushapp.ui.home.HomeActivity;
 import com.linroid.pushapp.util.AndroidUtil;
 import com.linroid.pushapp.util.DeviceUtil;
-
+import static  com.linroid.pushapp.ui.bind.QrcodeActivity.ARG_BIND_TOKEN;
 import javax.inject.Inject;
 
 import butterknife.Bind;
@@ -39,8 +39,6 @@ import retrofit.RetrofitError;
 import retrofit.client.Response;
 
 public class BindActivity extends BaseActivity {
-    public static final String ARG_BIND_TOKEN = "bind_token";
-    public static final int REQ_SCAN_QRCODE = 0x1111;
     @Bind(R.id.btn_open_qrcode)
     Button openQrcodeBtn;
     @Bind(R.id.et_alias)
@@ -83,7 +81,7 @@ public class BindActivity extends BaseActivity {
     @OnClick(R.id.btn_open_qrcode)
     public void onOpenQrcodeBtnClick(Button btn) {
         Intent intent = new Intent(this, QrcodeActivity.class);
-        startActivityForResult(intent, REQ_SCAN_QRCODE);
+        startActivityForResult(intent, QrcodeActivity.REQ_SCAN_QRCODE);
     }
 
     private void handleIntent(Intent intent) {

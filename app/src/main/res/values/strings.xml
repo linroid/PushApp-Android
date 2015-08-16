@@ -51,4 +51,6 @@
     <string name="msg_revoke_progress">请求中...</string>
     <string name="msg_dialog_content_revoke">收回后,%s将无法再向本设备安装应用</string>
     <string name="msg_dialog_title_revoke">确定要收回吗？</string>
+    <string name="msg_auth_snack">授权中...</string>
+    <string name="msg_auth_success">授权给%s安装权限成功!</string>
 </resources>

@@ -32,6 +32,8 @@ import timber.log.Timber;
 
 public class QrcodeActivity extends BaseActivity {
     public static final String STATE_TORCH = "torch";
+    public static final int REQ_SCAN_QRCODE = 0x1111;
+    public static final String ARG_BIND_TOKEN = "bind_token";
     @Bind(R.id.scanner)
     public CompoundBarcodeView scannerView;
     private boolean isTorchOn = false;
@@ -116,7 +118,7 @@ public class QrcodeActivity extends BaseActivity {
 
     private void onScanSuccess(String token) {
         Intent intent = getIntent();
-        intent.putExtra(BindActivity.ARG_BIND_TOKEN, token);
+        intent.putExtra(ARG_BIND_TOKEN, token);
         setResult(RESULT_OK, intent);
         finish();
     }

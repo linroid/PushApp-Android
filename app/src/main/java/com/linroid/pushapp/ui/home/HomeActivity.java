@@ -12,12 +12,14 @@ import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
+import android.view.View;
 
 import com.linroid.pushapp.App;
 import com.linroid.pushapp.Constants;
@@ -26,12 +28,14 @@ import com.linroid.pushapp.model.Binding;
 import com.linroid.pushapp.service.ApkAutoInstallService;
 import com.linroid.pushapp.ui.base.BaseActivity;
 import com.linroid.pushapp.ui.bind.BindActivity;
-
+import com.linroid.pushapp.ui.bind.QrcodeActivity;
 
 import javax.inject.Inject;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
+import hugo.weaving.DebugLog;
 import timber.log.Timber;
 
 public class HomeActivity extends BaseActivity {
@@ -43,6 +47,8 @@ public class HomeActivity extends BaseActivity {
     ViewPager pager;
     @Bind(R.id.toolbar)
     protected Toolbar toolbar;
+    @Bind(R.id.fab)
+    FloatingActionButton fab;
 
     @Inject
     Binding auth;
@@ -61,7 +67,38 @@ public class HomeActivity extends BaseActivity {
         ButterKnife.bind(this);
         pager.setAdapter(new HomePagerAdapter(getSupportFragmentManager()));
         tabLayout.setupWithViewPager(pager);
-        if(savedInstanceState!=null){
+        pager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @DebugLog
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+                if (position == 1) {
+                    if (positionOffset > 0.5f) {
+                        if (!fab.isShown()) {
+                            fab.setVisibility(View.VISIBLE);
+                        }
+                        float scale = (positionOffset - 0.5f) * 2;
+                        fab.setScaleX(scale);
+                        fab.setScaleY(scale);
+                        return;
+                    }
+                }
+
+                if (position!=2 && fab.isShown()) {
+                    fab.setVisibility(View.GONE);
+                }
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
+        if (savedInstanceState != null) {
             int pagerPosition = savedInstanceState.getInt(STATE_PAGER_POSITION);
             pager.setCurrentItem(pagerPosition);
         }
@@ -85,7 +122,7 @@ public class HomeActivity extends BaseActivity {
                     .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            SharedPreferences.Editor editor=  preferences.edit();
+                            SharedPreferences.Editor editor = preferences.edit();
                             editor.putBoolean(Constants.SP_AUTO_INSTALL_CONFIRMED, true);
 //                            editor.putBoolean(Constants.SP_AUTO_INSTALL, true);
                             editor.apply();
@@ -126,8 +163,8 @@ public class HomeActivity extends BaseActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(resultCode==RESULT_OK ) {
-            if (data!=null && data.hasExtra(EXTRA_MESSAGE)) {
+        if (resultCode == RESULT_OK) {
+            if (data != null && data.hasExtra(EXTRA_MESSAGE)) {
                 Snackbar.make(pager, data.getStringExtra(EXTRA_MESSAGE), Snackbar.LENGTH_SHORT).show();
             }
         }
