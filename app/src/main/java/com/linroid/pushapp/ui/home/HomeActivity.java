@@ -19,6 +19,7 @@ import android.support.v4.view.ViewCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 
 import com.linroid.pushapp.App;
@@ -29,6 +30,7 @@ import com.linroid.pushapp.service.ApkAutoInstallService;
 import com.linroid.pushapp.ui.base.BaseActivity;
 import com.linroid.pushapp.ui.bind.BindActivity;
 import com.linroid.pushapp.ui.bind.QrcodeActivity;
+import com.linroid.pushapp.ui.setting.SettingActivity;
 
 import javax.inject.Inject;
 
@@ -186,5 +188,14 @@ public class HomeActivity extends BaseActivity {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.home, menu);
         return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.action_settings) {
+            Intent intent = new Intent(this, SettingActivity.class);
+            startActivity(intent);
+        }
+        return super.onOptionsItemSelected(item);
     }
 }

@@ -14,6 +14,7 @@ import com.linroid.pushapp.ui.device.DeviceFragment;
 import com.linroid.pushapp.ui.push.PushActivity;
 import com.linroid.pushapp.ui.home.HomeActivity;
 import com.linroid.pushapp.ui.pack.PackageFragment;
+import com.linroid.pushapp.ui.setting.SettingFragment;
 
 import javax.inject.Singleton;
 
@@ -46,4 +47,6 @@ public interface AppComponent {
     void inject(PushActivity activity);
 
     void inject(AuthFragment fragment);
+
+    void inject(SettingFragment fragment);
 }

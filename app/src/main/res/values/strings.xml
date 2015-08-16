@@ -54,4 +54,10 @@
     <string name="msg_dialog_title_revoke">确定要收回吗？</string>
     <string name="msg_auth_snack">授权中…</string>
     <string name="msg_auth_success">授权给%s安装权限成功!</string>
+    <string name="pref_bind_account">bind_account</string>
+    <string name="pref_auto_install">auto_install</string>
+    <string name="pref_auto_open">auto_open</string>
+    <string name="pref_open_source_license">open_source_license</string>
+    <string name="pref_developer">developer</string>
+    <string name="pref_version">version</string>
 </resources>
