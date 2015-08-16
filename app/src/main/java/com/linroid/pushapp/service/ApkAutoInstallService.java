@@ -373,11 +373,11 @@ public class ApkAutoInstallService extends AccessibilityService {
     private void showInstalledNotification(Pack pack) {
         PendingIntent intent = PendingIntent.getActivity(this, 0, AndroidUtil.getOpenAppIntent(this, pack.getPackageName()), 0);
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this)
-                .setContentTitle(getString(R.string.msg_install_complete, pack.getAppName()))
-                .setSmallIcon(R.mipmap.ic_launcher)
+                .setContentTitle(getString(R.string.msg_download_title, pack.getAppName(), pack.getVersionName()))
+                .setSmallIcon(R.drawable.ic_stat_complete)
                 .setAutoCancel(true)
                 .setContentIntent(intent)
-                .setContentText("v" + pack.getVersionName());
+                .setContentText(getString(R.string.msg_install_complete));
 
         AndroidUtil.openApplication(this, pack.getPackageName());
         notificationManager.notify(pack.getId(), builder.build());

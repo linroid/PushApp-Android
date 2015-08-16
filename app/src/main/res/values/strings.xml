@@ -19,10 +19,11 @@
     <string name="msg_scan_qrcode_success">扫描成功</string>
     <string name="bind_fist_content">请在电脑上打开:\n\n%s\n</string>
     <string name="error_unknown_barcode">无法识别二维码信息:(</string>
-    <string name="msg_downloading" formatted="false">%s 下载中…</string>
-    <string name="msg_download_complete" formatted="false">%s 下载完成</string>
-    <string name="msg_download_progress" formatted="false">%d%%</string>
-    <string name="msg_download_fail" >%s 下载无法完成</string>
+    <string name="msg_downloading">正在下载中…</string>
+    <string name="msg_download_title" formatted="false">%s %s</string>
+    <string name="msg_download_complete">下载完成 点击安装</string>
+    <string name="msg_download_progress">%d%%</string>
+    <string name="msg_download_failed" >下载失败</string>
     <string name="title_auto_install_confirm_dialog">自动安装</string>
     <string name="msg_auto_install_confirm_dialog">"打开后，会在安装包下载完成后自动帮您安装
 无需手动点击</string>
@@ -31,7 +32,7 @@
     <string name="action_install">安装</string>
     <string name="action_uninstall">卸载</string>
     <string name="action_send_to_others">发给其他设备</string>
-    <string name="action_download">下载</string>
+    <string name="action_download">下载&amp;安装</string>
     <string name="action_open">打开</string>
     <string name="btn_dialog_copy">复制到剪切板</string>
     <string name="title_dialog_unsupport_qrcode">二维码信息</string>
@@ -45,12 +46,12 @@
     <string name="msg_push_success">推送成功!</string>
     <string name="msg_upload_progress" formatted="false">上传中…(%s/%s)</string>
     <string name="msg_upload_prepare">准备上传中…</string>
-    <string name="msg_install_complete">%s 安装完成</string>
+    <string name="msg_install_complete">安装完成 点击打开</string>
     <string name="msg_upload_complete">请稍等…</string>
     <string name="txt_auth_time">授权时间: %s</string>
-    <string name="msg_revoke_progress">请求中...</string>
+    <string name="msg_revoke_progress">请求中…</string>
     <string name="msg_dialog_content_revoke">收回后,%s将无法再向本设备安装应用</string>
     <string name="msg_dialog_title_revoke">确定要收回吗？</string>
-    <string name="msg_auth_snack">授权中...</string>
+    <string name="msg_auth_snack">授权中…</string>
     <string name="msg_auth_success">授权给%s安装权限成功!</string>
 </resources>

@@ -198,19 +198,19 @@ public class DownloadService extends Service {
             return;
         }
         prevProgress = progress;
-        String titleText;
+        String contentText;
         if (progress == 100) {
-            titleText = getString(R.string.msg_download_complete, pack.getAppName());
+            contentText = getString(R.string.msg_download_complete);
         } else if (progress < 0) {
-            titleText = getString(R.string.msg_download_fail, pack.getAppName());
+            contentText = getString(R.string.msg_download_failed);
         } else {
-            titleText = getString(R.string.msg_downloading, pack.getAppName());
+            contentText = getString(R.string.msg_downloading);
         }
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this)
-                .setContentTitle(titleText)
+                .setContentTitle(getString(R.string.msg_download_title, pack.getAppName(), "v"+pack.getVersionName()))
                 .setSmallIcon(R.mipmap.ic_launcher)
                 .setAutoCancel(false)
-                .setContentText("v" + pack.getVersionName());
+                .setContentText(contentText);
         if (progress > 0) {
             builder.setProgress(100, Math.max(progress, 0), false)
                     .setContentInfo(getString(R.string.msg_download_progress, progress));
@@ -218,6 +218,7 @@ public class DownloadService extends Service {
             builder.setProgress(100, 0, true);
         }
         if (progress == 100) {
+            builder.setSmallIcon(R.drawable.ic_stat_complete);
             Intent intent = new Intent(Intent.ACTION_VIEW);
             intent.setDataAndType(Uri.fromFile(new File(pack.getPath())),
                     "application/vnd.android.package-archive");
