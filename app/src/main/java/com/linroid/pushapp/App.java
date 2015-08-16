@@ -24,13 +24,16 @@ public class App extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-        Stetho.initialize(
-                Stetho.newInitializerBuilder(this)
-                        .enableDumpapp(
-                                Stetho.defaultDumperPluginsProvider(this))
-                        .enableWebKitInspector(
-                                Stetho.defaultInspectorModulesProvider(this))
-                        .build());
+        if(BuildConfig.DEBUG) {
+            Stetho.initialize(
+                    Stetho.newInitializerBuilder(this)
+                            .enableDumpapp(
+                                    Stetho.defaultDumperPluginsProvider(this))
+                            .enableWebKitInspector(
+                                    Stetho.defaultInspectorModulesProvider(this))
+                            .build());
+            Timber.plant(new Timber.DebugTree());
+        }
         component = DaggerAppComponent.builder()
                 .appModule(new AppModule(this))
                 .dataModule(new DataModule())
@@ -43,9 +46,6 @@ public class App extends Application {
         JPushInterface.init(this);
 
         PreferenceManager.setDefaultValues(this, Constants.SP_FILE_NAME, Context.MODE_PRIVATE, R.xml.pref_general, false);
-        if (BuildConfig.DEBUG) {
-            Timber.plant(new Timber.DebugTree());
-        }
     }
 
     public AppComponent component() {

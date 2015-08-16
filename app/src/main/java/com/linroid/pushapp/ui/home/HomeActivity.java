@@ -68,7 +68,6 @@ public class HomeActivity extends BaseActivity {
         pager.setAdapter(new HomePagerAdapter(getSupportFragmentManager()));
         tabLayout.setupWithViewPager(pager);
         pager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-            @DebugLog
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
                 if (position == 1) {

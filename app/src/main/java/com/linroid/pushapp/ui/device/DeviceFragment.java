@@ -22,7 +22,7 @@ import javax.inject.Inject;
 import hugo.weaving.DebugLog;
 import rx.Observable;
 import rx.Observer;
-import rx.android.app.AppObservable;
+import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
@@ -44,9 +44,10 @@ public class DeviceFragment extends RefreshableFragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         adapter = new DeviceAdapter(getActivity());
-        subscriptions.add(AppObservable.bindSupportFragment(this, db.createQuery(Device.DB.TABLE_NAME, Device.DB.SQL_LIST_QUERY))
+        subscriptions.add(db.createQuery(Device.DB.TABLE_NAME, Device.DB.SQL_LIST_QUERY)
                         .map(Device.DB.MAP)
                         .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(adapter)
         );
         forceRefresh();
@@ -64,7 +65,7 @@ public class DeviceFragment extends RefreshableFragment {
 
     @Override
     public void loadData(int page) {
-        subscriptions.add(AppObservable.bindSupportFragment(this, deviceApi.listDevice(page))
+        subscriptions.add(deviceApi.listDevice(page)
                 .map(new Func1<Pagination<Device>, List<Device>>() {
                     @Override
                     public List<Device> call(Pagination<Device> pagination) {
@@ -96,6 +97,7 @@ public class DeviceFragment extends RefreshableFragment {
                         db.endTransaction();
                     }
                 })
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<List<Device>>() {
 
                     @DebugLog

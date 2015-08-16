@@ -47,7 +47,7 @@ public class AuthFragment extends RefreshableFragment implements AuthAdapter.OnA
     AuthAdapter adapter;
     FloatingActionButton fab;
 
-    CompositeSubscription subscriptions;
+    CompositeSubscription subscriptions = new CompositeSubscription();
 
     public AuthFragment() {
     }

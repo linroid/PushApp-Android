@@ -25,7 +25,7 @@ import javax.inject.Inject;
 import hugo.weaving.DebugLog;
 import rx.Observable;
 import rx.Observer;
-import rx.android.app.AppObservable;
+import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
@@ -50,9 +50,10 @@ public class PackageFragment extends RefreshableFragment implements PackageAdapt
         super.onCreate(savedInstanceState);
         adapter = new PackageAdapter(picasso);
         adapter.setListener(this);
-        subscriptions.add(AppObservable.bindSupportFragment(this, db.createQuery(Pack.DB.TABLE_NAME, Pack.DB.SQL_LIST_QUERY))
+        subscriptions.add(db.createQuery(Pack.DB.TABLE_NAME, Pack.DB.SQL_LIST_QUERY)
                         .map(Pack.DB.MAP)
                         .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(adapter)
         );
         forceRefresh();
@@ -105,7 +106,7 @@ public class PackageFragment extends RefreshableFragment implements PackageAdapt
 
     @Override
     public void loadData(int page) {
-        subscriptions.add(AppObservable.bindSupportFragment(this, packageApi.listReceived(page))
+        subscriptions.add(packageApi.listReceived(page)
                 .map(new Func1<Pagination<Pack>, List<Pack>>() {
                     @Override
                     public List<Pack> call(Pagination<Pack> pagination) {
@@ -137,6 +138,7 @@ public class PackageFragment extends RefreshableFragment implements PackageAdapt
                         db.endTransaction();
                     }
                 })
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<List<Pack>>() {
 
                     @DebugLog
