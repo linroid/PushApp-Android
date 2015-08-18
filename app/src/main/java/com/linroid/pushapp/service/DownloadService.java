@@ -63,11 +63,10 @@ public class DownloadService extends Service {
     private ThinDownloadManager downloadManager;
     private Map<Integer, Pack> downloadPackageMap;
 
-    public static void download(Context context, Pack pack) {
+    public static Intent createNewDownloadIntent(Context context, Pack pack) {
         Intent intent = new Intent(context, DownloadService.class);
         intent.putExtra(DownloadService.EXTRA_PACKAGE, pack);
-        context.startService(intent);
-
+        return intent;
     }
 
     @Override

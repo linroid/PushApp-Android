@@ -139,6 +139,9 @@ public class PackageAdapter extends DataAdapter<Pack, PackageAdapter.PackageHold
                                     case R.id.action_install:
                                         listener.onInstall(pack);
                                         break;
+                                    case R.id.action_app_info:
+                                        listener.onAppInfo(pack);
+                                        break;
                                     case R.id.action_uninstall:
                                         listener.onUninstall(pack);
                                         break;
@@ -175,5 +178,7 @@ public class PackageAdapter extends DataAdapter<Pack, PackageAdapter.PackageHold
         void onSend(Pack pack);
 
         void onDownload(Pack pack);
+
+        void onAppInfo(Pack pack);
     }
 }

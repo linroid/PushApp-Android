@@ -1,6 +1,7 @@
 package com.linroid.pushapp.ui.pack;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
@@ -10,11 +11,12 @@ import com.linroid.pushapp.App;
 import com.linroid.pushapp.api.PackageService;
 import com.linroid.pushapp.model.Pack;
 import com.linroid.pushapp.model.Pagination;
+import com.linroid.pushapp.model.Push;
 import com.linroid.pushapp.service.ApkAutoInstallService;
 import com.linroid.pushapp.service.DownloadService;
 import com.linroid.pushapp.ui.base.RefreshableFragment;
 import com.linroid.pushapp.ui.push.PushActivity;
-import com.linroid.pushapp.util.AndroidUtil;
+import com.linroid.pushapp.util.IntentUtil;
 import com.squareup.picasso.Picasso;
 import com.squareup.sqlbrite.BriteDatabase;
 
@@ -164,27 +166,39 @@ public class PackageFragment extends RefreshableFragment implements PackageAdapt
 
     @Override
     public void onOpen(Pack pack) {
-        AndroidUtil.openApplication(getActivity(), pack.getPackageName());
+        Intent intent = IntentUtil.openApp(getActivity(), pack.getPackageName());
+        if (intent!=null) {
+            startActivity(intent);
+        }
     }
 
     @Override
     public void onInstall(Pack pack) {
         ApkAutoInstallService.addInstallPackage(pack);
-        AndroidUtil.installApk(getActivity(), pack.getPath());
+        startActivity(IntentUtil.appInfo(pack.getPath()));
     }
 
     @Override
     public void onUninstall(Pack pack) {
-        AndroidUtil.uninstallApp(getActivity(), pack.getPackageName());
+        Intent intent = IntentUtil.uninstallApp(pack.getPackageName());
+        startActivity(intent);
     }
 
     @Override
     public void onSend(Pack pack) {
-        PushActivity.selectForPackage(getActivity(), pack);
+        Intent intent = PushActivity.createNewSelectIntent(getActivity(), pack);
+        startActivityForResult(intent, PushActivity.REQUEST_PUSH);
     }
 
     @Override
     public void onDownload(Pack pack) {
-        DownloadService.download(getActivity(), pack);
+        Intent intent = DownloadService.createNewDownloadIntent(getActivity(), pack);
+        getActivity().startService(intent);
+    }
+
+    @Override
+    public void onAppInfo(Pack pack) {
+        Intent intent = IntentUtil.appInfo(pack.getPackageName());
+        startActivity(intent);
     }
 }

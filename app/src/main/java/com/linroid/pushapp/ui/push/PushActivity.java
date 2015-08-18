@@ -54,16 +54,16 @@ public class PushActivity extends BaseActivity
     ProgressDialog dialog;
     Subscription subscription;
 
-    public static void selectForPackage(Activity source, Pack pack) {
+    public static Intent createNewSelectIntent(Activity source, Pack pack) {
         Intent intent = new Intent(source, PushActivity.class);
         intent.putExtra(EXTRA_PACKAGE, pack);
-        source.startActivityForResult(intent, REQUEST_PUSH);
+        return intent;
     }
 
-    public static void selectForPackage(Activity source, ApplicationInfo info) {
+    public static Intent createNewSelectIntent(Activity source, ApplicationInfo info) {
         Intent intent = new Intent(source, PushActivity.class);
         intent.putExtra(EXTRA_APPLICATION_INFO, info);
-        source.startActivityForResult(intent, REQUEST_PUSH);
+        return intent;
     }
 
     @Override

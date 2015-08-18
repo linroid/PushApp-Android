@@ -1,6 +1,7 @@
 package com.linroid.pushapp.ui.app;
 
 
+import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
@@ -55,6 +56,7 @@ public class AppFragment extends RefreshableFragment implements AppAdapter.OnAct
 
     @Override
     public void onSend(ApplicationInfo info) {
-        PushActivity.selectForPackage(getActivity(), info);
+        Intent intent = PushActivity.createNewSelectIntent(getActivity(), info);
+        startActivityForResult(intent, PushActivity.REQUEST_PUSH);
     }
 }

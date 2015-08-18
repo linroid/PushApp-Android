@@ -14,6 +14,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.support.v4.app.FragmentActivity;
 import android.text.TextUtils;
 import android.text.format.DateUtils;
 import android.util.Log;
@@ -65,6 +66,7 @@ public class AndroidUtil {
     }
 
     /**
+     * @deprecated
      * 打开安装页面
      *
      * @param context
@@ -203,6 +205,7 @@ public class AndroidUtil {
     }
 
     /**
+     * @deprecated
      * 根据包名打开其他应用
      *
      * @param context
@@ -220,6 +223,7 @@ public class AndroidUtil {
 
     }
     /**
+     * @deprecated
      * 根据包名获得打开其他应用的Intent
      *
      * @param context
@@ -296,4 +300,6 @@ public class AndroidUtil {
         }
         return type;
     }
+
+
 }

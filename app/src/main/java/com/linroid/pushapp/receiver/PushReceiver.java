@@ -72,7 +72,7 @@ public class PushReceiver extends BroadcastReceiver {
 //                        .withMsgId(msgId)
 //                        .withPackage(pack)
 //                        .build();
-                DownloadService.download(context, pack);
+                DownloadService.createNewDownloadIntent(context, pack);
                 break;
             case Constants.PUSH_TYPE_DEVICE:
                 Device device = gson.fromJson(message, Device.class);
