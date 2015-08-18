@@ -1,7 +1,6 @@
 package com.linroid.pushapp.util;
 
 import android.annotation.TargetApi;
-import android.app.ActivityManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ApplicationInfo;
@@ -242,7 +241,7 @@ public class AndroidUtil {
     }
 
     /**
-     * 获得屏幕真是高度
+     * 获得屏幕真实高度
      *
      * @param display Display
      * @return
@@ -266,12 +265,12 @@ public class AndroidUtil {
      * @return
      */
     public static long totalMemorySize() {
-        String meminfoPath = "/proc/meminfo";
+        String memInfoPath = "/proc/meminfo";
         String str2;
         String[] arrayOfString;
         long initial_memory = 0;
         try {
-            FileReader localFileReader = new FileReader(meminfoPath);
+            FileReader localFileReader = new FileReader(memInfoPath);
             BufferedReader localBufferedReader = new BufferedReader(localFileReader, 8192);
             str2 = localBufferedReader.readLine();
             arrayOfString = str2.split("\\s+");

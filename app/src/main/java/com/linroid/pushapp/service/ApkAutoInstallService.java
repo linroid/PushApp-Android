@@ -7,6 +7,7 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.os.Build;
 import android.os.Build.VERSION;
+import android.os.Handler;
 import android.support.v4.app.NotificationCompat;
 import android.util.SparseArray;
 import android.view.KeyEvent;
@@ -21,6 +22,7 @@ import com.linroid.pushapp.model.Pack;
 import com.linroid.pushapp.util.AndroidUtil;
 import com.linroid.pushapp.util.BooleanPreference;
 import com.linroid.pushapp.util.DeviceUtil;
+import com.linroid.pushapp.util.IntentUtil;
 
 import java.util.List;
 
@@ -41,6 +43,10 @@ import timber.log.Timber;
 @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
 public class ApkAutoInstallService extends AccessibilityService {
     public static final int AVAILABLE_API = 16;
+
+    public static final int INSTALL_TIMEOUT = 60000;
+    public static final int UNINSTALL_TIMEOUT = 5000;
+
     private static final String CLASS_NAME_APP_ALERT_DIALOG = "android.app.AlertDialog";
     private static final String CLASS_NAME_LENOVO_SAFECENTER = "com.lenovo.safecenter";
     private static final String CLASS_NAME_PACKAGE_INSTALLER = "com.android.packageinstaller";
@@ -54,7 +60,9 @@ public class ApkAutoInstallService extends AccessibilityService {
     private static final String CLASS_NAME_WIDGET_TEXTVIEW = "android.widget.TextView";
 
     private static boolean enable = false;
-    //TODO 使用软引用
+
+    // 需要先卸载再安装的应用
+    private static SparseArray<Pack> sPrepareList = new SparseArray<>();
     private static SparseArray<Pack> sInstallList = new SparseArray<>();
     private static SparseArray<Pack> sUninstallList = new SparseArray<>();
 
@@ -63,6 +71,29 @@ public class ApkAutoInstallService extends AccessibilityService {
     public BooleanPreference autoOpen;
     @Inject
     NotificationManager notificationManager;
+
+    Handler handler;
+
+    Runnable handleInstallTimeout = new Runnable() {
+        @Override
+        public void run() {
+            openAfterInstalled(null);
+        }
+    };
+
+    Runnable handleUninstallTimeout = new Runnable() {
+        @Override
+        public void run() {
+            AccessibilityNodeInfo eventInfo = getRootInActiveWindow();
+            if (eventInfo != null) {
+                boolean success = performEventAction(eventInfo, getString(R.string.btn_accessibility_ok), false)
+                        || performEventAction(eventInfo, getString(R.string.btn_accessibility_know), false);
+                eventInfo.recycle();
+            }
+            processPrepareInstall(null);
+        }
+    };
+
 
     /**
      * 安装应用
@@ -89,6 +120,19 @@ public class ApkAutoInstallService extends AccessibilityService {
         }
     }
 
+    /**
+     * 先卸载再安装的应用
+     *
+     * @param pack
+     */
+    public static void addPrepareInstallApplication(Pack pack) {
+        enable = true;
+        if (pack != null) {
+            sUninstallList.put(pack.getId(), pack);
+            sPrepareList.put(pack.getId(), pack);
+        }
+    }
+
     public static void reset() {
         enable = false;
         if (sInstallList != null) {
@@ -103,10 +147,35 @@ public class ApkAutoInstallService extends AccessibilityService {
         return VERSION.SDK_INT >= AVAILABLE_API;
     }
 
+    /**
+     * 处理卸载后的安装
+     */
+    private void processPrepareInstall(String label) {
+        Pack pack = null;
+        if (sPrepareList.size() == 0) {
+            return;
+        }
+
+        if (label != null) {
+            for (int i = 0; i < sPrepareList.size(); i++) {
+                int key = sPrepareList.keyAt(i);
+                pack = sPrepareList.get(key);
+            }
+        }
+
+        if (pack == null){
+            pack = sPrepareList.get(sPrepareList.size() - 1);
+        }
+
+        addInstallPackage(pack);
+        startActivity(IntentUtil.installApk(pack.getPath()));
+    }
+
     @Override
     public void onCreate() {
         super.onCreate();
         App.from(this).component().inject(this);
+        handler = new Handler();
     }
 
     @DebugLog
@@ -316,6 +385,10 @@ public class ApkAutoInstallService extends AccessibilityService {
      */
     private void onApplicationInstall(AccessibilityEvent event, String nodeClassName, boolean maybeValidate) {
         Timber.d("准备安装");
+
+        // 设置安装超时（即最后未捕获到安装失败的话）
+        handler.postDelayed(handleInstallTimeout, INSTALL_TIMEOUT);
+
         if (!maybeValidate || isValidPackageEvent(event, sInstallList)) {
             AccessibilityNodeInfo nodeInfo = getAccessibilityNodeInfoByText(event, getString(R.string.btn_accessibility_install));
             if (nodeInfo != null) {
@@ -351,6 +424,10 @@ public class ApkAutoInstallService extends AccessibilityService {
      */
     private void onApplicationInstalled(AccessibilityEvent event) {
         Timber.d("安装完成");
+
+        // 取消安装超时的操作
+        handler.removeCallbacks(handleInstallTimeout);
+
         AccessibilityNodeInfo validInfo = getValidAccessibilityNodeInfo(event, sInstallList);
         if (validInfo != null) {
             if (autoOpen.getValue()) {
@@ -468,6 +545,10 @@ public class ApkAutoInstallService extends AccessibilityService {
      */
     private void onApplicationUninstall(AccessibilityEvent event) {
         Timber.d("准备卸载");
+
+        // 设置卸载超时（即最后未捕获到卸载失败的话）
+        handler.postDelayed(handleUninstallTimeout, UNINSTALL_TIMEOUT);
+
         if (isValidPackageEvent(event, sUninstallList)) {
             AccessibilityNodeInfo nodeInfo = getAccessibilityNodeInfoByText(event, getString(R.string.btn_accessibility_uninstall));
             if (nodeInfo != null) {
@@ -489,14 +570,22 @@ public class ApkAutoInstallService extends AccessibilityService {
      */
     private void onApplicationUninstalled(AccessibilityEvent event) {
         Timber.d("卸载完成");
+
+        // 取消卸载超时的操作
+        handler.removeCallbacks(handleUninstallTimeout);
+
         AccessibilityNodeInfo validInfo = getValidAccessibilityNodeInfo(event, sUninstallList);
+        String label = null;
         if (validInfo != null && processApplicationUninstalled(event)
                 && sUninstallList != null
                 && validInfo.getText() != null) {
-            String label = validInfo.getText().toString();
+            label = validInfo.getText().toString();
             removePackFromListByAppName(sUninstallList, label);
             validInfo.recycle();
         }
+
+        // 如果卸载完成是为了安装某个Apk，则执行安装
+        processPrepareInstall(label);
     }
 
     /**
