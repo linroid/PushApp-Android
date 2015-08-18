@@ -110,61 +110,57 @@ public class PackageAdapter extends DataAdapter<Pack, PackageAdapter.PackageHold
                 }
             });
             itemView.setOnClickListener(this);
-            actionBtn.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    final PopupMenu popupMenu = new PopupMenu(v.getContext(), v);
-                    Menu menu = popupMenu.getMenu();
-                    popupMenu.getMenuInflater().inflate(R.menu.item_pack, menu);
-                    if (pack.fileExists()) {
-                        menu.findItem(R.id.action_download).setVisible(false);
-                    }
-                    if (AndroidUtil.isInstalled(v.getContext(), pack.getPackageName())) {
-                        menu.findItem(R.id.action_install).setVisible(false);
-                    } else {
-                        if (!pack.fileExists()) {
-                            menu.findItem(R.id.action_install).setVisible(false);
-                        }
-                        menu.findItem(R.id.action_open).setVisible(false);
-                        menu.findItem(R.id.action_uninstall).setVisible(false);
-                    }
-                    popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-                        @Override
-                        public boolean onMenuItemClick(MenuItem item) {
-                            if (listener != null) {
-                                switch (item.getItemId()) {
-                                    case R.id.action_open:
-                                        listener.onOpen(pack);
-                                        break;
-                                    case R.id.action_install:
-                                        listener.onInstall(pack);
-                                        break;
-                                    case R.id.action_app_info:
-                                        listener.onAppInfo(pack);
-                                        break;
-                                    case R.id.action_uninstall:
-                                        listener.onUninstall(pack);
-                                        break;
-                                    case R.id.action_send_package:
-                                        listener.onSend(pack);
-                                        break;
-                                    case R.id.action_download:
-                                        listener.onDownload(pack);
-                                        break;
-                                }
-                                return true;
-                            }
-                            return false;
-                        }
-                    });
-                    popupMenu.show();
-                }
-            });
+            actionBtn.setOnClickListener(this);
 
         }
 
         @Override
         public void onClick(View v) {
+            final PopupMenu popupMenu = new PopupMenu(v.getContext(), actionBtn);
+            Menu menu = popupMenu.getMenu();
+            popupMenu.getMenuInflater().inflate(R.menu.item_pack, menu);
+            if (pack.fileExists()) {
+                menu.findItem(R.id.action_download).setVisible(false);
+            }
+            if (AndroidUtil.isInstalled(v.getContext(), pack.getPackageName())) {
+                menu.findItem(R.id.action_install).setVisible(false);
+            } else {
+                if (!pack.fileExists()) {
+                    menu.findItem(R.id.action_install).setVisible(false);
+                }
+                menu.findItem(R.id.action_open).setVisible(false);
+                menu.findItem(R.id.action_uninstall).setVisible(false);
+            }
+            popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                @Override
+                public boolean onMenuItemClick(MenuItem item) {
+                    if (listener != null) {
+                        switch (item.getItemId()) {
+                            case R.id.action_open:
+                                listener.onOpen(pack);
+                                break;
+                            case R.id.action_install:
+                                listener.onInstall(pack);
+                                break;
+                            case R.id.action_app_info:
+                                listener.onAppInfo(pack);
+                                break;
+                            case R.id.action_uninstall:
+                                listener.onUninstall(pack);
+                                break;
+                            case R.id.action_send_package:
+                                listener.onSend(pack);
+                                break;
+                            case R.id.action_download:
+                                listener.onDownload(pack);
+                                break;
+                        }
+                        return true;
+                    }
+                    return false;
+                }
+            });
+            popupMenu.show();
         }
     }
 
