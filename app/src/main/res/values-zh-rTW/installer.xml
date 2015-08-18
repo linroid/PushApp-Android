@@ -8,6 +8,8 @@
     <string name="str_accessibility_installed">已安裝應用程式</string>
     <string name="str_accessibility_installed2">已安装</string>
     <string name="str_accessibility_installed3">安装成功</string>
+    <string name="str_accessibility_installed4">應用程式尚未安裝</string>
+    <string name="str_accessibility_installed5">未安裝應用程式</string>
 
     <string name="btn_accessibility_uninstall">卸載</string>
 
@@ -18,6 +20,10 @@
     <string name="str_accessibility_uninstalled">解除安裝完成</string>
     <string name="str_accessibility_uninstalled2">卸載完成</string>
     <string name="str_accessibility_uninstalled3">卸載完成</string>
+
+    <string name="str_accessibility_replace">取代應用程式</string>
+    <string name="str_accessibility_replace1">取代應用程式</string>
+    <string name="str_accessibility_replace_continue">繼續安裝</string>
 
     <string name="btn_accessibility_complete">完成</string>
     <string name="btn_accessibility_know">我知道了</string>

@@ -7,6 +7,8 @@
     <string name="str_accessibility_installed">App installed</string>
     <string name="str_accessibility_installed2">Application installed</string>
     <string name="str_accessibility_installed3">Install successful</string>
+    <string name="str_accessibility_installed4">App was not installed</string>
+    <string name="str_accessibility_installed5">App not installed</string>
 
     <string name="btn_accessibility_uninstall">Uninstall</string>
 
@@ -18,6 +20,9 @@
     <string name="str_accessibility_uninstalled2">Uninstall finished</string>
     <string name="str_accessibility_uninstalled3">Uninstall complete</string>
 
+    <string name="str_accessibility_replace">Replace existing app</string>
+    <string name="str_accessibility_replace1">Replace existing app</string>
+    <string name="str_accessibility_replace_continue">Install anyway</string>
 
     <string name="str_accessibility_install_blocked">Install blocked</string>
     <string name="btn_accessibility_know">OK</string>
