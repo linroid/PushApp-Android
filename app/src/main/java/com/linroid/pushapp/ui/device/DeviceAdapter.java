@@ -15,6 +15,8 @@ import android.widget.TextView;
 import com.linroid.pushapp.R;
 import com.linroid.pushapp.model.Device;
 import com.linroid.pushapp.ui.base.DataAdapter;
+import com.linroid.pushapp.ui.push.OnSelectActionListener;
+import com.linroid.pushapp.ui.push.OnSelectCountChangedListener;
 import com.linroid.pushapp.ui.push.PushActivity;
 
 import java.util.ArrayList;
@@ -26,15 +28,20 @@ import butterknife.ButterKnife;
 /**
  * Created by linroid on 7/20/15.
  */
-public class DeviceAdapter extends DataAdapter<Device, DeviceAdapter.DeviceHolder> implements PushActivity.OnSelectListener {
+public class DeviceAdapter extends DataAdapter<Device, DeviceAdapter.DeviceHolder> implements OnSelectActionListener {
     SparseArray<Boolean> deviceSelectStatus;
     boolean selectMode = false;
+    int selectedCount = 0;
+    OnSelectCountChangedListener listener;
 
     public DeviceAdapter(Activity activity) {
         deviceSelectStatus = new SparseArray<>();
         if (activity instanceof PushActivity) {
             ((PushActivity) activity).setSelectListener(this);
             selectMode = true;
+            if(activity instanceof OnSelectCountChangedListener) {
+                this.listener = (OnSelectCountChangedListener) activity;
+            }
         }
     }
 
@@ -101,7 +108,7 @@ public class DeviceAdapter extends DataAdapter<Device, DeviceAdapter.DeviceHolde
     }
 
     @Override
-    public List<Integer> onObtainSelectedDeviceIds() {
+    public List<Integer> provideSelectedDeviceIds() {
         List<Integer> selectedDeviceIds = new ArrayList<>();
         for (int i = 0; i < deviceSelectStatus.size(); i++) {
             int key = deviceSelectStatus.keyAt(i);
@@ -111,6 +118,11 @@ public class DeviceAdapter extends DataAdapter<Device, DeviceAdapter.DeviceHolde
             }
         }
         return selectedDeviceIds;
+    }
+
+    @Override
+    public int provideSelectedCount() {
+        return selectedCount;
     }
 
     class DeviceHolder extends RecyclerView.ViewHolder implements CompoundButton.OnCheckedChangeListener, View.OnClickListener {
@@ -142,6 +154,15 @@ public class DeviceAdapter extends DataAdapter<Device, DeviceAdapter.DeviceHolde
             int position = getAdapterPosition();
             Device device = data.get(position);
             deviceSelectStatus.put(device.getId(), isChecked);
+            int prevCount = selectedCount;
+            if (isChecked) {
+                selectedCount++;
+            } else {
+                selectedCount--;
+            }
+            if (listener!=null) {
+                listener.onSelectCountChanged(prevCount, selectedCount);
+            }
         }
 
         @Override

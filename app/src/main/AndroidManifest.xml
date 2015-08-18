@@ -48,11 +48,7 @@
         </activity>
         <activity
             android:name=".ui.bind.QrcodeActivity"
-            android:label="@string/title_activity_qrcode"
-            android:parentActivityName=".ui.home.HomeActivity" >
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value=".ui.home.HomeActivity" />
+            android:label="@string/title_activity_qrcode">
         </activity>
 
         <service

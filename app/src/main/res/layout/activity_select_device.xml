@@ -13,5 +13,5 @@
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab_complete"
         style="@style/Widget.FloatingActionButton"
-        android:src="@drawable/ic_fab_complete" />
+        android:src="@drawable/ic_fab_scan" />
 </android.support.design.widget.CoordinatorLayout>

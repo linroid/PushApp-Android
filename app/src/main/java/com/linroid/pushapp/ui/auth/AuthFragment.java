@@ -28,7 +28,6 @@ import javax.inject.Inject;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
-import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.functions.Func1;
@@ -122,7 +121,7 @@ public class AuthFragment extends RefreshableFragment implements AuthAdapter.OnA
 
     @Override
     public void onClick(View v) {
-        Intent intent = new Intent(v.getContext(), QrcodeActivity.class);
+        Intent intent = QrcodeActivity.createNewScanIntent(getActivity());
         startActivityForResult(intent, QrcodeActivity.REQ_SCAN_QRCODE);
     }
 

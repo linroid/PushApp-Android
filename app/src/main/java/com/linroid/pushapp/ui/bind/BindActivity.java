@@ -80,7 +80,7 @@ public class BindActivity extends BaseActivity {
 
     @OnClick(R.id.btn_open_qrcode)
     public void onOpenQrcodeBtnClick(Button btn) {
-        Intent intent = new Intent(this, QrcodeActivity.class);
+        Intent intent = QrcodeActivity.createNewScanIntent(this);
         startActivityForResult(intent, QrcodeActivity.REQ_SCAN_QRCODE);
     }
 

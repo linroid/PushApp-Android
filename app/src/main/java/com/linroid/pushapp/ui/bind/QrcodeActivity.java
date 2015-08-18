@@ -3,6 +3,7 @@ package com.linroid.pushapp.ui.bind;
 import android.app.AlertDialog;
 import android.content.ClipData;
 import android.content.ClipboardManager;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -123,6 +124,11 @@ public class QrcodeActivity extends BaseActivity {
         finish();
     }
 
+
+    public static Intent createNewScanIntent(Context source) {
+        Intent intent = new Intent(source, QrcodeActivity.class);
+        return intent;
+    }
     @Override
     protected int provideContentViewId() {
         return R.layout.activity_qrcode;
@@ -184,5 +190,4 @@ public class QrcodeActivity extends BaseActivity {
 //        }
         return super.onOptionsItemSelected(item);
     }
-
 }

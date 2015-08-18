@@ -1,5 +1,7 @@
 package com.linroid.pushapp.ui.push;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
@@ -19,6 +21,7 @@ import com.linroid.pushapp.api.PushService;
 import com.linroid.pushapp.model.Pack;
 import com.linroid.pushapp.model.Push;
 import com.linroid.pushapp.ui.base.BaseActivity;
+import com.linroid.pushapp.ui.bind.QrcodeActivity;
 import com.linroid.pushapp.ui.device.DeviceFragment;
 import com.linroid.pushapp.ui.home.HomeActivity;
 import com.linroid.pushapp.util.CountingTypedFile;
@@ -38,15 +41,15 @@ import rx.Subscriber;
 import rx.Subscription;
 
 public class PushActivity extends BaseActivity
-        implements Callback<Push> {
+        implements Callback<Push>, OnSelectCountChangedListener {
     public static final String EXTRA_PACKAGE = "package";
     public static final String EXTRA_APPLICATION_INFO = "application";
     public static final int REQUEST_PUSH = 0x9999;
-    private OnSelectListener selectListener;
+    private OnSelectActionListener selectListener;
     @Inject
     PushService installApi;
     @Bind(R.id.fab_complete)
-    FloatingActionButton completeBtn;
+    FloatingActionButton fab;
 
     Pack pack;
     ApplicationInfo appInfo;
@@ -89,7 +92,7 @@ public class PushActivity extends BaseActivity
         App.from(this).component().inject(this);
     }
 
-    public void setSelectListener(OnSelectListener selectListener) {
+    public void setSelectListener(OnSelectActionListener selectListener) {
         this.selectListener = selectListener;
     }
 
@@ -131,7 +134,11 @@ public class PushActivity extends BaseActivity
         if (selectListener == null) {
             throw new IllegalStateException();
         }
-        List<Integer> selectedIds = selectListener.onObtainSelectedDeviceIds();
+        if (selectListener.provideSelectedCount()==0) {
+            Intent intent = QrcodeActivity.createNewScanIntent(this);
+            startActivityForResult(intent, QrcodeActivity.REQ_SCAN_QRCODE);
+        }
+        List<Integer> selectedIds = selectListener.provideSelectedDeviceIds();
         if (selectedIds.size() == 0) {
             Snackbar.make(btn, R.string.error_not_select_any_device, Snackbar.LENGTH_SHORT).show();
             return;
@@ -176,7 +183,7 @@ public class PushActivity extends BaseActivity
 
     @Override
     public void failure(RetrofitError error) {
-        Snackbar.make(completeBtn, error.getMessage(), Snackbar.LENGTH_SHORT).show();
+        Snackbar.make(fab, error.getMessage(), Snackbar.LENGTH_SHORT).show();
     }
 
     @Override
@@ -187,11 +194,38 @@ public class PushActivity extends BaseActivity
         }
     }
 
-    public interface OnSelectListener {
-        void onSelectAll();
-
-        void onSelectNone();
-
-        List<Integer> onObtainSelectedDeviceIds();
+    @Override
+    public void onSelectCountChanged(int prev, int current) {
+        if (current == 0) {
+            switchFabIcon(R.drawable.ic_fab_scan);
+        } else if(prev==0) {
+            switchFabIcon(R.drawable.ic_fab_complete);
+        }
+    }
+    private void switchFabIcon(final int drawableResId) {
+        final long duration = getResources().getInteger(android.R.integer.config_shortAnimTime);
+        fab.animate()
+            .scaleX(0f)
+            .scaleY(0f)
+            .setDuration(duration)
+            .setListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    fab.setImageDrawable(getResources().getDrawable(drawableResId));
+                    fab.animate()
+                            .scaleX(1.f)
+                            .scaleY(1.f)
+                            .setDuration(duration)
+                            .setListener(new AnimatorListenerAdapter() {
+                                @Override
+                                public void onAnimationEnd(Animator animation) {
+                                    fab.setScaleX(1.f);
+                                    fab.setScaleY(1.f);
+                                }
+                            })
+                            .start();
+                }
+            })
+            .start();
     }
 }
