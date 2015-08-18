@@ -46,6 +46,7 @@ public class QrcodeActivity extends BaseActivity {
         if (state != null) {
             isTorchOn = state.getBoolean(STATE_TORCH);
         }
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         scannerView.setStatusText(getString(R.string.msg_scanner, BuildConfig.HOST_URL));
         capture = new CaptureManager(this, this.scannerView);
         capture.initializeFromIntent(getIntent(), state);
@@ -188,6 +189,11 @@ public class QrcodeActivity extends BaseActivity {
 //                item.setTitle(isTorchOn ? R.string.action_torch_on : R.string.action_torch_off);
 //                return true;
 //        }
+        if (item.getItemId() == android.R.id.home) {
+            setResult(RESULT_CANCELED);
+            finish();
+            return true;
+        }
         return super.onOptionsItemSelected(item);
     }
 }

@@ -34,6 +34,10 @@ public abstract class BaseActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
+            if (NavUtils.getParentActivityIntent(this) != null) {
+                finish();
+                return true;
+            }
             NavUtils.navigateUpTo(this, NavUtils.getParentActivityIntent(this));
             return true;
         }
