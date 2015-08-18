@@ -60,4 +60,5 @@
     <string name="pref_open_source_license">open_source_license</string>
     <string name="pref_developer">developer</string>
     <string name="pref_version">version</string>
+    <string name="action_app_info">应用信息</string>
 </resources>
