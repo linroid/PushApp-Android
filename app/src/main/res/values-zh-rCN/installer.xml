@@ -8,6 +8,8 @@
     <string name="str_accessibility_installed">安装完成</string>
     <string name="str_accessibility_installed2">已安装</string>
     <string name="str_accessibility_installed3">安装成功</string>
+    <string name="str_accessibility_installed4">安装失败</string>
+    <string name="str_accessibility_installed5">应用未安装</string>
 
     <string name="btn_accessibility_uninstall">卸载</string>
 
@@ -19,13 +21,15 @@
     <string name="str_accessibility_uninstalled2">卸载完成</string>
     <string name="str_accessibility_uninstalled3">卸载完成</string>
 
+    <string name="str_accessibility_replace">替换应用</string>
+    <string name="str_accessibility_replace1">更换应用</string>
+    <string name="str_accessibility_replace_continue">继续安装</string>
 
     <string name="btn_accessibility_know">我知道了</string>
     <string name="btn_accessibility_open">打开</string>
     <string name="btn_accessibility_run">运行</string>
     <string name="btn_accessibility_done">完成</string>
     <string name="str_accessibility_error">解析错误</string>
-
 
     <string name="btn_accessibility_complete">完成</string>
     <string name="btn_accessibility_allow_once">仅允许一次</string>

@@ -29,15 +29,12 @@ import com.linroid.pushapp.model.Binding;
 import com.linroid.pushapp.service.ApkAutoInstallService;
 import com.linroid.pushapp.ui.base.BaseActivity;
 import com.linroid.pushapp.ui.bind.BindActivity;
-import com.linroid.pushapp.ui.bind.QrcodeActivity;
 import com.linroid.pushapp.ui.setting.SettingActivity;
 
 import javax.inject.Inject;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
-import hugo.weaving.DebugLog;
 import timber.log.Timber;
 
 public class HomeActivity extends BaseActivity {
@@ -117,7 +114,7 @@ public class HomeActivity extends BaseActivity {
 
     private void checkAutoInstall() {
         boolean confirmed = preferences.getBoolean(Constants.SP_AUTO_INSTALL_CONFIRMED, false);
-        if (!confirmed && ApkAutoInstallService.avaliable()) {
+        if (!confirmed && ApkAutoInstallService.available()) {
             new AlertDialog.Builder(this).setTitle(R.string.title_auto_install_confirm_dialog)
                     .setMessage(R.string.msg_auto_install_confirm_dialog)
                     .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {

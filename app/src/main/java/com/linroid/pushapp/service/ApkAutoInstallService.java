@@ -5,8 +5,6 @@ import android.accessibilityservice.AccessibilityService;
 import android.annotation.TargetApi;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
-import android.content.Intent;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Build.VERSION;
 import android.support.v4.app.NotificationCompat;
@@ -24,7 +22,6 @@ import com.linroid.pushapp.util.AndroidUtil;
 import com.linroid.pushapp.util.BooleanPreference;
 import com.linroid.pushapp.util.DeviceUtil;
 
-import java.io.File;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -43,7 +40,7 @@ import timber.log.Timber;
  */
 @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
 public class ApkAutoInstallService extends AccessibilityService {
-    public static final int AVALIABLE_API = 16;
+    public static final int AVAILABLE_API = 16;
     private static final String CLASS_NAME_APP_ALERT_DIALOG = "android.app.AlertDialog";
     private static final String CLASS_NAME_LENOVO_SAFECENTER = "com.lenovo.safecenter";
     private static final String CLASS_NAME_PACKAGE_INSTALLER = "com.android.packageinstaller";
@@ -66,18 +63,6 @@ public class ApkAutoInstallService extends AccessibilityService {
     public BooleanPreference autoOpen;
     @Inject
     NotificationManager notificationManager;
-
-    @Override
-    public void onCreate() {
-        super.onCreate();
-        App.from(this).component().inject(this);
-    }
-
-    @DebugLog
-    @Override
-    protected void onServiceConnected() {
-        super.onServiceConnected();
-    }
 
     /**
      * 安装应用
@@ -114,9 +99,25 @@ public class ApkAutoInstallService extends AccessibilityService {
         }
     }
 
+    public static boolean available() {
+        return VERSION.SDK_INT >= AVAILABLE_API;
+    }
+
+    @Override
+    public void onCreate() {
+        super.onCreate();
+        App.from(this).component().inject(this);
+    }
+
+    @DebugLog
+    @Override
+    protected void onServiceConnected() {
+        super.onServiceConnected();
+    }
+
     @Override
     public void onAccessibilityEvent(AccessibilityEvent event) {
-        if (enable && avaliable()) {
+        if (enable && available()) {
             try {
                 onProcessAccessibilityEvent(event);
             } catch (Exception e) {
@@ -136,7 +137,6 @@ public class ApkAutoInstallService extends AccessibilityService {
         return true;
     }
 
-
     private void onProcessAccessibilityEvent(AccessibilityEvent event) {
         if (event.getSource() == null) {
             return;
@@ -146,27 +146,26 @@ public class ApkAutoInstallService extends AccessibilityService {
         String sourceText = event.getSource().getText() == null ? BuildConfig.VERSION_NAME : event.getSource().getText().toString().trim();
         if (packageName.equals(CLASS_NAME_PACKAGE_INSTALLER)) {
             if (isApplicationInstallEvent(event, className, sourceText)) {
-                //准备安装
-                onApplicationInstall(event);
-            }
-            if (className.equalsIgnoreCase(CLASS_NAME_APP_ALERT_DIALOG)) {
-                //弹窗，如授权操作
-                processAlertDialogEvent(event, className, sourceText);
-            } else if (isApplicationUninstalledEvent(event, className, sourceText)) {
-                //卸载完成
-                onApplicationUninstalled(event);
-            } else if (isApplicationInstalledEvent(event, className, sourceText)) {
-                //安装完成
-                onApplicationInstalled(event);
-            } else if (isApplicationUninstallEvent(event, className, sourceText)) {
-                //准备卸载
-                onApplicationUninstall(event);
-            } else if (isApplicationInstallEvent(event, className, sourceText)) {
-                //准备安装
+                // 准备安装
                 onApplicationInstall(event);
             } else if (hasAccessibilityNodeInfoByText(event, getString(R.string.str_accessibility_install_blocked))) {
-                //准备安装
+                // 准备安装
                 onApplicationInstall(event, false);
+            } else if (isApplicationInstalledEvent(event, className, sourceText)) {
+                // 安装完成
+                onApplicationInstalled(event);
+            } else if (isApplicationInstallFailedEvent(event, className, sourceText)) {
+                // 安装失败
+                onInstallFail(event);
+            } else if (className.equalsIgnoreCase(CLASS_NAME_APP_ALERT_DIALOG)) {
+                // 弹窗，如授权操作
+                processAlertDialogEvent(event, className, sourceText);
+            } else if (isApplicationUninstallEvent(event, className, sourceText)) {
+                // 准备卸载
+                onApplicationUninstall(event);
+            } else if (isApplicationUninstalledEvent(event, className, sourceText)) {
+                // 卸载完成
+                onApplicationUninstalled(event);
             }
         } else if (packageName.equals(CLASS_NAME_LENOVO_SAFECENTER)) {
             processLenovoEvent(event, className, sourceText);
@@ -186,6 +185,19 @@ public class ApkAutoInstallService extends AccessibilityService {
                 || sourceText.contains(getString(R.string.btn_accessibility_install));
     }
 
+    /**
+     * 是否是安装失败界面
+     *
+     * @param event
+     * @param className
+     * @param sourceText
+     * @return
+     */
+    private boolean isApplicationInstallFailedEvent(AccessibilityEvent event, String className, String sourceText) {
+        return className.equalsIgnoreCase(CLASS_NAME_WIDGET_TEXTVIEW)
+                && (sourceText.contains(getString(R.string.str_accessibility_installed4))
+                || sourceText.contains(getString(R.string.str_accessibility_installed5)));
+    }
 
     /**
      * 是否是安装完成事件
@@ -255,6 +267,13 @@ public class ApkAutoInstallService extends AccessibilityService {
                 performClick(nodeInfo);
                 nodeInfo.recycle();
             }
+        } else if (eventText.contains(getString(R.string.str_accessibility_replace))
+                || eventText.contains(getString(R.string.str_accessibility_replace1))) {
+            AccessibilityNodeInfo nodeInfo = getAccessibilityNodeInfoByText(event, getString(R.string.btn_accessibility_ok));
+            if (nodeInfo != null) {
+                performClick(nodeInfo);
+                nodeInfo.recycle();
+            }
         }
     }
 
@@ -268,7 +287,6 @@ public class ApkAutoInstallService extends AccessibilityService {
             onApplicationInstall(event, CLASS_NAME_WIDGET_TEXTVIEW);
         }
     }
-
 
     /**
      * 安装失败
@@ -317,6 +335,12 @@ public class ApkAutoInstallService extends AccessibilityService {
                 onApplicationInstall(event);
                 nodeInfo.recycle();
             }
+            nodeInfo = getAccessibilityNodeInfoByText(event, getString(R.string.str_accessibility_replace_continue));
+            if (nodeInfo != null) {
+                performClick(nodeInfo);
+                onApplicationInstall(event);
+                nodeInfo.recycle();
+            }
         }
     }
 
@@ -330,7 +354,7 @@ public class ApkAutoInstallService extends AccessibilityService {
         AccessibilityNodeInfo validInfo = getValidAccessibilityNodeInfo(event, sInstallList);
         if (validInfo != null) {
             if (autoOpen.getValue()) {
-                boolean openSuccess =  openAfterInstalled(event);
+                boolean openSuccess = openAfterInstalled(event);
                 Timber.d("成功打开？%s", openSuccess);
             }
             String label = validInfo.getText().toString();
@@ -345,8 +369,9 @@ public class ApkAutoInstallService extends AccessibilityService {
 
     /**
      * 通过应用名称从列表中移除
-     * @param list 保存的列表
-     * @param appName 应用名称
+     *
+     * @param list             保存的列表
+     * @param appName          应用名称
      * @param becauseInstalled 是因为安装完成了才移除的
      */
     private void removePackFromListByAppName(SparseArray<Pack> list, String appName, boolean becauseInstalled) {
@@ -361,13 +386,14 @@ public class ApkAutoInstallService extends AccessibilityService {
                 break;
             }
         }
-        if (sInstallList.size() == 0 && sUninstallList.size()==0) {
+        if (sInstallList.size() == 0 && sUninstallList.size() == 0) {
             enable = false;
         }
     }
 
     /**
      * 显示安装完成的通知
+     *
      * @param pack
      */
     private void showInstalledNotification(Pack pack) {
@@ -407,11 +433,14 @@ public class ApkAutoInstallService extends AccessibilityService {
 
     /**
      * 安装完成之后关闭安装窗口
+     *
      * @param event
      * @return
      */
-    private boolean closeAfterInstalled(AccessibilityEvent event){
-        AccessibilityNodeInfo eventInfo;
+    private boolean closeAfterInstalled(AccessibilityEvent event) {
+        performGlobalAction(GLOBAL_ACTION_BACK);
+        return true;
+        /*AccessibilityNodeInfo eventInfo;
         if (event != null && event.getSource() != null) {
             eventInfo = event.getSource();
         } else {
@@ -421,15 +450,15 @@ public class ApkAutoInstallService extends AccessibilityService {
         if (eventInfo != null) {
             success =
                     performEventAction(eventInfo, getString(R.string.btn_accessibility_ok), false)
-                    || performEventAction(eventInfo, getString(R.string.btn_accessibility_done), false)
-                    || performEventAction(eventInfo, getString(R.string.btn_accessibility_complete), false)
-                    || performEventAction(eventInfo, getString(R.string.btn_accessibility_know), false)
-                    || performEventAction(eventInfo, getString(R.string.btn_accessibility_know), false)
-                    || performEventAction(eventInfo, getString(R.string.btn_accessibility_run), true)
-                    || performEventAction(eventInfo, getString(R.string.btn_accessibility_open), true);
+                            || performEventAction(eventInfo, getString(R.string.btn_accessibility_done), false)
+                            || performEventAction(eventInfo, getString(R.string.btn_accessibility_complete), false)
+                            || performEventAction(eventInfo, getString(R.string.btn_accessibility_know), false)
+                            || performEventAction(eventInfo, getString(R.string.btn_accessibility_know), false)
+                            || performEventAction(eventInfo, getString(R.string.btn_accessibility_run), true)
+                            || performEventAction(eventInfo, getString(R.string.btn_accessibility_open), true);
             eventInfo.recycle();
         }
-        return success;
+        return success;*/
     }
 
     /**
@@ -477,7 +506,9 @@ public class ApkAutoInstallService extends AccessibilityService {
      * @return
      */
     private boolean processApplicationUninstalled(AccessibilityEvent event) {
-        AccessibilityNodeInfo eventInfo = null;
+        performGlobalAction(GLOBAL_ACTION_BACK);
+        return true;
+        /*AccessibilityNodeInfo eventInfo = null;
         if (event != null && event.getSource() != null) {
             eventInfo = event.getSource();
         } else {
@@ -489,7 +520,7 @@ public class ApkAutoInstallService extends AccessibilityService {
                     || performEventAction(eventInfo, getString(R.string.btn_accessibility_know), false);
             eventInfo.recycle();
         }
-        return success;
+        return success;*/
     }
 
     private boolean hasAccessibilityNodeInfoByText(AccessibilityEvent event, int resId) {
@@ -620,9 +651,5 @@ public class ApkAutoInstallService extends AccessibilityService {
                 && node.isEnabled()
                 && node.isClickable()
                 && node.performAction(AccessibilityNodeInfo.ACTION_CLICK);
-    }
-
-    public static boolean avaliable() {
-        return VERSION.SDK_INT >= AVALIABLE_API;
     }
 }
