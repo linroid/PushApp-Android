@@ -65,4 +65,5 @@
     <string name="toast_download_complete">%s 下载完成</string>
     <string name="toast_start_install">%s 下载完成,开始安装</string>
     <string name="toast_download_failed">%s 下载失败</string>
+    <string name="action_qrcode">设备二维码</string>
 </resources>

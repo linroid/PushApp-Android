@@ -3,4 +3,6 @@
     xmlns:tools="http://schemas.android.com/tools" tools:context=".HomeActivity">
     <item android:id="@+id/action_settings" android:title="@string/action_settings"
         android:orderInCategory="100" app:showAsAction="never" />
+    <item android:id="@+id/action_qrcode" android:title="@string/action_qrcode"
+        android:orderInCategory="1" app:showAsAction="never" />
 </menu>

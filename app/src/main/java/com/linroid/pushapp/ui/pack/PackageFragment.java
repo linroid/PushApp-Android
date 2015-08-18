@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.v7.widget.RecyclerView;
 import android.widget.Toast;
 
@@ -153,7 +154,7 @@ public class PackageFragment extends RefreshableFragment implements PackageAdapt
                     @Override
                     public void onError(Throwable e) {
                         loaderView.refreshLayout.setRefreshing(false);
-                        Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_SHORT).show();
+                        Snackbar.make(loaderView, e.getMessage(), Snackbar.LENGTH_SHORT).show();
                     }
 
                     @DebugLog
@@ -175,7 +176,7 @@ public class PackageFragment extends RefreshableFragment implements PackageAdapt
     @Override
     public void onInstall(Pack pack) {
         ApkAutoInstallService.addInstallPackage(pack);
-        startActivity(IntentUtil.appInfo(pack.getPath()));
+        startActivity(IntentUtil.installApk(pack.getPath()));
     }
 
     @Override
