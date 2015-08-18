@@ -9,12 +9,11 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.Uri;
-import android.os.Handler;
 import android.os.IBinder;
-import android.os.Looper;
 import android.os.PowerManager;
 import android.support.v4.app.NotificationCompat;
 import android.text.TextUtils;
+import android.widget.Toast;
 
 import com.linroid.pushapp.App;
 import com.linroid.pushapp.Constants;
@@ -23,6 +22,7 @@ import com.linroid.pushapp.model.Pack;
 import com.linroid.pushapp.module.identifier.PackageDownloadDir;
 import com.linroid.pushapp.util.AndroidUtil;
 import com.linroid.pushapp.util.BooleanPreference;
+import com.linroid.pushapp.util.IntentUtil;
 import com.linroid.pushapp.util.StringPreference;
 import com.squareup.sqlbrite.BriteDatabase;
 import com.thin.downloadmanager.DownloadRequest;
@@ -166,8 +166,9 @@ public class DownloadService extends Service {
      * @param pack 下载的安装包
      */
     private void onDownloadComplete(Pack pack) {
+        int toastResId = R.string.toast_download_complete;
         if (autoInstall.getValue()) {
-            AndroidUtil.installApk(this, pack.getPath());
+            startActivity(IntentUtil.installApk(pack.getPath()));
             if (AndroidUtil.isAccessibilitySettingsOn(this, ApkAutoInstallService.class.getCanonicalName())) {
                 PowerManager powermanager = ((PowerManager) getSystemService(Context.POWER_SERVICE));
                 PowerManager.WakeLock wakeLock = powermanager.newWakeLock(
@@ -182,8 +183,13 @@ public class DownloadService extends Service {
                     keyguardLock.disableKeyguard();
 //                }
                 ApkAutoInstallService.addInstallPackage(pack);
+                toastResId = R.string.toast_start_install;
+            } else {
+                toastResId = R.string.toast_download_complete;
             }
         }
+        Toast.makeText(this, getString(toastResId, pack.getAppName()), Toast.LENGTH_SHORT).show();
+
     }
 
     /**
@@ -201,7 +207,11 @@ public class DownloadService extends Service {
             contentText = getString(R.string.msg_download_complete);
         } else if (progress < 0) {
             contentText = getString(R.string.msg_download_failed);
+            Toast.makeText(this, getString(R.string.toast_download_failed, pack.getAppName()), Toast.LENGTH_SHORT).show();
         } else {
+            if(progress == 0) {
+                Toast.makeText(this, getString(R.string.toast_start_download, pack.getAppName()), Toast.LENGTH_LONG).show();
+            }
             contentText = getString(R.string.msg_downloading);
         }
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this)

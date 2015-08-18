@@ -61,4 +61,8 @@
     <string name="pref_developer">developer</string>
     <string name="pref_version">version</string>
     <string name="action_app_info">应用信息</string>
+    <string name="toast_start_download">%s 开始下载…</string>
+    <string name="toast_download_complete">%s 下载完成</string>
+    <string name="toast_start_install">%s 下载完成,开始安装</string>
+    <string name="toast_download_failed">%s 下载失败</string>
 </resources>
