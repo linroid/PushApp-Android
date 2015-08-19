@@ -20,7 +20,7 @@ import com.linroid.pushapp.App;
 import com.linroid.pushapp.BuildConfig;
 import com.linroid.pushapp.R;
 import com.linroid.pushapp.api.AuthService;
-import com.linroid.pushapp.model.Binding;
+import com.linroid.pushapp.model.Account;
 import com.linroid.pushapp.model.Device;
 import com.linroid.pushapp.model.User;
 import com.linroid.pushapp.ui.base.BaseActivity;
@@ -51,7 +51,7 @@ public class BindActivity extends BaseActivity {
     @Inject
     AuthService authApi;
     @Inject
-    Binding auth;
+    Account account;
 
     private String bindToken;
     private boolean showProgress = false;
@@ -145,18 +145,17 @@ public class BindActivity extends BaseActivity {
         dialog.setMessage(getString(R.string.msg_dialog_bind));
         dialog.setCancelable(false);
         dialog.show();
-        authApi.bindDevice(bindToken, queryAndBuildDeviceInfo(), new Callback<Binding>() {
+        authApi.bindDevice(bindToken, queryAndBuildDeviceInfo(), new Callback<Account>() {
             @Override
             @DebugLog
-            public void success(Binding authInfo, Response response) {
-                authInfo.saveToFile(getApplicationContext());
+            public void success(Account authInfo, Response response) {
                 Device device = authInfo.getDevice();
                 User user = authInfo.getUser();
                 String token = authInfo.getToken();
-                auth.setDevice(device);
-                auth.setUser(user);
-                auth.setToken(token);
-                auth.saveToFile(getApplicationContext());
+                account.setDevice(device);
+                account.setUser(user);
+                account.setToken(token);
+                account.saveToFile();
 
                 dialog.dismiss();
                 redirectToHome();
@@ -214,7 +213,7 @@ public class BindActivity extends BaseActivity {
                 .withMemorySize(AndroidUtil.totalMemorySize())
                 .withToken(bindToken)
                 .withUniqueId(DeviceUtil.id(this))
-                .withPushId(JPushInterface.getRegistrationID(this))
+                .withInstallId(JPushInterface.getRegistrationID(this))
                 .build();
     }
 

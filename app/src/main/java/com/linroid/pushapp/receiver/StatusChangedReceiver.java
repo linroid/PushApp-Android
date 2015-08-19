@@ -7,7 +7,7 @@ import android.net.ConnectivityManager;
 
 import com.linroid.pushapp.App;
 import com.linroid.pushapp.api.DeviceService;
-import com.linroid.pushapp.model.Binding;
+import com.linroid.pushapp.model.Account;
 import com.linroid.pushapp.model.Device;
 import com.linroid.pushapp.util.DeviceUtil;
 
@@ -26,7 +26,7 @@ public class StatusChangedReceiver extends BroadcastReceiver {
     @Inject
     DeviceService deviceApi;
     @Inject
-    Binding auth;
+    Account auth;
 
     public StatusChangedReceiver() {
     }

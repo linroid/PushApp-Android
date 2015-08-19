@@ -1,10 +1,9 @@
 package com.linroid.pushapp.api;
 
+import com.linroid.pushapp.model.Account;
 import com.linroid.pushapp.model.Auth;
-import com.linroid.pushapp.model.Binding;
 import com.linroid.pushapp.model.Device;
 import com.linroid.pushapp.model.Pagination;
-import com.squareup.okhttp.Call;
 
 import retrofit.Callback;
 import retrofit.http.Body;
@@ -22,7 +21,7 @@ import rx.Observable;
  */
 public interface AuthService {
     @POST("/auth/bind")
-    void bindDevice(@Query("token") String token, @Body Device device, Callback<Binding> callback);
+    void bindDevice(@Query("token") String token, @Body Device device, Callback<Account> callback);
 
     @GET("/auth/check")
     void checkToken(@Query("token") String token, @Query("device_id") String deviceId, Callback<Device> callback);

@@ -13,7 +13,7 @@ import com.linroid.pushapp.BuildConfig;
 import com.linroid.pushapp.Constants;
 import com.linroid.pushapp.R;
 import com.linroid.pushapp.database.DbOpenHelper;
-import com.linroid.pushapp.model.Binding;
+import com.linroid.pushapp.model.Account;
 import com.linroid.pushapp.model.Error;
 import com.linroid.pushapp.module.identifier.DataCacheDir;
 import com.linroid.pushapp.module.identifier.HttpCacheDir;
@@ -94,7 +94,7 @@ public class DataModule {
     @Provides
     @Singleton
     RestAdapter provideRestAdapter(Gson gson, OkHttpClient okHttpClient,
-                                   final Binding auth,
+                                   final Account auth,
                                    ErrorHandler errorHandler) {
         return new RestAdapter.Builder()
                 .setErrorHandler(errorHandler)

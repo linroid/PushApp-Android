@@ -3,11 +3,10 @@ package com.linroid.pushapp.ui.setting;
 import android.app.Activity;
 import android.os.Bundle;
 import android.preference.PreferenceFragment;
-import android.support.v4.app.Fragment;
 
 import com.linroid.pushapp.App;
 import com.linroid.pushapp.R;
-import com.linroid.pushapp.model.Binding;
+import com.linroid.pushapp.model.Account;
 
 import javax.inject.Inject;
 
@@ -16,7 +15,7 @@ import javax.inject.Inject;
  */
 public class SettingFragment extends PreferenceFragment {
     @Inject
-    Binding binding;
+    Account account;
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
@@ -27,6 +26,6 @@ public class SettingFragment extends PreferenceFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         addPreferencesFromResource(R.xml.pref_general);
-        findPreference(getString(R.string.pref_bind_account)).setSummary(binding.getUser().getNickname());
+        findPreference(getString(R.string.pref_bind_account)).setSummary(account.getUser().getNickname());
     }
 }

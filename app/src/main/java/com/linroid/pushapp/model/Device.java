@@ -41,9 +41,9 @@ public class Device implements Parcelable {
     @SerializedName("unique_id")
     @Expose
     private String uniqueId;
-    @SerializedName("push_id")
+    @SerializedName("install_id")
     @Expose
-    private String pushId;
+    private String installId;
     @SerializedName("memory_size")
     @Expose
     private long memorySize;
@@ -193,17 +193,17 @@ public class Device implements Parcelable {
     }
 
     /**
-     * @param pushId The push_id
+     * @param installId The install_id
      */
-    public void setPushId(String pushId) {
-        this.pushId = pushId;
+    public void setInstallId(String installId) {
+        this.installId = installId;
     }
 
     /**
-     * @return The pushId
+     * @return The installId
      */
-    public String getPushId() {
-        return pushId;
+    public String getInstallId() {
+        return installId;
     }
 
     /**
@@ -316,7 +316,7 @@ public class Device implements Parcelable {
                 ", width=" + width +
                 ", dpi=" + dpi +
                 ", uniqueId='" + uniqueId + '\'' +
-                ", pushId='" + pushId + '\'' +
+                ", installId='" + installId + '\'' +
                 ", memorySize=" + memorySize +
                 ", cpuType='" + cpuType + '\'' +
                 ", networkType='" + networkType + '\'' +
@@ -340,7 +340,7 @@ public class Device implements Parcelable {
         device.width        = Db.getInt(cursor, DB.COLUMN_WIDTH);
         device.dpi          = Db.getInt(cursor, DB.COLUMN_DPI);
         device.uniqueId = Db.getString(cursor, DB.COLUMN_UNIQUE_ID);
-        device.pushId       = Db.getString(cursor, DB.COLUMN_PUSH_ID);
+        device.installId = Db.getString(cursor, DB.COLUMN_INSTALL_ID);
         device.memorySize   = Db.getInt(cursor, DB.COLUMN_MEMORY_SIZE);
         device.cpuType      = Db.getString(cursor, DB.COLUMN_CPU_TYPE);
         device.networkType  = Db.getString(cursor, DB.COLUMN_NETWORK_TYPE);
@@ -360,7 +360,7 @@ public class Device implements Parcelable {
         values.put(DB.COLUMN_WIDTH, width);
         values.put(DB.COLUMN_DPI, dpi);
         values.put(DB.COLUMN_UNIQUE_ID, uniqueId);
-        values.put(DB.COLUMN_PUSH_ID, pushId);
+        values.put(DB.COLUMN_INSTALL_ID, installId);
         values.put(DB.COLUMN_MEMORY_SIZE, memorySize);
         values.put(DB.COLUMN_CPU_TYPE, cpuType);
         values.put(DB.COLUMN_NETWORK_TYPE, networkType);
@@ -380,7 +380,7 @@ public class Device implements Parcelable {
         private int width;
         private int dpi;
         private String uniqueId;
-        private String pushId;
+        private String installId;
         private long memorySize;
         private String cpuType;
         private String token;
@@ -441,8 +441,8 @@ public class Device implements Parcelable {
             return this;
         }
 
-        public DeviceBuilder withPushId(String pushId) {
-            this.pushId = pushId;
+        public DeviceBuilder withInstallId(String installId) {
+            this.installId = installId;
             return this;
         }
 
@@ -496,7 +496,7 @@ public class Device implements Parcelable {
             device.setWidth(width);
             device.setDpi(dpi);
             device.setUniqueId(uniqueId);
-            device.setPushId(pushId);
+            device.setInstallId(installId);
             device.setMemorySize(memorySize);
             device.setCpuType(cpuType);
             device.setNetworkType(networkType);
@@ -523,7 +523,7 @@ public class Device implements Parcelable {
         dest.writeInt(this.width);
         dest.writeInt(this.dpi);
         dest.writeString(this.uniqueId);
-        dest.writeString(this.pushId);
+        dest.writeString(this.installId);
         dest.writeLong(this.memorySize);
         dest.writeString(this.cpuType);
         dest.writeString(this.networkType);
@@ -543,7 +543,7 @@ public class Device implements Parcelable {
         this.width = in.readInt();
         this.dpi = in.readInt();
         this.uniqueId = in.readString();
-        this.pushId = in.readString();
+        this.installId = in.readString();
         this.memorySize = in.readLong();
         this.cpuType = in.readString();
         this.networkType = in.readString();
@@ -576,7 +576,7 @@ public class Device implements Parcelable {
         public static final String COLUMN_WIDTH = "width";
         public static final String COLUMN_DPI = "dpi";
         public static final String COLUMN_UNIQUE_ID = "unique_id";
-        public static final String COLUMN_PUSH_ID = "push_id";
+        public static final String COLUMN_INSTALL_ID = "install_id";
         public static final String COLUMN_MEMORY_SIZE = "memory_size";
         public static final String COLUMN_CPU_TYPE = "cpu_type";
         public static final String COLUMN_NETWORK_TYPE = "network_type";
@@ -595,7 +595,7 @@ public class Device implements Parcelable {
                 + COLUMN_WIDTH + " INTEGER NOT NULL,"
                 + COLUMN_DPI + " INTEGER NOT NULL,"
                 + COLUMN_UNIQUE_ID + " TEXT NOT NULL,"
-                + COLUMN_PUSH_ID + " TEXT NOT NULL,"
+                + COLUMN_INSTALL_ID + " TEXT NOT NULL,"
                 + COLUMN_MEMORY_SIZE + " INTEGER NOT NULL,"
                 + COLUMN_CPU_TYPE + " TEXT NOT NULL,"
                 + COLUMN_NETWORK_TYPE + " TEXT NOT NULL,"

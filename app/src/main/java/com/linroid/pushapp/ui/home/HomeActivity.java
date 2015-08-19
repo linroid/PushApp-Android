@@ -25,7 +25,7 @@ import android.view.View;
 import com.linroid.pushapp.App;
 import com.linroid.pushapp.Constants;
 import com.linroid.pushapp.R;
-import com.linroid.pushapp.model.Binding;
+import com.linroid.pushapp.model.Account;
 import com.linroid.pushapp.service.ApkAutoInstallService;
 import com.linroid.pushapp.ui.base.BaseActivity;
 import com.linroid.pushapp.ui.bind.BindActivity;
@@ -50,7 +50,7 @@ public class HomeActivity extends BaseActivity {
     FloatingActionButton fab;
 
     @Inject
-    Binding auth;
+    Account auth;
     @Inject
     SharedPreferences preferences;
 

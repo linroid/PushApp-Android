@@ -21,13 +21,16 @@ import timber.log.Timber;
 /**
  * Created by linroid on 7/25/15.
  */
-public class Binding implements Parcelable {
+public class Account implements Parcelable {
     @Expose
     private Device device;
     @Expose
     private User user;
     @Expose
     private String token;
+
+    private File file;
+
 
     public String getToken() {
         return token;
@@ -62,13 +65,12 @@ public class Binding implements Parcelable {
         return !TextUtils.isEmpty(token);
     }
 
-    public boolean saveToFile(Context context) {
+    public boolean saveToFile() {
         Gson gson = new Gson();
         String json = gson.toJson(this);
-        File saveFile = new File(context.getFilesDir(), "auth.json");
         Writer writer = null;
         try {
-            writer = new FileWriter(saveFile);
+            writer = new FileWriter(this.file);
             writer.write(json);
             writer.close();
         } catch (IOException e) {
@@ -78,29 +80,28 @@ public class Binding implements Parcelable {
         return true;
     }
 
-    public static Binding readFromFile(Context context) {
-        File saveFile = new File(context.getFilesDir(), "auth.json");
-        Binding auth = null;
+    public static Account readFromFile(File file) {
+        Account account = null;
         try {
-            Reader reader = new FileReader(saveFile);
+            Reader reader = new FileReader(file);
             Gson gson = new Gson();
-            auth = gson.fromJson(reader, Binding.class);
+            account = gson.fromJson(reader, Account.class);
         } catch (FileNotFoundException e) {
             Timber.e("read auth info from file fail", e);
         }
-        return auth;
+        return account;
     }
 
     @Override
     public String toString() {
-        return "Binding{" +
+        return "Account{" +
                 "device=" + device +
                 ", user=" + user +
                 ", token='" + token + '\'' +
                 '}';
     }
 
-    public Binding() {
+    public Account() {
     }
 
     @Override
@@ -115,19 +116,23 @@ public class Binding implements Parcelable {
         dest.writeString(this.token);
     }
 
-    protected Binding(Parcel in) {
+    protected Account(Parcel in) {
         this.device = in.readParcelable(Device.class.getClassLoader());
         this.user = in.readParcelable(User.class.getClassLoader());
         this.token = in.readString();
     }
 
-    public static final Creator<Binding> CREATOR = new Creator<Binding>() {
-        public Binding createFromParcel(Parcel source) {
-            return new Binding(source);
+    public static final Creator<Account> CREATOR = new Creator<Account>() {
+        public Account createFromParcel(Parcel source) {
+            return new Account(source);
         }
 
-        public Binding[] newArray(int size) {
-            return new Binding[size];
+        public Account[] newArray(int size) {
+            return new Account[size];
         }
     };
+
+    public void setFile(File file) {
+        this.file = file;
+    }
 }

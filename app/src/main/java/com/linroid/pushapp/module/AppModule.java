@@ -8,11 +8,14 @@ import android.content.res.Resources;
 
 import com.linroid.pushapp.App;
 import com.linroid.pushapp.Constants;
-import com.linroid.pushapp.model.Binding;
+import com.linroid.pushapp.model.Account;
+import com.linroid.pushapp.module.identifier.AccountSavedFile;
 import com.linroid.pushapp.util.BooleanPreference;
 import com.linroid.pushapp.util.StringPreference;
 import com.squareup.leakcanary.LeakCanary;
 import com.squareup.leakcanary.RefWatcher;
+
+import java.io.File;
 
 import javax.inject.Named;
 import javax.inject.Singleton;
@@ -92,12 +95,13 @@ public class AppModule {
 
     @Provides
     @Singleton
-    Binding provideAuthorization(Context context) {
-        Binding auth = Binding.readFromFile(context);
-        if(auth == null){
-            auth = new Binding();
+    Account provideAuthorization(@AccountSavedFile File accountFile) {
+        Account account = Account.readFromFile(accountFile);
+        if(account == null){
+            account = new Account();
         }
-        return auth;
+        account.setFile(accountFile);
+        return account;
     }
 
     @Provides
