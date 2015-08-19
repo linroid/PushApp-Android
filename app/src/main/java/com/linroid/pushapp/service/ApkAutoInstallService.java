@@ -46,6 +46,7 @@ public class ApkAutoInstallService extends AccessibilityService {
 
     public static final int INSTALL_TIMEOUT = 60000;
     public static final int UNINSTALL_TIMEOUT = 5000;
+    public static final int INSTALL_RETRY_INTERVAL = 1000;
 
     private static final String CLASS_NAME_APP_ALERT_DIALOG = "android.app.AlertDialog";
     private static final String CLASS_NAME_LENOVO_SAFECENTER = "com.lenovo.safecenter";
@@ -77,15 +78,28 @@ public class ApkAutoInstallService extends AccessibilityService {
     Runnable handleInstallTimeout = new Runnable() {
         @Override
         public void run() {
-            openAfterInstalled(null);
+            AccessibilityNodeInfo validInfo = getRootInActiveWindow();
+            if (validInfo != null) {
+                if (autoOpen.getValue()) {
+                    boolean openSuccess = openAfterInstalled(null);
+                    Timber.d("成功打开？%s", openSuccess);
+                }
+                String label = validInfo.getText().toString();
+                removePackFromListByAppName(sInstallList, label, true);
+                validInfo.recycle();
+            }
         }
     };
 
     Runnable handleUninstallTimeout = new Runnable() {
         @Override
         public void run() {
+            // 卸载超时，先尝试点击完成（即卸载成功），然后再看有没有待装的应用（即先卸载再安装的）
             AccessibilityNodeInfo eventInfo = getRootInActiveWindow();
-            if (eventInfo != null) {
+            if (eventInfo != null && sUninstallList != null
+                    && eventInfo.getText() != null) {
+                String label = eventInfo.getText().toString();
+                removePackFromListByAppName(sUninstallList, label); // waring： 此处可能找不到
                 boolean success = performEventAction(eventInfo, getString(R.string.btn_accessibility_ok), false)
                         || performEventAction(eventInfo, getString(R.string.btn_accessibility_know), false);
                 eventInfo.recycle();
@@ -160,11 +174,13 @@ public class ApkAutoInstallService extends AccessibilityService {
             for (int i = 0; i < sPrepareList.size(); i++) {
                 int key = sPrepareList.keyAt(i);
                 pack = sPrepareList.get(key);
+                sPrepareList.remove(key);
             }
         }
 
-        if (pack == null){
+        if (pack == null) {
             pack = sPrepareList.get(sPrepareList.size() - 1);
+            sPrepareList.removeAt(sPrepareList.size() - 1);
         }
 
         addInstallPackage(pack);
@@ -364,26 +380,55 @@ public class ApkAutoInstallService extends AccessibilityService {
      */
     private void onInstallFail(AccessibilityEvent event) {
         Timber.e("安装失败");
+        performGlobalAction(AccessibilityService.GLOBAL_ACTION_BACK);
+
+        // 从 sInstallList 转移到 prepare 的流程（先卸载再安装
+        if (sInstallList != null && sInstallList.size() > 0) {
+            AccessibilityNodeInfo validInfo = getValidAccessibilityNodeInfo(event, sInstallList);
+            if (validInfo != null && processApplicationUninstalled(event)
+                    && validInfo.getText() != null) {
+                String label = validInfo.getText().toString();
+                removePackFromListByAppName(sInstallList, label);
+                for (int i = 0; i < sInstallList.size(); i++) {
+                    int key = sInstallList.keyAt(i);
+                    Pack pack = sInstallList.get(key);
+                    if (pack.getAppName().equals(label)) {
+                        addPrepareInstallApplication(pack);
+                        sInstallList.remove(key);
+                        startActivity(IntentUtil.uninstallApp(pack.getPath()));
+                        break;
+                    }
+                }
+                validInfo.recycle();
+            }
+        }
+
     }
 
     private void onApplicationInstall(AccessibilityEvent event) {
-        onApplicationInstall(event, DeviceUtil.isFlyme() ? CLASS_NAME_WIDGET_TEXTVIEW : CLASS_NAME_WIDGET_BUTTON, true);
+        onApplicationInstall(event, DeviceUtil.isFlyme() ? CLASS_NAME_WIDGET_TEXTVIEW : CLASS_NAME_WIDGET_BUTTON,
+                true, false);
     }
 
     private void onApplicationInstall(AccessibilityEvent event, boolean maybeValidate) {
-        onApplicationInstall(event, DeviceUtil.isFlyme() ? CLASS_NAME_WIDGET_TEXTVIEW : CLASS_NAME_WIDGET_BUTTON, maybeValidate);
+        onApplicationInstall(event, DeviceUtil.isFlyme() ? CLASS_NAME_WIDGET_TEXTVIEW : CLASS_NAME_WIDGET_BUTTON,
+                maybeValidate, false);
     }
 
     private void onApplicationInstall(AccessibilityEvent event, String nodeClassName) {
-        onApplicationInstall(event, nodeClassName, true);
+        onApplicationInstall(event, nodeClassName, true, false);
     }
 
     /**
      * 准备安装
      *
-     * @param event
+     * @param event Accessibility 捕获到的事件
+     * @param nodeClassName 需要遍历的节点是什么类型的
+     * @param maybeValidate 是否需要校验
+     * @param isRetry 是否是重试
      */
-    private void onApplicationInstall(AccessibilityEvent event, String nodeClassName, boolean maybeValidate) {
+    private void onApplicationInstall(final AccessibilityEvent event, final String nodeClassName,
+                                      final boolean maybeValidate, boolean isRetry) {
         Timber.d("准备安装");
 
         // 设置安装超时（即最后未捕获到安装失败的话）
@@ -414,7 +459,18 @@ public class ApkAutoInstallService extends AccessibilityService {
                 onApplicationInstall(event);
                 nodeInfo.recycle();
             }
+
+            // 低端机型，页面还没加载出来，事件却已经先发到了，故加入延迟机制
+            if (nodeInfo == null && !isRetry) {
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        onApplicationInstall(event, nodeClassName,maybeValidate, true);
+                    }
+                }, INSTALL_RETRY_INTERVAL);
+            }
         }
+
     }
 
     /**
@@ -677,9 +733,17 @@ public class ApkAutoInstallService extends AccessibilityService {
      */
     private AccessibilityNodeInfo getAccessibilityNodeInfoByText(AccessibilityEvent event, String text) {
         List<AccessibilityNodeInfo> nodes = null;
-        if (event != null && event.getSource() != null) {
-            nodes = event.getSource().findAccessibilityNodeInfosByText(text);
-        } else {
+        // 加入try-catch防崩溃，因为安装时的延迟调用可能会导致 event.getSource 产生奇妙的 NullPointerException
+        try {
+            if (event != null && event.getSource() != null) {
+                nodes = event.getSource().findAccessibilityNodeInfosByText(text);
+            }
+        } catch (Exception e) {
+
+        }
+
+        // 不用else，而是主动判断，提高识别的成功率
+        if (nodes == null || nodes.size() == 0){
             AccessibilityNodeInfo info = getRootInActiveWindow();
             if (info != null) {
                 nodes = info.findAccessibilityNodeInfosByText(text);
