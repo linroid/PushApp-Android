@@ -21,4 +21,8 @@ public class Constants {
 
     public static final int DB_VERSION = 2;
     public static final String DB_NAME = "pushapp.db";
+
+    public static final String QRCODE_KEY_AUTH = "auth";
+    public static final String QRCODE = "qrcode";
+    public static final String QRCODE_KEY_DEVICE = "device";
 }

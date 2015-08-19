@@ -12,6 +12,7 @@ import android.text.TextUtils;
 import android.view.View;
 
 import com.linroid.pushapp.App;
+import com.linroid.pushapp.Constants;
 import com.linroid.pushapp.R;
 import com.linroid.pushapp.api.AuthService;
 import com.linroid.pushapp.model.Auth;
@@ -19,7 +20,6 @@ import com.linroid.pushapp.model.Pagination;
 import com.linroid.pushapp.ui.base.RefreshableFragment;
 import com.linroid.pushapp.ui.bind.QrcodeActivity;
 import com.squareup.picasso.Picasso;
-import static  com.linroid.pushapp.ui.bind.QrcodeActivity.ARG_BIND_TOKEN;
 
 import java.util.List;
 
@@ -121,7 +121,7 @@ public class AuthFragment extends RefreshableFragment implements AuthAdapter.OnA
 
     @Override
     public void onClick(View v) {
-        Intent intent = QrcodeActivity.createNewScanIntent(getActivity());
+        Intent intent = QrcodeActivity.createNewScanIntent(getActivity(), Constants.QRCODE_KEY_AUTH);
         startActivityForResult(intent, QrcodeActivity.REQ_SCAN_QRCODE);
     }
 
@@ -129,10 +129,7 @@ public class AuthFragment extends RefreshableFragment implements AuthAdapter.OnA
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if(requestCode == QrcodeActivity.REQ_SCAN_QRCODE && resultCode == Activity.RESULT_OK) {
-            String token = null;
-            if (data.hasExtra(ARG_BIND_TOKEN)) {
-                token = data.getStringExtra(ARG_BIND_TOKEN);
-            }
+            String token = data.getStringExtra(QrcodeActivity.EXTRA_QRCODE_VALUE);
             if (!TextUtils.isEmpty(token)) {
                 authUser(token);
                 Snackbar.make(fab, R.string.msg_auth_snack, Snackbar.LENGTH_LONG).show();

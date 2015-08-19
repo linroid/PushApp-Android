@@ -22,6 +22,7 @@ import com.journeyapps.barcodescanner.BarcodeResult;
 import com.journeyapps.barcodescanner.CaptureManager;
 import com.journeyapps.barcodescanner.CompoundBarcodeView;
 import com.linroid.pushapp.BuildConfig;
+import com.linroid.pushapp.Constants;
 import com.linroid.pushapp.R;
 import com.linroid.pushapp.ui.base.BaseActivity;
 
@@ -34,17 +35,24 @@ import timber.log.Timber;
 public class QrcodeActivity extends BaseActivity {
     public static final String STATE_TORCH = "torch";
     public static final int REQ_SCAN_QRCODE = 0x1111;
-    public static final String ARG_BIND_TOKEN = "bind_token";
+    public static final String ARG_REQUIRE_KEY = "require_key";
+    public static final String EXTRA_QRCODE_KEY = "key";
+    public static final String EXTRA_QRCODE_VALUE = "value";
     @Bind(R.id.scanner)
     public CompoundBarcodeView scannerView;
     private boolean isTorchOn = false;
     CaptureManager capture;
+    private String requireKey;
 
     @Override
     public void onCreate(Bundle state) {
         super.onCreate(state);
         if (state != null) {
             isTorchOn = state.getBoolean(STATE_TORCH);
+        }
+        Intent intent = getIntent();
+        if (intent.hasExtra(ARG_REQUIRE_KEY)) {
+            requireKey = intent.getStringExtra(ARG_REQUIRE_KEY);
         }
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         scannerView.setStatusText(getString(R.string.msg_scanner, BuildConfig.HOST_URL));
@@ -57,12 +65,18 @@ public class QrcodeActivity extends BaseActivity {
             public void barcodeResult(BarcodeResult barcodeResult) {
                 Timber.d("扫描到信息:%s", barcodeResult.getText());
                 Uri uri = Uri.parse(barcodeResult.getText());
-                if(BuildConfig.HOST.equals(uri.getHost())){
-                    String token = uri.getQueryParameter("token");
-                    if (!TextUtils.isEmpty(token) && token.length() == 64) {
-                        onScanSuccess(token);
-                        return;
+
+                List<String> segments = uri.getPathSegments();
+                if(BuildConfig.HOST.equals(uri.getHost()) && segments.size()==3) {
+                    if (Constants.QRCODE.equals(segments.get(0))) {
+                        String key = segments.get(1);
+                        String value = segments.get(2);
+                        if (TextUtils.isEmpty(requireKey) || requireKey.equals(key)) {
+                            onScanSuccess(key, value);
+                            return;
+                        }
                     }
+
                 }
                 handleUnknownQrcode(barcodeResult.getText());
             }
@@ -118,9 +132,10 @@ public class QrcodeActivity extends BaseActivity {
                 .show();
     }
 
-    private void onScanSuccess(String token) {
+    private void onScanSuccess(String key, String value) {
         Intent intent = getIntent();
-        intent.putExtra(ARG_BIND_TOKEN, token);
+        intent.putExtra(ARG_REQUIRE_KEY, key);
+        intent.putExtra(EXTRA_QRCODE_VALUE, value);
         setResult(RESULT_OK, intent);
         finish();
     }
@@ -128,6 +143,11 @@ public class QrcodeActivity extends BaseActivity {
 
     public static Intent createNewScanIntent(Context source) {
         Intent intent = new Intent(source, QrcodeActivity.class);
+        return intent;
+    }
+    public static Intent createNewScanIntent(Context source, String requireKey) {
+        Intent intent = new Intent(source, QrcodeActivity.class);
+        intent.putExtra(ARG_REQUIRE_KEY, requireKey);
         return intent;
     }
     @Override

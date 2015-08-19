@@ -18,6 +18,7 @@ import android.widget.ViewSwitcher;
 
 import com.linroid.pushapp.App;
 import com.linroid.pushapp.BuildConfig;
+import com.linroid.pushapp.Constants;
 import com.linroid.pushapp.R;
 import com.linroid.pushapp.api.AuthService;
 import com.linroid.pushapp.model.Account;
@@ -27,7 +28,6 @@ import com.linroid.pushapp.ui.base.BaseActivity;
 import com.linroid.pushapp.ui.home.HomeActivity;
 import com.linroid.pushapp.util.AndroidUtil;
 import com.linroid.pushapp.util.DeviceUtil;
-import static  com.linroid.pushapp.ui.bind.QrcodeActivity.ARG_BIND_TOKEN;
 import javax.inject.Inject;
 
 import butterknife.Bind;
@@ -80,16 +80,13 @@ public class BindActivity extends BaseActivity {
 
     @OnClick(R.id.btn_open_qrcode)
     public void onOpenQrcodeBtnClick(Button btn) {
-        Intent intent = QrcodeActivity.createNewScanIntent(this);
+        Intent intent = QrcodeActivity.createNewScanIntent(this, Constants.QRCODE_KEY_AUTH);
         startActivityForResult(intent, QrcodeActivity.REQ_SCAN_QRCODE);
     }
 
     private void handleIntent(Intent intent) {
-        if (intent.hasExtra(ARG_BIND_TOKEN)) {
-            bindToken = intent.getStringExtra(ARG_BIND_TOKEN);
-        } else if (intent.getData() != null) {
-            bindToken = intent.getData().getQueryParameter(ARG_BIND_TOKEN);
-        }
+        String key = intent.getStringExtra(QrcodeActivity.ARG_REQUIRE_KEY);
+        bindToken = intent.getStringExtra(QrcodeActivity.EXTRA_QRCODE_VALUE);
         if (!TextUtils.isEmpty(bindToken)) {
             showSecond();
             Snackbar.make(switcher, R.string.msg_scan_qrcode_success, Snackbar.LENGTH_SHORT).show();
