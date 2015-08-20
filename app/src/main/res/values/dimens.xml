@@ -7,4 +7,9 @@
     <dimen name="shadow_height">5dp</dimen>
     <dimen name="item_divider_space">4dp</dimen>
     <dimen name="floating_button_elevation">16dp</dimen>
+
+    <dimen name="about_header_height">230dp</dimen>
+    <dimen name="about_card_margin">16dp</dimen>
+    <dimen name="about_avatar_size">38dp</dimen>
+    <dimen name="about_open_source_lis_text_size">13sp</dimen>
 </resources>

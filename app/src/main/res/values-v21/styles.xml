@@ -14,4 +14,5 @@
     <style name="TextAppearance.Widget.TabWidget" parent="android:TextAppearance.Widget.TabWidget">
         <item name="android:textColor">@color/tab_indicator_color</item>
     </style>
+
 </resources>
