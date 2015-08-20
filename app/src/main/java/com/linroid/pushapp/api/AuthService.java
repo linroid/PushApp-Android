@@ -11,7 +11,9 @@ import retrofit.http.DELETE;
 import retrofit.http.Field;
 import retrofit.http.FormUrlEncoded;
 import retrofit.http.GET;
+import retrofit.http.PATCH;
 import retrofit.http.POST;
+import retrofit.http.PUT;
 import retrofit.http.Path;
 import retrofit.http.Query;
 import rx.Observable;
@@ -34,5 +36,8 @@ public interface AuthService {
     Observable<Pagination<Auth>> listAuth(@Query("page") int page);
 
     @DELETE("/auth/{id}")
-    void revoke(@Path("id") int id, Callback<Void> callback);
+    Observable<Void> revoke(@Path("id") int id);
+
+    @PATCH("/auth/{id}/recall")
+    void recallRevoke(@Path("id") int id, Callback<Auth> auth);
 }

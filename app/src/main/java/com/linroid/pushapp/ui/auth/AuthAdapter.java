@@ -72,18 +72,20 @@ public class AuthAdapter extends DataAdapter<Auth, AuthAdapter.AuthHolder> {
         @OnClick(R.id.revoke_btn)
         void onRevokeBtnClicked(Button btn) {
             if (listener != null) {
-                final Auth auth = data.get(getAdapterPosition());
-                new AlertDialog.Builder(btn.getContext())
-                        .setTitle(btn.getResources().getString(R.string.msg_dialog_title_revoke))
-                        .setMessage(btn.getResources().getString(R.string.msg_dialog_content_revoke, auth.getUser().getNickname()))
-                        .setNegativeButton(android.R.string.cancel, null)
-                        .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                dialog.dismiss();
-                                listener.onRevoke(getAdapterPosition(), auth);
-                            }
-                        }).show();
+                Auth auth = data.get(getAdapterPosition());
+                listener.onRevoke(getAdapterPosition(), auth);
+
+//                new AlertDialog.Builder(btn.getContext())
+//                        .setTitle(btn.getResources().getString(R.string.msg_dialog_title_revoke))
+//                        .setMessage(btn.getResources().getString(R.string.msg_dialog_content_revoke, auth.getUser().getNickname()))
+//                        .setNegativeButton(android.R.string.cancel, null)
+//                        .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+//                            @Override
+//                            public void onClick(DialogInterface dialog, int which) {
+//                                dialog.dismiss();
+//                                listener.onRevoke(getAdapterPosition(), auth);
+//                            }
+//                        }).show();
             }
         }
     }
