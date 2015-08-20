@@ -1,5 +1,6 @@
 package com.linroid.pushapp.ui.app;
 
+import android.content.Context;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.graphics.drawable.Drawable;
@@ -15,7 +16,6 @@ import android.widget.TextView;
 
 import com.linroid.pushapp.R;
 import com.linroid.pushapp.ui.base.DataAdapter;
-import com.linroid.pushapp.ui.pack.PackageAdapter;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -25,6 +25,12 @@ import butterknife.ButterKnife;
  */
 public class AppAdapter extends DataAdapter<ApplicationInfo, AppAdapter.AppHolder> {
     OnActionListener listener;
+    PackageManager packageManager;
+
+    public AppAdapter(Context context) {
+        packageManager = context.getPackageManager();
+
+    }
 
     public void setListener(OnActionListener listener) {
         this.listener = listener;
@@ -39,9 +45,8 @@ public class AppAdapter extends DataAdapter<ApplicationInfo, AppAdapter.AppHolde
     @Override
     public void onBindViewHolder(AppHolder holder, int i) {
         ApplicationInfo info = data.get(i);
-        PackageManager pm = holder.appIconIV.getContext().getPackageManager();
-        Drawable icon = pm.getApplicationIcon(info);
-        holder.appNameTV.setText(pm.getApplicationLabel(info));
+        Drawable icon = packageManager.getApplicationIcon(info);
+        holder.appNameTV.setText(packageManager.getApplicationLabel(info));
         holder.appIconIV.setImageDrawable(icon);
     }
 

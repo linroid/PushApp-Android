@@ -49,7 +49,6 @@ public abstract class DataAdapter<T, VH extends RecyclerView.ViewHolder> extends
 
     @Override
     public void call(List<T> ts) {
-        Timber.d("数据发生变化");
         this.data = ts;
         notifyDataSetChanged();
     }
