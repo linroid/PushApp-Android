@@ -1,36 +1,25 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <PreferenceCategory
-        android:title="基本设置">
+    <PreferenceCategory android:title="基本设置">
         <Preference
             android:key="@string/pref_bind_account"
             android:title="绑定账户"
-            tools:summary="你是个好人啦"/>
+            tools:summary="你是个好人啦" />
         <SwitchPreference
+            android:defaultValue="true"
             android:key="@string/pref_auto_install"
-            android:title="下载后安装"
-            android:defaultValue="true" />
+            android:title="下载后安装" />
         <SwitchPreference
+            android:defaultValue="true"
             android:key="@string/pref_auto_open"
-            android:title="安装后打开"
-            android:defaultValue="true" />
+            android:title="安装后打开" />
     </PreferenceCategory>
-    <PreferenceCategory
-        android:title="关于">
+    <PreferenceCategory android:title="关于">
         <Preference
-            android:key="@string/pref_open_source_license"
-            android:title="开放源代码许可">
-        </Preference>
-        <Preference
-            android:key="@string/pref_developer"
-            android:title="开发者"
-            android:summary="\@linroid">
-        </Preference>
-        <Preference
-            android:key="@string/pref_version"
-            android:title="版本"
-            android:summary="1.0.0">
-        </Preference>
-        </PreferenceCategory>
+            android:key="@string/pref_about_us"
+            android:summary="你想知道的一切"
+            android:title="关于我们" />
+    </PreferenceCategory>
+
 </PreferenceScreen>

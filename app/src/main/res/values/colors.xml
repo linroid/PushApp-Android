@@ -1,4 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="window_background">#FFF5F5F5</color>
+
+    <color name="app_primary">#22A2E6</color>
+    <color name="app_primary_dark">#0B8ACE</color>
+    <color name="app_accent">#FF4081</color>
+
+
 </resources>

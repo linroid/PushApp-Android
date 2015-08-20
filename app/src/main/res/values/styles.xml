@@ -3,9 +3,9 @@
     <style name="AppTheme" parent="AppTheme.Base"/>
 
     <style name="AppTheme.Base" parent="Theme.AppCompat.Light.DarkActionBar">
-        <item name="colorPrimary">#22A2E6</item>
-        <item name="colorPrimaryDark">#0B8ACE</item>
-        <item name="colorAccent">#FF4081</item>
+        <item name="colorPrimary">@color/app_primary</item>
+        <item name="colorPrimaryDark">@color/app_primary_dark</item>
+        <item name="colorAccent">@color/app_accent</item>
         <item name="android:windowBackground">@color/window_background</item>
     </style>
 
@@ -32,5 +32,17 @@
 
     </style>
 
+
+    <style name="CollapsingToolbarTitleStyle"
+        parent="@android:style/TextAppearance">
+        <item name="android:textColor">@android:color/transparent</item>
+    </style>
+
+    <style name="AppTheme.About" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="colorPrimary">@color/app_primary</item>
+        <item name="colorPrimaryDark">@color/app_primary_dark</item>
+        <item name="colorAccent">@color/app_accent</item>
+    </style>
 
 </resources>
