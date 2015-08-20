@@ -55,7 +55,12 @@ public class AuthFragment extends RefreshableFragment implements AuthAdapter.OnA
     public void onAttach(Activity activity) {
         super.onAttach(activity);
         App.from(activity).component().inject(this);
-        fab = (FloatingActionButton) activity.findViewById(R.id.fab);
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        fab = (FloatingActionButton) getActivity().findViewById(R.id.fab);
         fab.setOnClickListener(this);
     }
 

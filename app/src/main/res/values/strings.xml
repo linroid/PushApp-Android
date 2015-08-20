@@ -70,4 +70,6 @@
     <string name="txt_device_token_url" formatted="false">%s/qrcode/device/%s</string>
     <string name="title_device_qrcode">设备二维码</string>
     <string name="msg_qrcode_type_require_device">请扫描设备二维码!</string>
+    <string name="error_unauthorized">授权已过期,请重新绑定</string>
+    <string name="txt_device_token_introduce">选中安装包，然后扫描二维码\n即可发送到这台设备，十分钟内有效。</string>
 </resources>

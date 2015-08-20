@@ -1,11 +1,15 @@
 package com.linroid.pushapp.module;
 
+import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.Application;
+import android.content.ComponentName;
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.Resources;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.net.Uri;
+import android.widget.Toast;
 
 import com.facebook.stetho.okhttp.StethoInterceptor;
 import com.google.gson.Gson;
@@ -17,6 +21,7 @@ import com.linroid.pushapp.model.Account;
 import com.linroid.pushapp.model.Error;
 import com.linroid.pushapp.module.identifier.DataCacheDir;
 import com.linroid.pushapp.module.identifier.HttpCacheDir;
+import com.linroid.pushapp.ui.bind.BindActivity;
 import com.squareup.okhttp.Cache;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.internal.DiskLruCache;
@@ -32,6 +37,7 @@ import java.util.concurrent.TimeUnit;
 
 import javax.inject.Singleton;
 
+import butterknife.Bind;
 import dagger.Module;
 import dagger.Provides;
 import hugo.weaving.DebugLog;
@@ -115,7 +121,7 @@ public class DataModule {
 
     @Provides
     @Singleton
-    ErrorHandler provideErrorHandler(final Resources res) {
+    ErrorHandler provideErrorHandler(final Resources res, final Context context) {
         return new ErrorHandler() {
             @Override
             @DebugLog
@@ -124,6 +130,13 @@ public class DataModule {
                 RetrofitError.Kind kind = retrofitError.getKind();
                 String message;
                 if (retrofitError.getResponse() != null) {
+                    if (retrofitError.getResponse().getStatus() == 401) {
+                        Intent intent = new Intent(context, BindActivity.class);
+                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        context.startActivity(intent);
+                        Toast.makeText(context, R.string.error_unauthorized, Toast.LENGTH_LONG).show();
+                        return null;
+                    }
                     try {
                         Error error = (Error) retrofitError.getBodyAs(Error.class);
                         message = error.getMessage();

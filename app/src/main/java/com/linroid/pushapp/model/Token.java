@@ -1,12 +1,15 @@
 package com.linroid.pushapp.model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 /**
  * Created by linroid on 8/20/15.
  */
-public class Token {
+public class Token implements Parcelable {
 
     @Expose
     private String value;
@@ -152,4 +155,43 @@ public class Token {
         this.id = id;
     }
 
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(this.value);
+        dest.writeString(this.expireIn);
+        dest.writeValue(this.owner);
+        dest.writeString(this.type);
+        dest.writeString(this.updatedAt);
+        dest.writeString(this.createdAt);
+        dest.writeValue(this.id);
+    }
+
+    public Token() {
+    }
+
+    protected Token(Parcel in) {
+        this.value = in.readString();
+        this.expireIn = in.readString();
+        this.owner = (Integer) in.readValue(Integer.class.getClassLoader());
+        this.type = in.readString();
+        this.updatedAt = in.readString();
+        this.createdAt = in.readString();
+        this.id = (Integer) in.readValue(Integer.class.getClassLoader());
+    }
+
+    public static final Parcelable.Creator<Token> CREATOR = new Parcelable.Creator<Token>() {
+        public Token createFromParcel(Parcel source) {
+            return new Token(source);
+        }
+
+        public Token[] newArray(int size) {
+            return new Token[size];
+        }
+    };
 }

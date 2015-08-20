@@ -31,6 +31,7 @@ import javax.inject.Inject;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import rx.Observable;
 import rx.Subscriber;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
@@ -40,6 +41,7 @@ import rx.functions.Func1;
  * Created by linroid on 8/20/15.
  */
 public class DeviceTokenDialog extends DialogFragment {
+    public static final String STATE_TOKEN = "token";
     @Bind(R.id.progressbar)
     ProgressBar progressBar;
     @Bind(R.id.qrcode_iv)
@@ -47,6 +49,7 @@ public class DeviceTokenDialog extends DialogFragment {
     @Inject
     DeviceService deviceApi;
     Subscription subscription;
+    Token token;
 
     @Override
     public void onAttach(Activity activity) {
@@ -57,11 +60,18 @@ public class DeviceTokenDialog extends DialogFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        subscription = deviceApi.token()
-                .observeOn(AndroidSchedulers.mainThread())
+        Observable<Token> observable;
+        if (savedInstanceState != null && savedInstanceState.containsKey(STATE_TOKEN)) {
+            Token token = savedInstanceState.getParcelable(STATE_TOKEN);
+            observable = Observable.just(token);
+        } else {
+            observable = deviceApi.token();
+        }
+        subscription = observable.observeOn(AndroidSchedulers.mainThread())
                 .map(new Func1<Token, Bitmap>() {
                     @Override
                     public Bitmap call(Token token) {
+                        DeviceTokenDialog.this.token = token;
                         String url = getString(R.string.txt_device_token_url, BuildConfig.HOST_URL, token.getValue());
                         return generateQrcode(url, qrcodeIV.getMeasuredHeight());
                     }
@@ -86,6 +96,16 @@ public class DeviceTokenDialog extends DialogFragment {
                            }
 
                 );
+    }
+
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        if (token!=null) {
+            outState.putParcelable(STATE_TOKEN, token);
+        }
     }
 
     private Bitmap generateQrcode(String content, int size) {
@@ -138,7 +158,7 @@ public class DeviceTokenDialog extends DialogFragment {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        if (subscription!=null && !subscription.isUnsubscribed()) {
+        if (subscription != null && !subscription.isUnsubscribed()) {
             subscription.unsubscribe();
         }
     }

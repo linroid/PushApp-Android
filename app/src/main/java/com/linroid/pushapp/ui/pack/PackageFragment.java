@@ -33,6 +33,7 @@ import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
+import timber.log.Timber;
 
 public class PackageFragment extends RefreshableFragment implements PackageAdapter.OnActionListener {
     public static final String STATE_PACKAGE = "package";
@@ -153,8 +154,11 @@ public class PackageFragment extends RefreshableFragment implements PackageAdapt
                     @DebugLog
                     @Override
                     public void onError(Throwable e) {
-                        loaderView.refreshLayout.setRefreshing(false);
-                        Snackbar.make(loaderView, e.getMessage(), Snackbar.LENGTH_SHORT).show();
+                        if(loaderView!=null) {
+                            loaderView.refreshLayout.setRefreshing(false);
+                            Snackbar.make(loaderView, e.getMessage(), Snackbar.LENGTH_SHORT).show();
+                            Timber.e(e, "pack error");
+                        }
                     }
 
                     @DebugLog

@@ -25,7 +25,7 @@ public abstract class DataAdapter<T, VH extends RecyclerView.ViewHolder> extends
     }
 
     public void insertItem(T item) {
-        data.add(this.data.size(), item);
+        insertItem(0, item);
     }
 
     public void set(int location, T item) {
