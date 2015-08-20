@@ -18,9 +18,11 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.Toolbar;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 
 import com.linroid.pushapp.App;
 import com.linroid.pushapp.Constants;
@@ -192,6 +194,12 @@ public class HomeActivity extends BaseActivity {
         if (item.getItemId() == R.id.action_settings) {
             Intent intent = new Intent(this, SettingActivity.class);
             startActivity(intent);
+        } else if (item.getItemId() == R.id.action_device_qrcode) {
+//            LayoutInflater inflater = LayoutInflater.from(this);
+//            View view = inflater.inflate(R.layout.dialog_device_token, null);
+//
+//            getWindow().addContentView(view, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+            new DeviceTokenDialog().show(getSupportFragmentManager(), null);
         }
         return super.onOptionsItemSelected(item);
     }

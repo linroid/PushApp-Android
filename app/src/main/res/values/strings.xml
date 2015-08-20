@@ -66,4 +66,7 @@
     <string name="toast_start_install">%s 下载完成,开始安装</string>
     <string name="toast_download_failed">%s 下载失败</string>
     <string name="action_qrcode">设备二维码</string>
+    <string name="toast_get_device_token_failed">获取失败</string>
+    <string name="txt_device_token_url" formatted="false">%s/qrcode/device/%s</string>
+    <string name="title_device_qrcode">设备二维码</string>
 </resources>

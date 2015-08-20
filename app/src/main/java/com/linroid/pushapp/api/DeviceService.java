@@ -27,5 +27,5 @@ public interface DeviceService {
     void updateDevice(@Path("id") int id, @FieldMap Map<String, String> params, Callback<Device> callback);
 
     @GET("/device/token")
-    void token(Callback<Token> callback);
+    Observable<Token> token();
 }
