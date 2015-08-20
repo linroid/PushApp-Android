@@ -11,7 +11,7 @@ public interface OnSelectActionListener {
 
     void onSelectNone();
 
-    List<Integer> provideSelectedDeviceIds();
+    List<String> provideSelectedDeviceIds();
 
     int provideSelectedCount();
 }
