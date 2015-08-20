@@ -77,4 +77,10 @@
     <string name="about_share">分享我们的App</string>
     <string name="about_share_text">发现了一款方便移动开发测试的App，一键安装App到多个设备，推荐你也来看看~ http://pushapp.linroid.com</string>
     <string name="about_share_action">分享</string>
+
+    <string name="toast_get_device_token_failed">获取失败</string>
+    <string name="txt_device_token_url" formatted="false">%s/qrcode/device/%s</string>
+    <string name="title_device_qrcode">设备二维码</string>
+    <string name="msg_qrcode_type_require_device">请扫描设备二维码!</string>
+
 </resources>

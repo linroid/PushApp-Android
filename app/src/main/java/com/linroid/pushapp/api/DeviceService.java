@@ -2,6 +2,7 @@ package com.linroid.pushapp.api;
 
 import com.linroid.pushapp.model.Device;
 import com.linroid.pushapp.model.Pagination;
+import com.linroid.pushapp.model.Token;
 
 import java.util.Map;
 
@@ -24,4 +25,7 @@ public interface DeviceService {
     @FormUrlEncoded
     @PUT("/device/{id}")
     void updateDevice(@Path("id") int id, @FieldMap Map<String, String> params, Callback<Device> callback);
+
+    @GET("/device/token")
+    Observable<Token> token();
 }

@@ -134,7 +134,7 @@ public class QrcodeActivity extends BaseActivity {
 
     private void onScanSuccess(String key, String value) {
         Intent intent = getIntent();
-        intent.putExtra(ARG_REQUIRE_KEY, key);
+        intent.putExtra(EXTRA_QRCODE_KEY, key);
         intent.putExtra(EXTRA_QRCODE_VALUE, value);
         setResult(RESULT_OK, intent);
         finish();

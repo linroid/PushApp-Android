@@ -14,8 +14,10 @@ import android.text.TextUtils;
 import android.text.format.Formatter;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import com.linroid.pushapp.App;
+import com.linroid.pushapp.Constants;
 import com.linroid.pushapp.R;
 import com.linroid.pushapp.api.PushService;
 import com.linroid.pushapp.model.Pack;
@@ -27,6 +29,8 @@ import com.linroid.pushapp.ui.home.HomeActivity;
 import com.linroid.pushapp.util.CountingTypedFile;
 
 import java.io.File;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -138,13 +142,17 @@ public class PushActivity extends BaseActivity
             Intent intent = QrcodeActivity.createNewScanIntent(this);
             startActivityForResult(intent, QrcodeActivity.REQ_SCAN_QRCODE);
         }
-        List<Integer> selectedIds = selectListener.provideSelectedDeviceIds();
-        if (selectedIds.size() == 0) {
-            Snackbar.make(btn, R.string.error_not_select_any_device, Snackbar.LENGTH_SHORT).show();
+        List<String> selectedIds = selectListener.provideSelectedDeviceIds();
+        pushToDevice(selectedIds);
+    }
+
+    private void pushToDevice(List<String> devices) {
+        if (devices.size() == 0) {
+            Snackbar.make(fab, R.string.error_not_select_any_device, Snackbar.LENGTH_SHORT).show();
             return;
         }
-        Snackbar.make(btn, getString(R.string.msg_push_install_package, selectedIds.size()), Snackbar.LENGTH_SHORT).show();
-        String deviceIds = TextUtils.join(",", selectedIds.toArray());
+        Snackbar.make(fab, getString(R.string.msg_push_install_package, devices.size()), Snackbar.LENGTH_SHORT).show();
+        String deviceIds = TextUtils.join(",", devices.toArray());
         if (pack != null) {
             installApi.installPackage(deviceIds, pack.getId(), this);
         } else {
@@ -173,6 +181,20 @@ public class PushActivity extends BaseActivity
     }
 
     @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode==QrcodeActivity.REQ_SCAN_QRCODE && resultCode==RESULT_OK) {
+            String key = data.getStringExtra(QrcodeActivity.EXTRA_QRCODE_KEY);
+            String value = data.getStringExtra(QrcodeActivity.EXTRA_QRCODE_VALUE);
+            if (!Constants.QRCODE_KEY_DEVICE.equals(key)) {
+                Snackbar.make(fab, R.string.msg_qrcode_type_require_device, Snackbar.LENGTH_SHORT).show();
+                return;
+            }
+            pushToDevice(Collections.singletonList(value));
+        }
+    }
+
+    @Override
     public void success(Push push, Response response) {
         Intent intent = getIntent();
         intent.putExtra(HomeActivity.EXTRA_MESSAGE, getString(R.string.msg_push_success));
@@ -183,6 +205,7 @@ public class PushActivity extends BaseActivity
 
     @Override
     public void failure(RetrofitError error) {
+        dialog.dismiss();
         Snackbar.make(fab, error.getMessage(), Snackbar.LENGTH_SHORT).show();
     }
 

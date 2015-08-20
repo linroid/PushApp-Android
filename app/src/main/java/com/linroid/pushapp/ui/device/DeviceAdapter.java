@@ -108,13 +108,13 @@ public class DeviceAdapter extends DataAdapter<Device, DeviceAdapter.DeviceHolde
     }
 
     @Override
-    public List<Integer> provideSelectedDeviceIds() {
-        List<Integer> selectedDeviceIds = new ArrayList<>();
+    public List<String> provideSelectedDeviceIds() {
+        List<String> selectedDeviceIds = new ArrayList<>();
         for (int i = 0; i < deviceSelectStatus.size(); i++) {
             int key = deviceSelectStatus.keyAt(i);
             Boolean isChecked = deviceSelectStatus.get(key);
             if(isChecked!=null && isChecked) {
-                selectedDeviceIds.add(key);
+                selectedDeviceIds.add(String.valueOf(key));
             }
         }
         return selectedDeviceIds;

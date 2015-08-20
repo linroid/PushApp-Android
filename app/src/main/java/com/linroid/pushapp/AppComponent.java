@@ -11,6 +11,7 @@ import com.linroid.pushapp.service.DownloadService;
 import com.linroid.pushapp.ui.auth.AuthFragment;
 import com.linroid.pushapp.ui.bind.BindActivity;
 import com.linroid.pushapp.ui.device.DeviceFragment;
+import com.linroid.pushapp.ui.home.DeviceTokenDialog;
 import com.linroid.pushapp.ui.push.PushActivity;
 import com.linroid.pushapp.ui.home.HomeActivity;
 import com.linroid.pushapp.ui.pack.PackageFragment;
@@ -49,4 +50,6 @@ public interface AppComponent {
     void inject(AuthFragment fragment);
 
     void inject(SettingFragment fragment);
+
+    void inject(DeviceTokenDialog fragment);
 }
