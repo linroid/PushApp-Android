@@ -152,6 +152,7 @@ public class BindActivity extends BaseActivity {
                 account.setDevice(device);
                 account.setUser(user);
                 account.setToken(token);
+                account.setInstallToken(token);
                 account.saveToFile();
 
                 dialog.dismiss();
@@ -191,6 +192,7 @@ public class BindActivity extends BaseActivity {
                 showFirst();
                 return true;
             }
+
         }
         return super.onOptionsItemSelected(item);
     }
