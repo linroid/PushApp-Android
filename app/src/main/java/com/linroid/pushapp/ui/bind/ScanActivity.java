@@ -1,9 +1,9 @@
 package com.linroid.pushapp.ui.bind;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.ClipData;
 import android.content.ClipboardManager;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -15,6 +15,7 @@ import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.TextView;
 
 import com.google.zxing.ResultPoint;
 import com.journeyapps.barcodescanner.BarcodeCallback;
@@ -32,16 +33,19 @@ import butterknife.Bind;
 import hugo.weaving.DebugLog;
 import timber.log.Timber;
 
-public class QrcodeActivity extends BaseActivity {
+public class ScanActivity extends BaseActivity {
     public static final String STATE_TORCH = "torch";
     public static final int REQ_SCAN_QRCODE = 0x1111;
     public static final String ARG_REQUIRE_KEY = "require_key";
+    public static final String ARG_TIP = "tip";
     public static final String EXTRA_QRCODE_KEY = "key";
     public static final String EXTRA_QRCODE_VALUE = "value";
     @Bind(R.id.scanner)
     public CompoundBarcodeView scannerView;
+    @Bind(R.id.tip_tv)
+    public TextView tipTV;
     private boolean isTorchOn = false;
-    CaptureManager capture;
+    private CaptureManager capture;
     private String requireKey;
 
     @Override
@@ -54,8 +58,15 @@ public class QrcodeActivity extends BaseActivity {
         if (intent.hasExtra(ARG_REQUIRE_KEY)) {
             requireKey = intent.getStringExtra(ARG_REQUIRE_KEY);
         }
+        String tip;
+        if (intent.hasExtra(ARG_TIP)) {
+            tip = intent.getStringExtra(ARG_TIP);
+        } else {
+            tip = getString(R.string.msg_scanner, BuildConfig.HOST_URL);
+        }
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        scannerView.setStatusText(getString(R.string.msg_scanner, BuildConfig.HOST_URL));
+        scannerView.setStatusText(null);
+        tipTV.setText(tip);
         capture = new CaptureManager(this, this.scannerView);
         capture.initializeFromIntent(getIntent(), state);
         capture.decode();
@@ -71,7 +82,8 @@ public class QrcodeActivity extends BaseActivity {
                     if (Constants.QRCODE.equals(segments.get(0))) {
                         String key = segments.get(1);
                         String value = segments.get(2);
-                        if (TextUtils.isEmpty(requireKey) || requireKey.equals(key)) {
+                        Timber.d("%s => %s", key, value);
+                        if (!TextUtils.isEmpty(requireKey) && requireKey.equals(key)) {
                             onScanSuccess(key, value);
                             return;
                         }
@@ -141,18 +153,20 @@ public class QrcodeActivity extends BaseActivity {
     }
 
 
-    public static Intent createNewScanIntent(Context source) {
-        Intent intent = new Intent(source, QrcodeActivity.class);
+    public static Intent createNewScanIntent(Activity activity, String tip) {
+        Intent intent = new Intent(activity, ScanActivity.class);
+        intent.putExtra(ARG_TIP, tip);
         return intent;
     }
-    public static Intent createNewScanIntent(Context source, String requireKey) {
-        Intent intent = new Intent(source, QrcodeActivity.class);
+    public static Intent createNewScanIntent(Activity activity, String tip, String requireKey) {
+        Intent intent = new Intent(activity, ScanActivity.class);
         intent.putExtra(ARG_REQUIRE_KEY, requireKey);
+        intent.putExtra(ARG_TIP, tip);
         return intent;
     }
     @Override
     protected int provideContentViewId() {
-        return R.layout.activity_qrcode;
+        return R.layout.activity_scan;
     }
 
     @Override
@@ -186,7 +200,7 @@ public class QrcodeActivity extends BaseActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.qrcode, menu);
+        getMenuInflater().inflate(R.menu.scan, menu);
 //        MenuItem menuItem = menu.findItem(R.id.action_flash);
 //        if (isTorchOn) {
 //            menuItem.setTitle(R.string.action_torch_on);

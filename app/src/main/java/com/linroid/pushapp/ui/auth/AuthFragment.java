@@ -1,11 +1,8 @@
 package com.linroid.pushapp.ui.auth;
 
 import android.app.Activity;
-import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -20,7 +17,7 @@ import com.linroid.pushapp.api.AuthService;
 import com.linroid.pushapp.model.Auth;
 import com.linroid.pushapp.model.Pagination;
 import com.linroid.pushapp.ui.base.RefreshableFragment;
-import com.linroid.pushapp.ui.bind.QrcodeActivity;
+import com.linroid.pushapp.ui.bind.ScanActivity;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
@@ -38,7 +35,6 @@ import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
-import timber.log.Timber;
 
 /**
  * TODO 添加数据库支持
@@ -170,15 +166,15 @@ public class AuthFragment extends RefreshableFragment implements AuthAdapter.OnA
 
     @Override
     public void onClick(View v) {
-        Intent intent = QrcodeActivity.createNewScanIntent(getActivity(), Constants.QRCODE_KEY_AUTH);
-        startActivityForResult(intent, QrcodeActivity.REQ_SCAN_QRCODE);
+        Intent intent = ScanActivity.createNewScanIntent(getActivity(), getString(R.string.txt_scan_auth), Constants.QRCODE_KEY_AUTH);
+        startActivityForResult(intent, ScanActivity.REQ_SCAN_QRCODE);
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode == QrcodeActivity.REQ_SCAN_QRCODE && resultCode == Activity.RESULT_OK) {
-            String token = data.getStringExtra(QrcodeActivity.EXTRA_QRCODE_VALUE);
+        if(requestCode == ScanActivity.REQ_SCAN_QRCODE && resultCode == Activity.RESULT_OK) {
+            String token = data.getStringExtra(ScanActivity.EXTRA_QRCODE_VALUE);
             if (!TextUtils.isEmpty(token)) {
                 authUser(token);
                 Snackbar.make(fab, R.string.msg_auth_snack, Snackbar.LENGTH_LONG).show();

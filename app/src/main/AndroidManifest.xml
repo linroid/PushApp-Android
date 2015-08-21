@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.linroid.pushapp" >
+    package="com.linroid.pushapp">
 
     <uses-sdk tools:overrideLibrary="org.bunnyblue.autoinstaller" />
 
@@ -34,12 +34,12 @@
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
-        android:theme="@style/AppTheme" >
+        android:theme="@style/AppTheme">
         <activity
             android:name=".ui.home.HomeActivity"
-            android:launchMode="standard"
             android:label="@string/app_name"
-            android:theme="@style/AppTheme.Home" >
+            android:launchMode="standard"
+            android:theme="@style/AppTheme.Home">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -47,9 +47,8 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".ui.bind.QrcodeActivity"
-            android:label="@string/title_activity_qrcode" >
-        </activity>
+            android:name=".ui.bind.ScanActivity"
+            android:label="@string/title_activity_qrcode"/>
 
         <service
             android:name=".service.DownloadService"
@@ -59,7 +58,7 @@
         <activity
             android:name=".ui.push.PushActivity"
             android:label="@string/title_activity_select_device"
-            android:parentActivityName=".ui.home.HomeActivity" >
+            android:parentActivityName=".ui.home.HomeActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".ui.home.HomeActivity" />
@@ -68,8 +67,9 @@
             android:name=".ui.bind.BindActivity"
             android:exported="true"
             android:label="@string/title_activity_bind"
-            android:theme="@style/AppTheme" >
+            android:theme="@style/AppTheme">
             <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.APP_BROWSER" />
 
                 <data
@@ -85,7 +85,7 @@
         <activity
             android:name="cn.jpush.android.ui.PushActivity"
             android:configChanges="orientation|keyboardHidden"
-            android:theme="@android:style/Theme.Translucent.NoTitleBar" >
+            android:theme="@android:style/Theme.Translucent.NoTitleBar">
             <intent-filter>
                 <action android:name="cn.jpush.android.ui.PushActivity" />
 
@@ -103,7 +103,7 @@
         <service
             android:name="cn.jpush.android.service.PushService"
             android:enabled="true"
-            android:exported="false" >
+            android:exported="false">
             <intent-filter>
                 <action android:name="cn.jpush.android.intent.REGISTER" />
                 <action android:name="cn.jpush.android.intent.REPORT" />
@@ -116,8 +116,8 @@
         <receiver
             android:name="cn.jpush.android.service.PushReceiver"
             android:enabled="true"
-            android:permission="${PACKAGE}.permission.JPUSH_MESSAGE" >
-            <intent-filter android:priority="1000" >
+            android:permission="${PACKAGE}.permission.JPUSH_MESSAGE">
+            <intent-filter android:priority="1000">
                 <action android:name="cn.jpush.android.intent.NOTIFICATION_RECEIVED_PROXY" />
                 <!-- Required  显示通知栏 -->
                 <category android:name="${PACKAGE}" />
@@ -150,7 +150,7 @@
         <receiver
             android:name=".receiver.PushReceiver"
             android:enabled="true"
-            android:exported="true" >
+            android:exported="true">
             <intent-filter>
                 <action android:name="cn.jpush.android.intent.REGISTRATION" />
                 <!-- Required  用户注册SDK的intent -->
@@ -172,7 +172,7 @@
         <activity
             android:name=".ui.setting.SettingActivity"
             android:label="@string/title_activity_setting"
-            android:parentActivityName=".ui.home.HomeActivity" >
+            android:parentActivityName=".ui.home.HomeActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.linroid.pushapp.ui.home.HomeActivity" />
@@ -181,7 +181,7 @@
         <service
             android:name=".service.ApkAutoInstallService"
             android:label="@string/title_auto_install_accessibility_service"
-            android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE" >
+            android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE">
             <intent-filter>
                 <action android:name="android.accessibilityservice.AccessibilityService" />
             </intent-filter>
@@ -194,7 +194,7 @@
         <receiver
             android:name=".receiver.StatusChangedReceiver"
             android:enabled="true"
-            android:exported="true" >
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
             </intent-filter>
@@ -203,8 +203,7 @@
         <activity
             android:name=".ui.setting.AboutActivity"
             android:label="@string/title_activity_about"
-            android:theme="@style/AppTheme.About">
-        </activity>
+            android:theme="@style/AppTheme.About"></activity>
     </application>
 
 </manifest>

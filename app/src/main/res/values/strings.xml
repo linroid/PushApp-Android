@@ -17,7 +17,7 @@
     <string name="tpl_alias_default" formatted="false" >%s(%s)</string>
     <string name="msg_dialog_bind">绑定中…</string>
     <string name="msg_scan_qrcode_success">扫描成功</string>
-    <string name="bind_fist_content">请在电脑上打开:\n\n%s\n</string>
+    <string name="bind_fist_content">请在电脑上打开:\n\n%s/device/bind</string>
     <string name="error_unknown_barcode">无法识别二维码信息:(</string>
     <string name="msg_downloading">正在下载中…</string>
     <string name="msg_download_title" formatted="false">%s %s</string>
@@ -41,7 +41,7 @@
     <string name="txt_device_cpu_type" formatted="false">CPU: %s</string>
     <string name="txt_device_screen" formatted="false">屏幕: %dx%d(%ddpi)</string>
     <string name="txt_device_memory_size" formatted="false">内存: %s</string>
-    <string name="error_not_select_any_device">请选择至少一台设备</string>
+    <string name="error_not_select_any_device">请至少一台设备</string>
     <string name="msg_push_install_package">正在向%d台设备推送安装…</string>
     <string name="msg_push_success">推送成功!</string>
     <string name="msg_upload_progress" formatted="false">上传中…(%s/%s)</string>
@@ -87,4 +87,7 @@
     <string name="msg_revoke_progress">正在收回…</string>
     <string name="btn_revoke_recall">撤回</string>
     <string name="msg_recall_revoke_progress">撤销中…</string>
+    <string name="txt_scan_auth">扫描其他帐号的二维码进行授权</string>
+    <string name="txt_scan_device">扫描其他设备的二维码发送安装包</string>
+    <string name="txt_scan_bind">请在电脑上打开 %s/device/bind</string>
 </resources>

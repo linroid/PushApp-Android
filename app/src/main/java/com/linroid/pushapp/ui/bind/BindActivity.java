@@ -80,13 +80,15 @@ public class BindActivity extends BaseActivity {
 
     @OnClick(R.id.btn_open_qrcode)
     public void onOpenQrcodeBtnClick(Button btn) {
-        Intent intent = QrcodeActivity.createNewScanIntent(this, Constants.QRCODE_KEY_AUTH);
-        startActivityForResult(intent, QrcodeActivity.REQ_SCAN_QRCODE);
+        Intent intent = ScanActivity.createNewScanIntent(this,
+                                                        getString(R.string.txt_scan_bind, BuildConfig.HOST_URL),
+                                                        Constants.QRCODE_KEY_AUTH);
+        startActivityForResult(intent, ScanActivity.REQ_SCAN_QRCODE);
     }
 
     private void handleIntent(Intent intent) {
-        String key = intent.getStringExtra(QrcodeActivity.ARG_REQUIRE_KEY);
-        bindToken = intent.getStringExtra(QrcodeActivity.EXTRA_QRCODE_VALUE);
+        String key = intent.getStringExtra(ScanActivity.ARG_REQUIRE_KEY);
+        bindToken = intent.getStringExtra(ScanActivity.EXTRA_QRCODE_VALUE);
         if (!TextUtils.isEmpty(bindToken)) {
             showSecond();
             Snackbar.make(switcher, R.string.msg_scan_qrcode_success, Snackbar.LENGTH_SHORT).show();

@@ -14,7 +14,6 @@ import android.text.TextUtils;
 import android.text.format.Formatter;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.Toast;
 
 import com.linroid.pushapp.App;
 import com.linroid.pushapp.Constants;
@@ -23,13 +22,12 @@ import com.linroid.pushapp.api.PushService;
 import com.linroid.pushapp.model.Pack;
 import com.linroid.pushapp.model.Push;
 import com.linroid.pushapp.ui.base.BaseActivity;
-import com.linroid.pushapp.ui.bind.QrcodeActivity;
+import com.linroid.pushapp.ui.bind.ScanActivity;
 import com.linroid.pushapp.ui.device.DeviceFragment;
 import com.linroid.pushapp.ui.home.HomeActivity;
 import com.linroid.pushapp.util.CountingTypedFile;
 
 import java.io.File;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -139,8 +137,8 @@ public class PushActivity extends BaseActivity
             throw new IllegalStateException();
         }
         if (selectListener.provideSelectedCount()==0) {
-            Intent intent = QrcodeActivity.createNewScanIntent(this);
-            startActivityForResult(intent, QrcodeActivity.REQ_SCAN_QRCODE);
+            Intent intent = ScanActivity.createNewScanIntent(this, getString(R.string.txt_scan_device));
+            startActivityForResult(intent, ScanActivity.REQ_SCAN_QRCODE);
         }
         List<String> selectedIds = selectListener.provideSelectedDeviceIds();
         pushToDevice(selectedIds);
@@ -183,9 +181,9 @@ public class PushActivity extends BaseActivity
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode==QrcodeActivity.REQ_SCAN_QRCODE && resultCode==RESULT_OK) {
-            String key = data.getStringExtra(QrcodeActivity.EXTRA_QRCODE_KEY);
-            String value = data.getStringExtra(QrcodeActivity.EXTRA_QRCODE_VALUE);
+        if (requestCode== ScanActivity.REQ_SCAN_QRCODE && resultCode==RESULT_OK) {
+            String key = data.getStringExtra(ScanActivity.EXTRA_QRCODE_KEY);
+            String value = data.getStringExtra(ScanActivity.EXTRA_QRCODE_VALUE);
             if (!Constants.QRCODE_KEY_DEVICE.equals(key)) {
                 Snackbar.make(fab, R.string.msg_qrcode_type_require_device, Snackbar.LENGTH_SHORT).show();
                 return;
