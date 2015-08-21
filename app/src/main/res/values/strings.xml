@@ -53,10 +53,14 @@
     <string name="msg_dialog_title_revoke">确定要收回吗？</string>
     <string name="msg_auth_snack">授权中…</string>
     <string name="msg_auth_success">授权给%s安装权限成功!</string>
+
+    <!--设置-->
     <string name="pref_bind_account">bind_account</string>
     <string name="pref_auto_install">auto_install</string>
     <string name="pref_auto_open">auto_open</string>
     <string name="pref_about_us">about_us</string>
+    <string name="pref_accessibility_service">accessibility_service</string>
+
 
     <string name="action_app_info">应用信息</string>
     <string name="toast_start_download">%s 开始下载…</string>
@@ -94,4 +98,6 @@
     <string name="title_fragment_app">已安装</string>
     <string name="title_fragment_auth">授权</string>
     <string name="action_replace_install">切换到这个版本</string>
+    <string name="title_logout_account">注销%s?</string>
+    <string name="msg_logout_account">如果只是想其他账号可以向这台手机安装应用，可以选择授权其他用户</string>
 </resources>

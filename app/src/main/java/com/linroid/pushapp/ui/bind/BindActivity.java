@@ -154,7 +154,6 @@ public class BindActivity extends BaseActivity {
                 account.setDevice(device);
                 account.setUser(user);
                 account.setToken(token);
-                account.setInstallToken(token);
                 account.saveToFile();
 
                 dialog.dismiss();

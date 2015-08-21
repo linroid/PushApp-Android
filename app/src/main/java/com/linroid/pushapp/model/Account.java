@@ -29,9 +29,6 @@ public class Account implements Parcelable {
     private User user;
     @Expose
     private String token;
-    @SerializedName("install_token")
-    @Expose
-    private String installToken;
 
     private File file;
 
@@ -60,13 +57,6 @@ public class Account implements Parcelable {
         this.user = user;
     }
 
-    public String getInstallToken() {
-        return installToken;
-    }
-
-    public void setInstallToken(String installToken) {
-        this.installToken = installToken;
-    }
 
     /**
      * 判断授权是否有效
@@ -109,7 +99,6 @@ public class Account implements Parcelable {
                 "device=" + device +
                 ", user=" + user +
                 ", token='" + token + '\'' +
-                ", installToken='" + installToken + '\'' +
                 ", file=" + file +
                 '}';
     }
@@ -127,14 +116,12 @@ public class Account implements Parcelable {
         dest.writeParcelable(this.device, 0);
         dest.writeParcelable(this.user, 0);
         dest.writeString(this.token);
-        dest.writeString(this.installToken);
     }
 
     protected Account(Parcel in) {
         this.device = in.readParcelable(Device.class.getClassLoader());
         this.user = in.readParcelable(User.class.getClassLoader());
         this.token = in.readString();
-        this.installToken = in.readString();
     }
 
     public static final Creator<Account> CREATOR = new Creator<Account>() {
@@ -149,5 +136,12 @@ public class Account implements Parcelable {
 
     public void setFile(File file) {
         this.file = file;
+    }
+
+    public void invalidate() {
+        this.token = null;
+        this.device = null;
+        this.user = null;
+        saveToFile();
     }
 }

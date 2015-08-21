@@ -402,9 +402,11 @@ public class Pack implements Parcelable {
 
         public static final String SQL_LIST_QUERY = "SELECT * FROM " + TABLE_NAME + " ORDER BY " + COLUMN_CREATED_AT + " DESC";
 
-        public static final String WHERE_ID = COLUMN_ID + "= ?";
-        public static final String SQL_ITEM_QUERY = "SELECT * FROM " + TABLE_NAME + " WHERE " + WHERE_ID;
+        public static final String WHERE_ALL = "WHERE 1";
 
+        public static final String WHERE_ID = COLUMN_ID + "= ?";
+
+        public static final String SQL_ITEM_QUERY = "SELECT * FROM " + TABLE_NAME + " WHERE " + WHERE_ID;
 
         public static final Func1<SqlBrite.Query, List<Pack>> MAP = new Func1<SqlBrite.Query, List<Pack>>() {
             @Override

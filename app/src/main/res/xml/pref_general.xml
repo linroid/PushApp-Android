@@ -14,6 +14,10 @@
             android:defaultValue="true"
             android:key="@string/pref_auto_open"
             android:title="安装后打开" />
+        <Preference
+            android:key="@string/pref_accessibility_service"
+            android:title="自动安装服务"
+            android:summary="帮你自动点击安装界面的“安装”按钮，解放你的双手，请确保该服务处于开启状态。"/>
     </PreferenceCategory>
     <PreferenceCategory android:title="关于">
         <Preference
