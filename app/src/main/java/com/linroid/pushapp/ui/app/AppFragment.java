@@ -6,6 +6,8 @@ import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
+import android.view.View;
 
 import com.linroid.pushapp.BuildConfig;
 import com.linroid.pushapp.ui.base.RefreshableFragment;
@@ -38,6 +40,30 @@ public class AppFragment extends RefreshableFragment implements AppAdapter.OnAct
     }
 
     @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+                adapter.setOnScroll(newState != RecyclerView.SCROLL_STATE_IDLE);
+                if (!adapter.onScroll) {
+                    RecyclerView.LayoutManager layoutManager = recyclerView.getLayoutManager();
+                    View firstVisibleChild = recyclerView.getChildAt(0);
+                    int visibleItemCount = layoutManager.getChildCount();
+                    int firstVisibleItemPosition = recyclerView.getChildPosition(firstVisibleChild);
+                    AppAdapter.AppHolder holder;
+                    for (int i = 0; i < visibleItemCount; i++) {
+                        holder = (AppAdapter.AppHolder)
+                                recyclerView.getChildViewHolder(recyclerView.getChildAt(i));
+                        holder.showImage(i + firstVisibleItemPosition);
+                    }
+                }
+            }
+        });
+    }
+
+    @Override
     public RecyclerView.Adapter<? extends RecyclerView.ViewHolder> getAdapter() {
         return adapter;
     }
@@ -54,38 +80,38 @@ public class AppFragment extends RefreshableFragment implements AppAdapter.OnAct
                 subscriber.onCompleted();
             }
         })
-        .subscribeOn(Schedulers.computation())
-        .flatMap(new Func1<List<ApplicationInfo>, Observable<ApplicationInfo>>() {
-            @Override
-            @DebugLog
-            public Observable<ApplicationInfo> call(List<ApplicationInfo> applicationInfos) {
-                return Observable.from(applicationInfos);
-            }
-        })
-        .filter(new Func1<ApplicationInfo, Boolean>() {
-            @Override
-            public Boolean call(ApplicationInfo applicationInfo) {
-                return !BuildConfig.APPLICATION_ID.equals(applicationInfo.packageName);
-            }
-        })
-        .toSortedList(new Func2<ApplicationInfo, ApplicationInfo, Integer>() {
-            @Override
-            public Integer call(ApplicationInfo applicationInfo, ApplicationInfo applicationInfo2) {
-                Timber.d(applicationInfo.packageName+"  " + applicationInfo2.packageName);
-                int flag1 = applicationInfo.flags&ApplicationInfo.FLAG_DEBUGGABLE;
-                int flag2 = applicationInfo2.flags&ApplicationInfo.FLAG_DEBUGGABLE;
-                if ((flag1!=0 && flag2!=0) || flag1==0&&flag2==0) {
-                    return 0;
-                }
-                if (flag1!=0) {
-                    return -1;
-                }
-                return 1;
-            }
-        })
+                .subscribeOn(Schedulers.computation())
+                .flatMap(new Func1<List<ApplicationInfo>, Observable<ApplicationInfo>>() {
+                    @Override
+                    @DebugLog
+                    public Observable<ApplicationInfo> call(List<ApplicationInfo> applicationInfos) {
+                        return Observable.from(applicationInfos);
+                    }
+                })
+                .filter(new Func1<ApplicationInfo, Boolean>() {
+                    @Override
+                    public Boolean call(ApplicationInfo applicationInfo) {
+                        return !BuildConfig.APPLICATION_ID.equals(applicationInfo.packageName);
+                    }
+                })
+                .toSortedList(new Func2<ApplicationInfo, ApplicationInfo, Integer>() {
+                    @Override
+                    public Integer call(ApplicationInfo applicationInfo, ApplicationInfo applicationInfo2) {
+                        Timber.d(applicationInfo.packageName + "  " + applicationInfo2.packageName);
+                        int flag1 = applicationInfo.flags & ApplicationInfo.FLAG_DEBUGGABLE;
+                        int flag2 = applicationInfo2.flags & ApplicationInfo.FLAG_DEBUGGABLE;
+                        if ((flag1 != 0 && flag2 != 0) || flag1 == 0 && flag2 == 0) {
+                            return 0;
+                        }
+                        if (flag1 != 0) {
+                            return -1;
+                        }
+                        return 1;
+                    }
+                })
 //                .toList()
-        .observeOn(AndroidSchedulers.mainThread())
-        .subscribe(adapter);
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(adapter);
 
     }
 
@@ -95,4 +121,6 @@ public class AppFragment extends RefreshableFragment implements AppAdapter.OnAct
         Intent intent = PushActivity.createNewSelectIntent(getActivity(), info);
         startActivityForResult(intent, PushActivity.REQUEST_PUSH);
     }
+
+
 }

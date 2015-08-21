@@ -26,10 +26,15 @@ import butterknife.ButterKnife;
 public class AppAdapter extends DataAdapter<ApplicationInfo, AppAdapter.AppHolder> {
     OnActionListener listener;
     PackageManager packageManager;
+    boolean onScroll = false;
 
     public AppAdapter(Context context) {
         packageManager = context.getPackageManager();
 
+    }
+
+    public void setOnScroll(boolean onScroll) {
+        this.onScroll = onScroll;
     }
 
     public void setListener(OnActionListener listener) {
@@ -45,9 +50,13 @@ public class AppAdapter extends DataAdapter<ApplicationInfo, AppAdapter.AppHolde
     @Override
     public void onBindViewHolder(AppHolder holder, int i) {
         ApplicationInfo info = data.get(i);
-        Drawable icon = packageManager.getApplicationIcon(info);
         holder.appNameTV.setText(packageManager.getApplicationLabel(info));
-        holder.appIconIV.setImageDrawable(icon);
+        if (onScroll) {
+            holder.appIconIV.setImageDrawable(null);
+        } else {
+            Drawable icon = packageManager.getApplicationIcon(info);
+            holder.appIconIV.setImageDrawable(icon);
+        }
     }
 
     class AppHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
@@ -61,6 +70,11 @@ public class AppAdapter extends DataAdapter<ApplicationInfo, AppAdapter.AppHolde
             super(itemView);
             ButterKnife.bind(this, itemView);
             itemView.setOnClickListener(this);
+        }
+
+        public void showImage(int i) {
+            Drawable icon = packageManager.getApplicationIcon(data.get(i));
+            appIconIV.setImageDrawable(icon);
         }
 
         @Override
