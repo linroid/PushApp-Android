@@ -74,6 +74,7 @@ public class AppAdapter extends DataAdapter<ApplicationInfo, AppAdapter.AppHolde
 
         public void showImage(int i) {
             Drawable icon = packageManager.getApplicationIcon(data.get(i));
+            // todo 还能优化一下，如果滑动少的时候不要屏幕所见的都刷（只刷新出来的），顺便加动画
             appIconIV.setImageDrawable(icon);
         }
 

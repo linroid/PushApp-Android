@@ -6,7 +6,6 @@ import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.View;
 
 import com.linroid.pushapp.BuildConfig;
@@ -46,7 +45,10 @@ public class AppFragment extends RefreshableFragment implements AppAdapter.OnAct
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
                 super.onScrollStateChanged(recyclerView, newState);
+                // 同步状态，其实没用，就初始化的时候用一下，为了防止有别的问题就同步一下吧
                 adapter.setOnScroll(newState != RecyclerView.SCROLL_STATE_IDLE);
+
+                // 如果滑动完毕了，就刷图出来，用viewholder直接调用方法比 notifyItem 来得快
                 if (!adapter.onScroll) {
                     RecyclerView.LayoutManager layoutManager = recyclerView.getLayoutManager();
                     View firstVisibleChild = recyclerView.getChildAt(0);
