@@ -1,20 +1,23 @@
 package com.linroid.pushapp.ui.home;
 
+import android.content.res.Resources;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
+import com.linroid.pushapp.R;
 import com.linroid.pushapp.ui.app.AppFragment;
 import com.linroid.pushapp.ui.auth.AuthFragment;
-import com.linroid.pushapp.ui.device.DeviceFragment;
 import com.linroid.pushapp.ui.pack.PackageFragment;
 
 /**
  * Created by linroid on 7/20/15.
  */
 public class HomePagerAdapter extends FragmentPagerAdapter {
-    public HomePagerAdapter(FragmentManager fm) {
+    Resources resources;
+    public HomePagerAdapter(FragmentManager fm, Resources resources) {
         super(fm);
+        this.resources = resources;
     }
 
     @Override
@@ -45,14 +48,14 @@ public class HomePagerAdapter extends FragmentPagerAdapter {
         CharSequence title;
         switch (position) {
             case 0:
-                title = "推送";
+                title = resources.getString(R.string.title_fragment_push);
                 break;
             case 1:
-                title = "本地";
+                title = resources.getString(R.string.title_fragment_app);
                 break;
             case 2:
             default:
-                title = "授权";
+                title = resources.getString(R.string.title_fragment_auth);
                 break;
         }
         return title;

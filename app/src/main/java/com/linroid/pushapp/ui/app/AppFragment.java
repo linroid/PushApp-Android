@@ -74,14 +74,14 @@ public class AppFragment extends RefreshableFragment implements AppAdapter.OnAct
     public void loadData(int page) {
 
         Observable.create(new Observable.OnSubscribe<List<ApplicationInfo>>() {
-            @Override
-            public void call(Subscriber<? super List<ApplicationInfo>> subscriber) {
-                PackageManager pm = getActivity().getPackageManager();
-                List<ApplicationInfo> packages = pm.getInstalledApplications(PackageManager.GET_META_DATA);
-                subscriber.onNext(packages);
-                subscriber.onCompleted();
-            }
-        })
+                    @Override
+                    public void call(Subscriber<? super List<ApplicationInfo>> subscriber) {
+                        PackageManager pm = getActivity().getPackageManager();
+                        List<ApplicationInfo> packages = pm.getInstalledApplications(PackageManager.GET_META_DATA);
+                        subscriber.onNext(packages);
+                        subscriber.onCompleted();
+                    }
+                })
                 .subscribeOn(Schedulers.computation())
                 .flatMap(new Func1<List<ApplicationInfo>, Observable<ApplicationInfo>>() {
                     @Override
@@ -93,7 +93,9 @@ public class AppFragment extends RefreshableFragment implements AppAdapter.OnAct
                 .filter(new Func1<ApplicationInfo, Boolean>() {
                     @Override
                     public Boolean call(ApplicationInfo applicationInfo) {
-                        return !BuildConfig.APPLICATION_ID.equals(applicationInfo.packageName);
+                        return (applicationInfo.flags&ApplicationInfo.FLAG_SYSTEM)==0
+                                && !BuildConfig.APPLICATION_ID.equals(applicationInfo.packageName);
+
                     }
                 })
                 .toSortedList(new Func2<ApplicationInfo, ApplicationInfo, Integer>() {

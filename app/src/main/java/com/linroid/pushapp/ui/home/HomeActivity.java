@@ -66,7 +66,7 @@ public class HomeActivity extends BaseActivity {
             ViewCompat.setElevation(toolbar, 0);
         }
         ButterKnife.bind(this);
-        pager.setAdapter(new HomePagerAdapter(getSupportFragmentManager()));
+        pager.setAdapter(new HomePagerAdapter(getSupportFragmentManager(), getResources()));
         tabLayout.setupWithViewPager(pager);
         pager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
