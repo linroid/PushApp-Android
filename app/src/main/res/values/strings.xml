@@ -16,7 +16,7 @@
     <string name="btn_bind">绑定</string>
     <string name="tpl_alias_default" formatted="false" >%s(%s)</string>
     <string name="msg_dialog_bind">绑定中…</string>
-    <string name="msg_scan_qrcode_success">扫描成功</string>
+    <string name="msg_scan_auth_success">扫描成功!</string>
     <string name="bind_fist_content">请在电脑上打开:\n\n%s/device/bind</string>
     <string name="error_unknown_barcode">无法识别二维码信息:(</string>
     <string name="msg_downloading">正在下载中…</string>

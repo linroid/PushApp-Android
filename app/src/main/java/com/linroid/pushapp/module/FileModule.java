@@ -44,9 +44,9 @@ public class FileModule {
         String state = Environment.getExternalStorageState();
         File rootDir;
         if (Environment.MEDIA_MOUNTED.equals(state)) {
-            rootDir = new File(context.getExternalFilesDir(null), "apk/");
+            rootDir = new File(context.getExternalCacheDir(), "apk/");
         } else {
-            rootDir = new File(context.getFilesDir(), "apk/");
+            rootDir = new File(context.getCacheDir(), "apk/");
 
         }
         if(!rootDir.exists()){

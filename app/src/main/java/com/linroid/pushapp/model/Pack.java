@@ -29,6 +29,9 @@ public class Pack implements Parcelable {
     @SerializedName("package_name")
     @Expose
     private String packageName;
+
+    @Expose
+    private String md5;
     @SerializedName("app_name")
     @Expose
     private String appName;
@@ -278,6 +281,7 @@ public class Pack implements Parcelable {
         dest.writeValue(this.id);
         dest.writeString(this.packageName);
         dest.writeString(this.appName);
+        dest.writeString(this.md5);
         dest.writeString(this.versionName);
         dest.writeValue(this.versionCode);
         dest.writeValue(this.sdkLevel);
@@ -293,6 +297,7 @@ public class Pack implements Parcelable {
         this.id = (Integer) in.readValue(Integer.class.getClassLoader());
         this.packageName = in.readString();
         this.appName = in.readString();
+        this.md5 = in.readString();
         this.versionName = in.readString();
         this.versionCode = (Integer) in.readValue(Integer.class.getClassLoader());
         this.sdkLevel = (Integer) in.readValue(Integer.class.getClassLoader());
@@ -309,6 +314,7 @@ public class Pack implements Parcelable {
         values.put(DB.COLUMN_ID, id);
         values.put(DB.COLUMN_PACKAGE_NAME, packageName);
         values.put(DB.COLUMN_APP_NAME, appName);
+        values.put(DB.COLUMN_MD5, md5);
         values.put(DB.COLUMN_VERSION_NAME, versionName);
         values.put(DB.COLUMN_VERSION_CODE, versionCode);
         values.put(DB.COLUMN_SDK_LEVEL, sdkLevel);
@@ -326,6 +332,7 @@ public class Pack implements Parcelable {
         pack.id = Db.getInt(cursor, DB.COLUMN_ID);
         pack.packageName = Db.getString(cursor, DB.COLUMN_PACKAGE_NAME);
         pack.appName = Db.getString(cursor, DB.COLUMN_APP_NAME);
+        pack.md5 = Db.getString(cursor, DB.COLUMN_MD5);
         pack.versionName = Db.getString(cursor, DB.COLUMN_VERSION_NAME);
         pack.versionCode = Db.getInt(cursor, DB.COLUMN_VERSION_CODE);
         pack.sdkLevel = Db.getInt(cursor, DB.COLUMN_SDK_LEVEL);
@@ -349,12 +356,21 @@ public class Pack implements Parcelable {
         }
     };
 
+    public String getMD5() {
+        return md5;
+    }
+
+    public void setMD5(String md5) {
+        this.md5 = md5;
+    }
+
     public static class DB {
         public static final String TABLE_NAME = "packages";
 
         public static final String COLUMN_ID = "id";
         public static final String COLUMN_PACKAGE_NAME = "package_name";
         public static final String COLUMN_APP_NAME = "app_name";
+        public static final String COLUMN_MD5 = "md5";
         public static final String COLUMN_VERSION_NAME = "version_name";
         public static final String COLUMN_VERSION_CODE = "version_code";
         public static final String COLUMN_SDK_LEVEL = "sdk_level";
@@ -369,6 +385,7 @@ public class Pack implements Parcelable {
                 + "CREATE TABLE " + TABLE_NAME + "("
                 + COLUMN_ID + " INTEGER NOT NULL,"
                 + COLUMN_APP_NAME + " TEXT NOT NULL,"
+                + COLUMN_MD5 + " TEXT NOT NULL,"
                 + COLUMN_PACKAGE_NAME + " TEXT NOT NULL,"
                 + COLUMN_VERSION_NAME + " TEXT NOT NULL,"
                 + COLUMN_VERSION_CODE + " TEXT NOT NULL,"

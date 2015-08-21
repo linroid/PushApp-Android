@@ -134,8 +134,8 @@ public class DataModule {
                         Intent intent = new Intent(context, BindActivity.class);
                         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                         context.startActivity(intent);
-                        Toast.makeText(context, R.string.error_unauthorized, Toast.LENGTH_LONG).show();
-                        return null;
+//                        Toast.makeText(context, R.string.error_unauthorized, Toast.LENGTH_LONG).show();
+                        return retrofitError;
                     }
                     try {
                         Error error = (Error) retrofitError.getBodyAs(Error.class);

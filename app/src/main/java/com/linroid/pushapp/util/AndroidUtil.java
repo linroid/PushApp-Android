@@ -13,7 +13,6 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
-import android.support.v4.app.FragmentActivity;
 import android.text.TextUtils;
 import android.text.format.DateUtils;
 import android.util.Log;
@@ -65,11 +64,9 @@ public class AndroidUtil {
     }
 
     /**
-     * @deprecated
-     * 打开安装页面
-     *
      * @param context
      * @param apkPath apk文件路径
+     * @deprecated 打开安装页面
      */
     public static void installApk(Context context, String apkPath) {
         Intent intent = new Intent(Intent.ACTION_VIEW);
@@ -109,6 +106,25 @@ public class AndroidUtil {
             info = null;
         }
         return info != null;
+    }
+
+    /**
+     * 获取已安装app的Apk路径
+     *
+     * @param context
+     * @param packageName 包名
+     * @return
+     */
+    public static File appPath(Context context, String packageName) {
+        PackageManager pm = context.getPackageManager();
+        ApplicationInfo info = null;
+        try {
+            info = pm.getApplicationInfo(packageName, 0);
+        } catch (PackageManager.NameNotFoundException e) {
+            Timber.e(e, "没有找到 %s");
+            return null;
+        }
+        return new File(info.sourceDir);
     }
 
     /**
@@ -204,11 +220,9 @@ public class AndroidUtil {
     }
 
     /**
-     * @deprecated
-     * 根据包名打开其他应用
-     *
      * @param context
      * @param packageName 包名
+     * @deprecated 根据包名打开其他应用
      */
     public static void openApplication(Context context, String packageName) {
         PackageManager pm = context.getPackageManager();
@@ -221,12 +235,11 @@ public class AndroidUtil {
         }
 
     }
+
     /**
-     * @deprecated
-     * 根据包名获得打开其他应用的Intent
-     *
      * @param context
      * @param packageName 包名
+     * @deprecated 根据包名获得打开其他应用的Intent
      */
     public static Intent getOpenAppIntent(Context context, String packageName) {
         PackageManager pm = context.getPackageManager();
@@ -288,6 +301,7 @@ public class AndroidUtil {
 
     /**
      * 获得文件MimeType
+     *
      * @param filePath
      * @return
      */
@@ -299,6 +313,5 @@ public class AndroidUtil {
         }
         return type;
     }
-
 
 }

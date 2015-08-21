@@ -91,7 +91,7 @@ public class BindActivity extends BaseActivity {
         bindToken = intent.getStringExtra(ScanActivity.EXTRA_QRCODE_VALUE);
         if (!TextUtils.isEmpty(bindToken)) {
             showSecond();
-            Snackbar.make(switcher, R.string.msg_scan_qrcode_success, Snackbar.LENGTH_SHORT).show();
+            Snackbar.make(switcher, R.string.msg_scan_auth_success, Snackbar.LENGTH_SHORT).show();
             checkToken();
         }
     }
@@ -164,7 +164,7 @@ public class BindActivity extends BaseActivity {
             @Override
             @DebugLog
             public void failure(RetrofitError error) {
-                Toast.makeText(BindActivity.this, error.getMessage(), Toast.LENGTH_SHORT).show();
+                Snackbar.make(switcher, error.getMessage(), Snackbar.LENGTH_SHORT).show();
                 dialog.dismiss();
             }
         });

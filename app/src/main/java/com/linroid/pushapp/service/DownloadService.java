@@ -23,6 +23,7 @@ import com.linroid.pushapp.module.identifier.PackageDownloadDir;
 import com.linroid.pushapp.util.AndroidUtil;
 import com.linroid.pushapp.util.BooleanPreference;
 import com.linroid.pushapp.util.IntentUtil;
+import com.linroid.pushapp.util.MD5;
 import com.linroid.pushapp.util.StringPreference;
 import com.squareup.sqlbrite.BriteDatabase;
 import com.thin.downloadmanager.DownloadRequest;
@@ -137,6 +138,9 @@ public class DownloadService extends Service {
                 Pack pack = downloadPackageMap.remove(i);
                 CharSequence label = AndroidUtil.getApkLabel(DownloadService.this, pack.getPath());
                 pack.setAppName(label != null ? label.toString() : pack.getAppName());
+                //TODO 临时解决办法（使用ThinDownloadManager下载APK后MD5改变)
+                String md5 = MD5.calculateFile(new File(pack.getPath()));
+                pack.setMD5(md5);
                 db.update(Pack.DB.TABLE_NAME, pack.toContentValues(), Pack.DB.WHERE_ID, String.valueOf(pack.getId()));
                 DownloadService.this.onDownloadComplete(pack);
             }
@@ -166,6 +170,7 @@ public class DownloadService extends Service {
      * @param pack 下载的安装包
      */
     private void onDownloadComplete(Pack pack) {
+        Timber.d("%s 下载完成,保存到:%s", pack.getAppName(), pack.getPath());
         int toastResId = R.string.toast_download_complete;
         if (autoInstall.getValue()) {
             startActivity(IntentUtil.installApk(pack.getPath()));

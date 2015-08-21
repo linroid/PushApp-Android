@@ -4,6 +4,7 @@ import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -20,6 +21,7 @@ import com.linroid.pushapp.R;
 import com.linroid.pushapp.model.Pack;
 import com.linroid.pushapp.ui.base.DataAdapter;
 import com.linroid.pushapp.util.AndroidUtil;
+import com.linroid.pushapp.util.MD5;
 import com.squareup.picasso.Picasso;
 
 import butterknife.Bind;
@@ -122,7 +124,9 @@ public class PackageAdapter extends DataAdapter<Pack, PackageAdapter.PackageHold
             if (pack.fileExists()) {
                 menu.findItem(R.id.action_download).setVisible(false);
             }
-            if (AndroidUtil.isInstalled(v.getContext(), pack.getPackageName())) {
+            if (AndroidUtil.isInstalled(v.getContext(), pack.getPackageName())
+                    && !TextUtils.isEmpty(pack.getMD5())
+                    && MD5.checkMD5(pack.getMD5(), AndroidUtil.appPath(v.getContext(), pack.getPackageName()))) {
                 menu.findItem(R.id.action_install).setVisible(false);
             } else {
                 if (!pack.fileExists()) {
