@@ -93,4 +93,5 @@
     <string name="title_fragment_push">推送</string>
     <string name="title_fragment_app">已安装</string>
     <string name="title_fragment_auth">授权</string>
+    <string name="action_replace_install">切换到这个版本</string>
 </resources>

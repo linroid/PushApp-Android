@@ -121,16 +121,18 @@ public class PackageAdapter extends DataAdapter<Pack, PackageAdapter.PackageHold
             final PopupMenu popupMenu = new PopupMenu(v.getContext(), actionBtn);
             Menu menu = popupMenu.getMenu();
             popupMenu.getMenuInflater().inflate(R.menu.item_pack, menu);
-            if (pack.fileExists()) {
-                menu.findItem(R.id.action_download).setVisible(false);
-            }
-            if (AndroidUtil.isInstalled(v.getContext(), pack.getPackageName())
-                    && !TextUtils.isEmpty(pack.getMD5())
-                    && MD5.checkMD5(pack.getMD5(), AndroidUtil.appPath(v.getContext(), pack.getPackageName()))) {
+
+            boolean isInstalledPackageName = AndroidUtil.isInstalled(v.getContext(), pack.getPackageName());
+            boolean isInstalledFile = !TextUtils.isEmpty(pack.getMD5())
+                                        && MD5.checkMD5(pack.getMD5(), AndroidUtil.appPath(v.getContext(), pack.getPackageName()));
+            if (isInstalledPackageName && isInstalledFile) {
                 menu.findItem(R.id.action_install).setVisible(false);
             } else {
                 if (!pack.fileExists()) {
-                    menu.findItem(R.id.action_install).setVisible(false);
+                    menu.findItem(R.id.action_download).setVisible(true);
+                } else if (isInstalledPackageName) {
+//                    menu.findItem(R.id.action_replace_install).setVisible(true);
+                    menu.findItem(R.id.action_install).setTitle(R.string.action_replace_install);
                 }
                 menu.findItem(R.id.action_app_info).setVisible(false);
                 menu.findItem(R.id.action_open).setVisible(false);
@@ -144,6 +146,7 @@ public class PackageAdapter extends DataAdapter<Pack, PackageAdapter.PackageHold
                             case R.id.action_open:
                                 listener.onOpen(pack);
                                 break;
+//                            case R.id.action_replace_install:
                             case R.id.action_install:
                                 listener.onInstall(pack);
                                 break;

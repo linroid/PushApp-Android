@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:title="@string/action_open" android:id="@+id/action_open"/>
-    <item android:title="@string/action_download" android:id="@+id/action_download"/>
+    <item android:title="@string/action_download" android:id="@+id/action_download" android:visible="false"/>
     <item android:title="@string/action_install" android:id="@+id/action_install"/>
+    <!--<item android:title="@string/action_replace_install" android:id="@+id/action_replace_install" android:visible="false"/>-->
     <item android:title="@string/action_app_info" android:id="@+id/action_app_info"/>
     <item android:title="@string/action_uninstall" android:id="@+id/action_uninstall"/>
     <item android:title="@string/action_send_to_others" android:id="@+id/action_send_package"/>
