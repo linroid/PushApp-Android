@@ -83,7 +83,7 @@
     <string name="msg_qrcode_type_require_device">请扫描设备二维码!</string>
     <string name="error_unauthorized">授权已过期,请重新绑定</string>
     <string name="txt_device_token_introduce">选中安装包，然后扫描二维码\n即可发送到这台设备，十分钟内有效。</string>
-    <string name="msg_revoke_success">收回权限成功!</string>
+    <string name="msg_revoke_success">成功收回%s的安装权限!</string>
     <string name="msg_revoke_progress">正在收回…</string>
     <string name="btn_revoke_recall">撤回</string>
     <string name="msg_recall_revoke_progress">撤销中…</string>

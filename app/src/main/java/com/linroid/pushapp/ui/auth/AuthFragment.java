@@ -116,7 +116,7 @@ public class AuthFragment extends RefreshableFragment implements AuthAdapter.OnA
                 .subscribe(new Subscriber<Void>() {
                     @Override
                     public void onCompleted() {
-                        Snackbar.make(fab, R.string.msg_revoke_success, Snackbar.LENGTH_SHORT).show();
+                        Snackbar.make(fab, getString(R.string.msg_revoke_success, auth.getUser().getNickname()), Snackbar.LENGTH_SHORT).show();
                     }
 
                     @Override
