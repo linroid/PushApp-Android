@@ -30,7 +30,7 @@
                     android:layout_width="96dp"
                     android:layout_height="96dp"
                     android:layout_marginTop="24dp"
-                    android:src="@mipmap/ic_launcher" />
+                    android:src="@mipmap/icon_high_quality" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -89,9 +89,10 @@
                     android:layout_height="wrap_content"
                     android:autoLink="web"
                     android:text="@string/about_introduce"
-                    android:textColor="@color/md_grey_800"
+                    android:textColor="@color/md_grey_700"
                     android:textIsSelectable="true"
-                    android:textSize="14sp" />
+                    android:textSize="14sp"
+                    android:lineSpacingMultiplier="1.5"/>
 
             </RelativeLayout>
 
@@ -166,7 +167,7 @@
                     android:layout_below="@id/tv_2bab"
                     android:layout_toRightOf="@id/ig_avatar_2bab"
                     android:paddingBottom="16dp"
-                    android:text="Android后勤开发 &amp; icon设计"
+                    android:text="Android开发 &amp; 设计"
                     android:textColor="@color/md_grey_600" />
 
             </RelativeLayout>
@@ -185,22 +186,127 @@
                 android:text="@string/about_open_source_license"
                 android:textColor="@color/md_grey_600" />
 
-            <RelativeLayout
+            <com.linroid.pushapp.view.AboutDependencyView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp"
-                android:background="@drawable/bg_card_nopic"
-                android:padding="16dp">
+                app:name="Dagger 2.0"
+                app:author="Google"
+                app:address="https://github.com/google/dagger"
+                app:license="Apache_2"/>
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/about_open_source_libraries_list"
-                    android:textColor="@color/md_grey_600"
-                    android:textSize="@dimen/about_open_source_lis_text_size"
-                    tools:ignore="HardcodedText" />
+            <com.linroid.pushapp.view.AboutDependencyView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:name="Gson"
+                app:author="Google"
+                app:address="https://github.com/google/gson"
+                app:license="Apache_2"/>
 
-            </RelativeLayout>
+            <com.linroid.pushapp.view.AboutDependencyView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:name="ButterKnife"
+                app:author="Jake Wharton"
+                app:address="https://github.com/JakeWharton/butterknife"
+                app:license="Apache_2"/>
+
+            <com.linroid.pushapp.view.AboutDependencyView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:name="Timber"
+                app:author="Jake Wharton"
+                app:address="https://github.com/JakeWharton/timber"
+                app:license="Apache_2"/>
+
+            <com.linroid.pushapp.view.AboutDependencyView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:name="ZXing Android Embedded"
+                app:author="Journey"
+                app:address="https://github.com/journeyapps/zxing-android-embedded"
+                app:license="Apache_2"/>
+
+            <com.linroid.pushapp.view.AboutDependencyView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:name="ZXing Core"
+                app:author="Google"
+                app:address="https://github.com/zxing/zxing"
+                app:license="Apache_2"/>
+
+            <com.linroid.pushapp.view.AboutDependencyView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:name="ThinDownloadManager"
+                app:author="Mani Selvaraj"
+                app:address="https://github.com/smanikandan14/ThinDownloadManager"
+                app:license="Apache_2"/>
+
+            <com.linroid.pushapp.view.AboutDependencyView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:name="RxAndroid"
+                app:author="ReactiveX"
+                app:address="https://github.com/ReactiveX/RxAndroid"
+                app:license="Apache_2"/>
+
+            <com.linroid.pushapp.view.AboutDependencyView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:name="OkHttp"
+                app:author="Square"
+                app:address="https://github.com/square/okhttp"
+                app:license="Apache_2"/>
+
+            <com.linroid.pushapp.view.AboutDependencyView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:name="Retrofit"
+                app:author="Square"
+                app:address="https://github.com/square/retrofit"
+                app:license="Apache_2"/>
+
+            <com.linroid.pushapp.view.AboutDependencyView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:name="SQLBrite"
+                app:author="Square"
+                app:address="https://github.com/square/sqlbrite"
+                app:license="Apache_2"/>
+
+            <com.linroid.pushapp.view.AboutDependencyView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:name="Picasso"
+                app:author="Square"
+                app:address="https://github.com/square/picasso"
+                app:license="Apache_2"/>
+
+            <com.linroid.pushapp.view.AboutDependencyView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:name="Stetho"
+                app:author="Facebook"
+                app:address="https://github.com/facebook/stetho"
+                app:license="BSD"/>
+
+            <com.linroid.pushapp.view.AboutDependencyView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:name="LeakCanary"
+                app:author="Square"
+                app:address="https://github.com/square/leakcanary"
+                app:license="Apache_2"/>
+
+            <com.linroid.pushapp.view.AboutDependencyView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:name="Apache Commons Codec"
+                app:author="Apache"
+                app:address="https://commons.apache.org/proper/commons-codec/"
+                app:license="Apache_2"/>
+
+
 
         </LinearLayout>
     </android.support.v4.widget.NestedScrollView>

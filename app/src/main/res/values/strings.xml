@@ -72,10 +72,10 @@
 
     <!-- About -->
     <string name="about_app_name_with_introduce">PushApp，自动化安装与测试</string>
-    <string name="about_introduce">这是一段PushApp的介绍</string>
-    <string name="about_introduce_and_help">介绍与帮助</string>
+    <string name="about_introduce">我们有一个愿想\n帮助开发和测试人员\n从重复安装软件的体力劳动中解放出来\n乃至于自动化测试、自动化报告生成\nPushApp是一个开始\n一起走向远方</string>
+    <string name="about_introduce_and_help">介绍</string>
     <string name="about_developers">开发人员</string>
-    <string name="about_open_source_license">用到的开源库（后续会补充协议）</string>
+    <string name="about_open_source_license">致敬</string>
     <string name="about_open_source_libraries_list">LiteOrm\nheadsupcompat\ncom.android.support:appcompat-v7:22.2.1\ncom.android.support:recyclerview-v7:22.2.1\ncom.squareup.picasso:picasso:2.5.2\ncom.android.support:design:22.2.1\ncom.github.chrisbanes.photoview:library:1.2.3\ncom.daimajia.numberprogressbar:library:1.2@aar\ncom.umeng.analytics:analytics:latest.integration\ncom.squareup.retrofit:retrofit:1.9.0\nio.reactivex:rxandroid:1.0.0\ncom.squareup.okhttp:okhttp-urlconnection:2.0.0\ncom.squareup.okhttp:okhttp:2.0.0\ncom.jakewharton:butterknife:7.0.1\ncom.squareup:otto:1.3.8\ncom.github.bumptech.glide:glide:3.6.1"</string>
     <string name="about_share">分享我们的App</string>
     <string name="about_share_text">发现了一款方便移动开发测试的App，一键安装App到多个设备，推荐你也来看看~ http://pushapp.linroid.com</string>

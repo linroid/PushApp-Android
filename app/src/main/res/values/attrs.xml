@@ -14,7 +14,24 @@
         <attr name="android:paddingBottom" />
         <attr name="android:clipToPadding" />
     </declare-styleable>
+
     <declare-styleable name="VectorImageView">
         <attr name="src" format="reference" />
+    </declare-styleable>
+
+    <declare-styleable name="AboutDependencyView">
+        <attr name="name" format="reference|string" />
+        <attr name="author" format="reference|string" />
+        <attr name="address" format="reference|string" />
+        <attr name="license" format="enum">
+            <enum name="Apache_2" value="0" />
+            <enum name="GPL_2" value="1" />
+            <enum name="GPL_3" value="2" />
+            <enum name="MIT" value="3" />
+            <enum name="NoLicense" value="4" />
+            <enum name="BSD_2" value="5" />
+            <enum name="BSD_3" value="6" />
+            <enum name="BSD" value="7" />
+        </attr>
     </declare-styleable>
 </resources>
