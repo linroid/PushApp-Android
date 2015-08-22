@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <declare-styleable name="ContentLoaderView">
+        <attr name="contentView" format="integer|reference" />
         <attr name="loadingView" format="integer|reference" />
         <attr name="errorView" format="integer|reference" />
         <attr name="emptyView" format="integer|reference" />
@@ -12,5 +13,8 @@
         <attr name="android:paddingRight" />
         <attr name="android:paddingBottom" />
         <attr name="android:clipToPadding" />
+    </declare-styleable>
+    <declare-styleable name="VectorImageView">
+        <attr name="src" format="reference" />
     </declare-styleable>
 </resources>

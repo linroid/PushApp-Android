@@ -25,7 +25,7 @@ import timber.log.Timber;
 
 
 /**
- * 显示本地的App列表,Debuggable 模式的App的将会显示在前面
+ * 显示本地已安装的的App列表,Debuggable 模式的App的将会显示在前面
  */
 public class AppFragment extends RefreshableFragment implements AppAdapter.OnActionListener {
     AppAdapter adapter;
@@ -85,7 +85,6 @@ public class AppFragment extends RefreshableFragment implements AppAdapter.OnAct
                 .subscribeOn(Schedulers.computation())
                 .flatMap(new Func1<List<ApplicationInfo>, Observable<ApplicationInfo>>() {
                     @Override
-                    @DebugLog
                     public Observable<ApplicationInfo> call(List<ApplicationInfo> applicationInfos) {
                         return Observable.from(applicationInfos);
                     }
@@ -101,7 +100,6 @@ public class AppFragment extends RefreshableFragment implements AppAdapter.OnAct
                 .toSortedList(new Func2<ApplicationInfo, ApplicationInfo, Integer>() {
                     @Override
                     public Integer call(ApplicationInfo applicationInfo, ApplicationInfo applicationInfo2) {
-                        Timber.d(applicationInfo.packageName + "  " + applicationInfo2.packageName);
                         int flag1 = applicationInfo.flags & ApplicationInfo.FLAG_DEBUGGABLE;
                         int flag2 = applicationInfo2.flags & ApplicationInfo.FLAG_DEBUGGABLE;
                         if ((flag1 != 0 && flag2 != 0) || flag1 == 0 && flag2 == 0) {

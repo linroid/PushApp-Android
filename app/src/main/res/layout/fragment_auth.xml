@@ -10,7 +10,7 @@
         android:layout_height="match_parent"
         android:clipToPadding="false"
         android:padding="8dp"
-        app:emptyView="@layout/layout_empty_device"/>
+        app:emptyView="@layout/layout_empty_auth"/>
 
     <include
         layout="@layout/toolbar_shadow"

@@ -100,4 +100,12 @@
     <string name="action_replace_install">切换到这个版本</string>
     <string name="title_logout_account">注销%s?</string>
     <string name="msg_logout_account">如果只是想其他账号可以向这台手机安装应用，可以选择授权其他用户</string>
+    <string name="txt_emoji_unhappy">:(</string>
+    <string name="empty_auth_message">扫描其他账户二维码，即可授予其安装权限哟</string>
+    <string name="empty_pack_message">没有收到过哦，还不去试一下!</string>
+    <string name="loading_error_text">出现错误—</string>
+    <string name="btn_error_retry">刷新试试</string>
+    <string name="btn_empty_retry">刷新试试</string>
+    <string name="empty_message">什么也没有</string>
+    <string name="empty_auth_device">还有有绑定任何设备～</string>
 </resources>

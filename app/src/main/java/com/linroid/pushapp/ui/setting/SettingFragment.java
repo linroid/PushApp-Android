@@ -57,7 +57,6 @@ public class SettingFragment extends PreferenceFragment implements Preference.On
 
         Preference bindAccountPreference = findPreference(bindAccount);
         bindAccountPreference.setSummary(account.getUser().getNickname());
-        bindAccountPreference.setSummary(account.getUser().getNickname());
         bindAccountPreference.setOnPreferenceClickListener(this);
 
         findPreference(aboutUS).setOnPreferenceClickListener(this);

@@ -9,4 +9,7 @@
     <item name="error_view" type="id" />
     <item name="empty_view" type="id" />
     <item name="loading_view" type="id" />
+    <item name="empty_message" type="id" />
+    <item name="empty_emotion" type="id" />
+    <item name="btn_empty_retry" type="id" />
 </resources>

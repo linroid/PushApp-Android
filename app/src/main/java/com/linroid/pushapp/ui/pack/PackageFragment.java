@@ -3,12 +3,15 @@ package com.linroid.pushapp.ui.pack;
 import android.app.Activity;
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.drawable.VectorDrawable;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.RecyclerView;
+import android.view.View;
 import android.widget.Toast;
 
 import com.linroid.pushapp.App;
+import com.linroid.pushapp.R;
 import com.linroid.pushapp.api.PackageService;
 import com.linroid.pushapp.model.Pack;
 import com.linroid.pushapp.model.Pagination;
@@ -84,7 +87,6 @@ public class PackageFragment extends RefreshableFragment implements PackageAdapt
     @Override
     public void onResume() {
         super.onResume();
-
     }
 
     @Override
@@ -96,6 +98,11 @@ public class PackageFragment extends RefreshableFragment implements PackageAdapt
     public void onDestroy() {
         super.onDestroy();
         subscriptions.unsubscribe();
+    }
+
+    @Override
+    protected int provideViewResourceId() {
+        return R.layout.fragment_pack;
     }
 
     @Override

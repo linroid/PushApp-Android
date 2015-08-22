@@ -9,6 +9,7 @@ import android.os.Parcelable;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.FrameLayout;
@@ -89,25 +90,39 @@ public class ContentLoaderView extends FrameLayout implements SwipeRefreshLayout
         paddingTop = ta.getDimensionPixelSize(R.styleable.ContentLoaderView_android_paddingTop, -1);
         paddingBottom = ta.getDimensionPixelSize(R.styleable.ContentLoaderView_android_paddingBottom, -1);
         clipToPadding = ta.getBoolean(R.styleable.ContentLoaderView_android_clipToPadding, true);
+        int errorViewId = ta.getResourceId(R.styleable.ContentLoaderView_errorView, R.layout.content_loader_error);
+        int emptyViewId = ta.getResourceId(R.styleable.ContentLoaderView_emptyView, R.layout.content_loader_empty);
+        int loadingViewId = ta.getResourceId(R.styleable.ContentLoaderView_loadingView, R.layout.content_loader_loading);
+        int contentViewId = ta.getResourceId(R.styleable.ContentLoaderView_contentView, R.layout.content_loader_content);
         ta.recycle();
+        LayoutInflater inflater = LayoutInflater.from(ctx);
+
+        errorView = inflater.inflate(errorViewId, this, false);
+        emptyView = inflater.inflate(emptyViewId, this, false);
+        loadingView = inflater.inflate(loadingViewId, this, false);
+        contentView = inflater.inflate(contentViewId, this, false);
+        addView(errorView);
+        addView(emptyView);
+        addView(loadingView);
+        addView(contentView);
     }
 
     private void initViews() {
-        inflate(getContext(), R.layout.merge_content_loader, this);
         setPadding(0, 0, 0, 0);
         setClickable(true);
-        errorView = findViewById(R.id.error_view);
-        emptyView = findViewById(R.id.empty_view);
-        loadingView = findViewById(R.id.loading_view);
         refreshLayout = (SwipeRefreshLayout) findViewById(R.id.refresher);
         recyclerView = (RecyclerView) findViewById(R.id.recycler);
-        errorRetryBtn = (Button) findViewById(R.id.btn_error_retry);
-        errorMessageTV = (TextView) findViewById(R.id.error_message);
-        emptyRetryBtn = (Button) findViewById(R.id.btn_empty_retry);
-        emptyMessageTV = (TextView) findViewById(R.id.empty_message);
+        errorRetryBtn = (Button) errorView.findViewById(R.id.btn_error_retry);
+        errorMessageTV = (TextView) errorView.findViewById(R.id.error_message);
+        emptyRetryBtn = (Button) emptyView.findViewById(R.id.btn_empty_retry);
+        emptyMessageTV = (TextView) emptyView.findViewById(R.id.empty_message);
 
-        errorRetryBtn.setOnClickListener(this);
-        emptyRetryBtn.setOnClickListener(this);
+        if (errorRetryBtn != null) {
+            errorRetryBtn.setOnClickListener(this);
+        }
+        if (emptyRetryBtn != null) {
+            emptyRetryBtn.setOnClickListener(this);
+        }
         contentView = refreshLayout;
         refreshLayout.setEnabled(false);
         refreshLayout.setColorSchemeResources(
@@ -117,7 +132,7 @@ public class ContentLoaderView extends FrameLayout implements SwipeRefreshLayout
                 android.R.color.holo_red_light,
                 android.R.color.holo_orange_light);
         refreshLayout.setOnRefreshListener(this);
-        recyclerView.setOnScrollListener(mRecyclerScrollListener);
+        recyclerView.addOnScrollListener(mRecyclerScrollListener);
         if (padding != -1) {
             recyclerView.setPadding(padding, padding, padding, padding);
         } else {
@@ -254,10 +269,10 @@ public class ContentLoaderView extends FrameLayout implements SwipeRefreshLayout
 
     private void setDisplayState(int state) {
         this.displayState = state;
-        loadingView.setVisibility(state == STATE_LOADING ? VISIBLE : GONE);
-        emptyView.setVisibility(state == STATE_EMPTY ? VISIBLE : GONE);
-        errorView.setVisibility(state == STATE_ERROR ? VISIBLE : GONE);
-        contentView.setVisibility(state == STATE_CONTENT ? VISIBLE : GONE);
+        loadingView.setVisibility(state == STATE_LOADING    ? VISIBLE : GONE);
+        emptyView.setVisibility(state   == STATE_EMPTY      ? VISIBLE : GONE);
+        errorView.setVisibility(state   == STATE_ERROR      ? VISIBLE : GONE);
+        contentView.setVisibility(state == STATE_CONTENT    ? VISIBLE : GONE);
     }
 
     public void setOnRefreshListener(OnRefreshListener refreshListener) {
@@ -302,11 +317,11 @@ public class ContentLoaderView extends FrameLayout implements SwipeRefreshLayout
         }
     }
 
-    public static interface OnRefreshListener {
+    public interface OnRefreshListener {
         void onRefresh(boolean fromSwipe);
     }
 
-    public static interface OnMoreListener {
+    public interface OnMoreListener {
         void onMore(int page);
     }
 

@@ -4,6 +4,7 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.os.Bundle;
@@ -26,6 +27,7 @@ import com.linroid.pushapp.ui.bind.ScanActivity;
 import com.linroid.pushapp.ui.device.DeviceFragment;
 import com.linroid.pushapp.ui.home.HomeActivity;
 import com.linroid.pushapp.util.CountingTypedFile;
+import com.telly.mrvector.MrVector;
 
 import java.io.File;
 import java.util.Collections;

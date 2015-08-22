@@ -31,7 +31,7 @@ public abstract class RefreshableFragment extends Fragment
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_refreshable, container, false);
+        View view = inflater.inflate(provideViewResourceId(), container, false);
 
         loaderView = (ContentLoaderView) view.findViewById(R.id.content_loader);
         recyclerView = (RecyclerView) view.findViewById(R.id.recycler);
@@ -43,6 +43,10 @@ public abstract class RefreshableFragment extends Fragment
         loaderView.setOnRefreshListener(this);
         loaderView.setMoreListener(this);
         return view;
+    }
+
+    protected int provideViewResourceId() {
+        return R.layout.fragment_refreshable;
     }
 
     public abstract RecyclerView.Adapter<? extends RecyclerView.ViewHolder> getAdapter();

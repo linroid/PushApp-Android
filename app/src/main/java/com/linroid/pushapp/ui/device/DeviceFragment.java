@@ -9,6 +9,7 @@ import android.support.v7.widget.RecyclerView;
 import android.widget.Toast;
 
 import com.linroid.pushapp.App;
+import com.linroid.pushapp.R;
 import com.linroid.pushapp.api.DeviceService;
 import com.linroid.pushapp.model.Device;
 import com.linroid.pushapp.model.Pagination;
@@ -61,6 +62,11 @@ public class DeviceFragment extends RefreshableFragment {
     @Override
     public RecyclerView.Adapter<? extends RecyclerView.ViewHolder> getAdapter() {
         return adapter;
+    }
+
+    @Override
+    protected int provideViewResourceId() {
+        return R.layout.fragment_device;
     }
 
     @Override

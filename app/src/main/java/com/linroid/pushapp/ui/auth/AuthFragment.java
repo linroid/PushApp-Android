@@ -83,6 +83,11 @@ public class AuthFragment extends RefreshableFragment implements AuthAdapter.OnA
     }
 
     @Override
+    protected int provideViewResourceId() {
+        return R.layout.fragment_auth;
+    }
+
+    @Override
     public RecyclerView.Adapter<? extends RecyclerView.ViewHolder> getAdapter() {
         return adapter;
     }

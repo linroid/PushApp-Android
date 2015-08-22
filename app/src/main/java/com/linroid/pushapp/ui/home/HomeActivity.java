@@ -3,6 +3,7 @@ package com.linroid.pushapp.ui.home;
 import android.annotation.TargetApi;
 import android.app.ActivityManager;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -32,6 +33,7 @@ import com.linroid.pushapp.service.ApkAutoInstallService;
 import com.linroid.pushapp.ui.base.BaseActivity;
 import com.linroid.pushapp.ui.bind.BindActivity;
 import com.linroid.pushapp.ui.setting.SettingActivity;
+import com.telly.mrvector.MrVector;
 
 import javax.inject.Inject;
 
@@ -107,6 +109,7 @@ public class HomeActivity extends BaseActivity {
 //            setTaskDescriptionColor();
 //        }
     }
+
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
