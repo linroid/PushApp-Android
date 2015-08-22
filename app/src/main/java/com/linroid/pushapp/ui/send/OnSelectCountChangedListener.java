@@ -1,4 +1,4 @@
-package com.linroid.pushapp.ui.push;
+package com.linroid.pushapp.ui.send;
 
 /**
  * Created by linroid on 8/19/15.

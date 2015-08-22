@@ -11,7 +11,6 @@ import com.linroid.pushapp.module.ApiModule;
 import com.linroid.pushapp.module.AppModule;
 import com.linroid.pushapp.module.DataModule;
 import com.linroid.pushapp.module.FileModule;
-import com.telly.mrvector.MrVector;
 
 import cn.jpush.android.api.JPushInterface;
 import timber.log.Timber;

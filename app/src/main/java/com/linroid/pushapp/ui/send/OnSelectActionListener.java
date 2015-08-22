@@ -1,4 +1,4 @@
-package com.linroid.pushapp.ui.push;
+package com.linroid.pushapp.ui.send;
 
 import java.util.List;
 

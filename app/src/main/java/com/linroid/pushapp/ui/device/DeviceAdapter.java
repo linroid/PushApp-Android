@@ -15,9 +15,9 @@ import android.widget.TextView;
 import com.linroid.pushapp.R;
 import com.linroid.pushapp.model.Device;
 import com.linroid.pushapp.ui.base.DataAdapter;
-import com.linroid.pushapp.ui.push.OnSelectActionListener;
-import com.linroid.pushapp.ui.push.OnSelectCountChangedListener;
-import com.linroid.pushapp.ui.push.PushActivity;
+import com.linroid.pushapp.ui.send.OnSelectActionListener;
+import com.linroid.pushapp.ui.send.OnSelectCountChangedListener;
+import com.linroid.pushapp.ui.send.SendActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,8 +36,8 @@ public class DeviceAdapter extends DataAdapter<Device, DeviceAdapter.DeviceHolde
 
     public DeviceAdapter(Activity activity) {
         deviceSelectStatus = new SparseArray<>();
-        if (activity instanceof PushActivity) {
-            ((PushActivity) activity).setSelectListener(this);
+        if (activity instanceof SendActivity) {
+            ((SendActivity) activity).setSelectListener(this);
             selectMode = true;
             if(activity instanceof OnSelectCountChangedListener) {
                 this.listener = (OnSelectCountChangedListener) activity;

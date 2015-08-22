@@ -10,18 +10,16 @@ import android.view.View;
 
 import com.linroid.pushapp.BuildConfig;
 import com.linroid.pushapp.ui.base.RefreshableFragment;
-import com.linroid.pushapp.ui.push.PushActivity;
+import com.linroid.pushapp.ui.send.SendActivity;
 
 import java.util.List;
 
-import hugo.weaving.DebugLog;
 import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
 import rx.functions.Func2;
 import rx.schedulers.Schedulers;
-import timber.log.Timber;
 
 
 /**
@@ -120,8 +118,8 @@ public class AppFragment extends RefreshableFragment implements AppAdapter.OnAct
 
     @Override
     public void onSend(ApplicationInfo info) {
-        Intent intent = PushActivity.createNewSelectIntent(getActivity(), info);
-        startActivityForResult(intent, PushActivity.REQUEST_PUSH);
+        Intent intent = SendActivity.createNewSelectIntent(getActivity(), info);
+        startActivityForResult(intent, SendActivity.REQUEST_SEND);
     }
 
 

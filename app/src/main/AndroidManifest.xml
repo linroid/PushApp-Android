@@ -56,7 +56,7 @@
             android:exported="false" />
 
         <activity
-            android:name=".ui.push.PushActivity"
+            android:name=".ui.send.SendActivity"
             android:label="@string/title_activity_select_device"
             android:parentActivityName=".ui.home.HomeActivity">
             <meta-data

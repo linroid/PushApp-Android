@@ -107,5 +107,5 @@
     <string name="btn_error_retry">刷新试试</string>
     <string name="btn_empty_retry">刷新试试</string>
     <string name="empty_message">什么也没有</string>
-    <string name="empty_auth_device">还有有绑定任何设备～</string>
+    <string name="empty_auth_device">还没有绑定任何设备～</string>
 </resources>

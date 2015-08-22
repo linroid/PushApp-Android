@@ -33,7 +33,6 @@ import com.linroid.pushapp.service.ApkAutoInstallService;
 import com.linroid.pushapp.ui.base.BaseActivity;
 import com.linroid.pushapp.ui.bind.BindActivity;
 import com.linroid.pushapp.ui.setting.SettingActivity;
-import com.telly.mrvector.MrVector;
 
 import javax.inject.Inject;
 

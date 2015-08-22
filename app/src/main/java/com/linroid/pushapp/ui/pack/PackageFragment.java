@@ -3,23 +3,19 @@ package com.linroid.pushapp.ui.pack;
 import android.app.Activity;
 import android.content.Intent;
 import android.database.Cursor;
-import android.graphics.drawable.VectorDrawable;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.RecyclerView;
-import android.view.View;
-import android.widget.Toast;
 
 import com.linroid.pushapp.App;
 import com.linroid.pushapp.R;
 import com.linroid.pushapp.api.PackageService;
 import com.linroid.pushapp.model.Pack;
 import com.linroid.pushapp.model.Pagination;
-import com.linroid.pushapp.model.Push;
 import com.linroid.pushapp.service.ApkAutoInstallService;
 import com.linroid.pushapp.service.DownloadService;
 import com.linroid.pushapp.ui.base.RefreshableFragment;
-import com.linroid.pushapp.ui.push.PushActivity;
+import com.linroid.pushapp.ui.send.SendActivity;
 import com.linroid.pushapp.util.IntentUtil;
 import com.squareup.picasso.Picasso;
 import com.squareup.sqlbrite.BriteDatabase;
@@ -198,8 +194,8 @@ public class PackageFragment extends RefreshableFragment implements PackageAdapt
 
     @Override
     public void onSend(Pack pack) {
-        Intent intent = PushActivity.createNewSelectIntent(getActivity(), pack);
-        startActivityForResult(intent, PushActivity.REQUEST_PUSH);
+        Intent intent = SendActivity.createNewSelectIntent(getActivity(), pack);
+        startActivityForResult(intent, SendActivity.REQUEST_SEND);
     }
 
     @Override

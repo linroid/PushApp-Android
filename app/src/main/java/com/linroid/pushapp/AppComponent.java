@@ -12,7 +12,7 @@ import com.linroid.pushapp.ui.auth.AuthFragment;
 import com.linroid.pushapp.ui.bind.BindActivity;
 import com.linroid.pushapp.ui.device.DeviceFragment;
 import com.linroid.pushapp.ui.home.DeviceTokenDialog;
-import com.linroid.pushapp.ui.push.PushActivity;
+import com.linroid.pushapp.ui.send.SendActivity;
 import com.linroid.pushapp.ui.home.HomeActivity;
 import com.linroid.pushapp.ui.pack.PackageFragment;
 import com.linroid.pushapp.ui.setting.SettingFragment;
@@ -45,7 +45,7 @@ public interface AppComponent {
 
     void inject(HomeActivity activity);
 
-    void inject(PushActivity activity);
+    void inject(SendActivity activity);
 
     void inject(AuthFragment fragment);
 

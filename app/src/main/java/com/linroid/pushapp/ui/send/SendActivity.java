@@ -1,10 +1,9 @@
-package com.linroid.pushapp.ui.push;
+package com.linroid.pushapp.ui.send;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.app.Activity;
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.os.Bundle;
@@ -27,7 +26,6 @@ import com.linroid.pushapp.ui.bind.ScanActivity;
 import com.linroid.pushapp.ui.device.DeviceFragment;
 import com.linroid.pushapp.ui.home.HomeActivity;
 import com.linroid.pushapp.util.CountingTypedFile;
-import com.telly.mrvector.MrVector;
 
 import java.io.File;
 import java.util.Collections;
@@ -44,11 +42,11 @@ import retrofit.mime.TypedString;
 import rx.Subscriber;
 import rx.Subscription;
 
-public class PushActivity extends BaseActivity
+public class SendActivity extends BaseActivity
         implements Callback<Push>, OnSelectCountChangedListener {
     public static final String EXTRA_PACKAGE = "package";
     public static final String EXTRA_APPLICATION_INFO = "application";
-    public static final int REQUEST_PUSH = 0x9999;
+    public static final int REQUEST_SEND = 0x9999;
     private OnSelectActionListener selectListener;
     @Inject
     PushService installApi;
@@ -62,13 +60,13 @@ public class PushActivity extends BaseActivity
     Subscription subscription;
 
     public static Intent createNewSelectIntent(Activity source, Pack pack) {
-        Intent intent = new Intent(source, PushActivity.class);
+        Intent intent = new Intent(source, SendActivity.class);
         intent.putExtra(EXTRA_PACKAGE, pack);
         return intent;
     }
 
     public static Intent createNewSelectIntent(Activity source, ApplicationInfo info) {
-        Intent intent = new Intent(source, PushActivity.class);
+        Intent intent = new Intent(source, SendActivity.class);
         intent.putExtra(EXTRA_APPLICATION_INFO, info);
         return intent;
     }
@@ -139,7 +137,7 @@ public class PushActivity extends BaseActivity
             throw new IllegalStateException();
         }
         if (selectListener.provideSelectedCount()==0) {
-            Intent intent = ScanActivity.createNewScanIntent(this, getString(R.string.txt_scan_device));
+            Intent intent = ScanActivity.createNewScanIntent(this, getString(R.string.txt_scan_device), Constants.QRCODE_KEY_DEVICE);
             startActivityForResult(intent, ScanActivity.REQ_SCAN_QRCODE);
         }
         List<String> selectedIds = selectListener.provideSelectedDeviceIds();
@@ -172,8 +170,8 @@ public class PushActivity extends BaseActivity
                 @Override
                 public void onNext(Pair<Long, Long> pair) {
                     dialog.setMessage(getString(R.string.msg_upload_progress,
-                            Formatter.formatShortFileSize(PushActivity.this, pair.second),
-                            Formatter.formatShortFileSize(PushActivity.this, pair.first)));
+                            Formatter.formatShortFileSize(SendActivity.this, pair.second),
+                            Formatter.formatShortFileSize(SendActivity.this, pair.first)));
                 }
             });
             installApi.installLocal(new TypedString(deviceIds), typedFile, this);
