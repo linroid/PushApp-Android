@@ -1,8 +1,11 @@
 package com.linroid.pushapp.view;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.TypedArray;
+import android.net.Uri;
 import android.util.AttributeSet;
+import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -16,7 +19,7 @@ import butterknife.ButterKnife;
  * <p/>
  * 关于界面的开源库介绍的View
  */
-public class AboutDependencyView extends LinearLayout {
+public class AboutDependencyView extends LinearLayout implements View.OnClickListener {
 
     @Bind(R.id.about_dependency_name_author)
     TextView nameAndAuthorTx;
@@ -67,6 +70,8 @@ public class AboutDependencyView extends LinearLayout {
         nameAndAuthorTx.setText(name + " - " + author);
         addressTx.setText(address);
         licenseTx.setText(License.getLicense(licenseId));
+        setClickable(true);
+        setOnClickListener(this);
     }
 
     @Override
@@ -78,6 +83,13 @@ public class AboutDependencyView extends LinearLayout {
 
         int paddingSize = getResources().getDimensionPixelSize(R.dimen.about_dependency_block_padding);
         setPadding(paddingSize, paddingSize, paddingSize, paddingSize);
+    }
+
+    @Override
+    public void onClick(View v) {
+        Intent intent = new Intent(Intent.ACTION_VIEW);
+        intent.setData(Uri.parse(address));
+        v.getContext().startActivity(Intent.createChooser(intent, null));
     }
 
     private enum License {

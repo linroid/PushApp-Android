@@ -17,13 +17,14 @@
             android:layout_height="match_parent"
             app:contentScrim="?attr/colorPrimary"
             app:expandedTitleTextAppearance="@style/CollapsingToolbarTitleStyle"
-            app:layout_scrollFlags="scroll|exitUntilCollapsed">
+            app:layout_scrollFlags="scroll|exitUntilCollapsed"
+            app:title="@string/app_name">
 
             <LinearLayout
                 android:id="@+id/about_header"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/about_header_height"
-                android:background="@drawable/bg_about_header"
+                android:background="#1C1E22"
                 android:gravity="center"
                 android:orientation="vertical">
 
@@ -56,6 +57,9 @@
                 android:id="@+id/toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
+                android:background="@android:color/transparent"
+                app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+                android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
                 app:layout_collapseMode="pin" />
 
         </android.support.design.widget.CollapsingToolbarLayout>
@@ -90,19 +94,19 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:autoLink="web"
+                    android:lineSpacingMultiplier="1.5"
                     android:text="@string/about_introduce"
                     android:textColor="@color/md_grey_700"
                     android:textIsSelectable="true"
-                    android:textSize="14sp"
-                    android:lineSpacingMultiplier="1.5"/>
+                    android:textSize="14sp" />
 
             </RelativeLayout>
 
-            <LinearLayout
+            <View
                 android:layout_width="match_parent"
                 android:layout_height="1px"
                 android:layout_marginTop="12dp"
-                android:background="@color/md_grey_500" />
+                android:background="?android:attr/dividerHorizontal"/>
 
             <TextView
                 android:layout_width="wrap_content"
@@ -174,11 +178,11 @@
 
             </RelativeLayout>
 
-            <LinearLayout
+            <View
                 android:layout_width="match_parent"
                 android:layout_height="1px"
                 android:layout_marginTop="12dp"
-                android:background="@color/md_grey_500" />
+                android:background="?android:attr/dividerHorizontal"/>
 
             <TextView
                 android:layout_width="wrap_content"
@@ -191,123 +195,122 @@
             <com.linroid.pushapp.view.AboutDependencyView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:name="Dagger 2.0"
-                app:author="Google"
                 app:address="https://github.com/google/dagger"
-                app:license="Apache_2"/>
+                app:author="Google"
+                app:license="Apache_2"
+                app:name="Dagger 2.0" />
 
             <com.linroid.pushapp.view.AboutDependencyView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:name="Gson"
-                app:author="Google"
                 app:address="https://github.com/google/gson"
-                app:license="Apache_2"/>
-
-            <com.linroid.pushapp.view.AboutDependencyView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:name="ButterKnife"
-                app:author="Jake Wharton"
-                app:address="https://github.com/JakeWharton/butterknife"
-                app:license="Apache_2"/>
-
-            <com.linroid.pushapp.view.AboutDependencyView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:name="Timber"
-                app:author="Jake Wharton"
-                app:address="https://github.com/JakeWharton/timber"
-                app:license="Apache_2"/>
-
-            <com.linroid.pushapp.view.AboutDependencyView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:name="ZXing Android Embedded"
-                app:author="Journey"
-                app:address="https://github.com/journeyapps/zxing-android-embedded"
-                app:license="Apache_2"/>
-
-            <com.linroid.pushapp.view.AboutDependencyView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:name="ZXing Core"
                 app:author="Google"
+                app:license="Apache_2"
+                app:name="Gson" />
+
+            <com.linroid.pushapp.view.AboutDependencyView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:address="https://github.com/JakeWharton/butterknife"
+                app:author="Jake Wharton"
+                app:license="Apache_2"
+                app:name="ButterKnife" />
+
+            <com.linroid.pushapp.view.AboutDependencyView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:address="https://github.com/JakeWharton/timber"
+                app:author="Jake Wharton"
+                app:license="Apache_2"
+                app:name="Timber" />
+
+            <com.linroid.pushapp.view.AboutDependencyView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:address="https://github.com/journeyapps/zxing-android-embedded"
+                app:author="Journey"
+                app:license="Apache_2"
+                app:name="ZXing Android Embedded" />
+
+            <com.linroid.pushapp.view.AboutDependencyView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 app:address="https://github.com/zxing/zxing"
-                app:license="Apache_2"/>
+                app:author="Google"
+                app:license="Apache_2"
+                app:name="ZXing Core" />
 
             <com.linroid.pushapp.view.AboutDependencyView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:name="ThinDownloadManager"
-                app:author="Mani Selvaraj"
                 app:address="https://github.com/smanikandan14/ThinDownloadManager"
-                app:license="Apache_2"/>
+                app:author="Mani Selvaraj"
+                app:license="Apache_2"
+                app:name="ThinDownloadManager" />
 
             <com.linroid.pushapp.view.AboutDependencyView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:name="RxAndroid"
-                app:author="ReactiveX"
                 app:address="https://github.com/ReactiveX/RxAndroid"
-                app:license="Apache_2"/>
+                app:author="ReactiveX"
+                app:license="Apache_2"
+                app:name="RxAndroid" />
 
             <com.linroid.pushapp.view.AboutDependencyView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:name="OkHttp"
-                app:author="Square"
                 app:address="https://github.com/square/okhttp"
-                app:license="Apache_2"/>
+                app:author="Square"
+                app:license="Apache_2"
+                app:name="OkHttp" />
 
             <com.linroid.pushapp.view.AboutDependencyView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:name="Retrofit"
-                app:author="Square"
                 app:address="https://github.com/square/retrofit"
-                app:license="Apache_2"/>
+                app:author="Square"
+                app:license="Apache_2"
+                app:name="Retrofit" />
 
             <com.linroid.pushapp.view.AboutDependencyView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:name="SQLBrite"
-                app:author="Square"
                 app:address="https://github.com/square/sqlbrite"
-                app:license="Apache_2"/>
+                app:author="Square"
+                app:license="Apache_2"
+                app:name="SQLBrite" />
 
             <com.linroid.pushapp.view.AboutDependencyView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:name="Picasso"
-                app:author="Square"
                 app:address="https://github.com/square/picasso"
-                app:license="Apache_2"/>
-
-            <com.linroid.pushapp.view.AboutDependencyView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:name="Stetho"
-                app:author="Facebook"
-                app:address="https://github.com/facebook/stetho"
-                app:license="BSD"/>
-
-            <com.linroid.pushapp.view.AboutDependencyView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:name="LeakCanary"
                 app:author="Square"
-                app:address="https://github.com/square/leakcanary"
-                app:license="Apache_2"/>
+                app:license="Apache_2"
+                app:name="Picasso" />
 
             <com.linroid.pushapp.view.AboutDependencyView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:name="Apache Commons Codec"
-                app:author="Apache"
-                app:address="https://commons.apache.org/proper/commons-codec/"
-                app:license="Apache_2"/>
+                app:address="https://github.com/facebook/stetho"
+                app:author="Facebook"
+                app:license="BSD"
+                app:name="Stetho" />
 
+            <com.linroid.pushapp.view.AboutDependencyView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:address="https://github.com/square/leakcanary"
+                app:author="Square"
+                app:license="Apache_2"
+                app:name="LeakCanary" />
+
+            <com.linroid.pushapp.view.AboutDependencyView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:address="https://commons.apache.org/proper/commons-codec/"
+                app:author="Apache"
+                app:license="Apache_2"
+                app:name="Apache Commons Codec" />
 
 
         </LinearLayout>

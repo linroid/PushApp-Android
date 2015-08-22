@@ -18,7 +18,7 @@
 
     <style name="Widget"/>
 
-    <style name="AppTheme.Home">
+    <style name="AppTheme.Coordinator">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
     </style>
@@ -36,13 +36,6 @@
     <style name="CollapsingToolbarTitleStyle"
         parent="@android:style/TextAppearance">
         <item name="android:textColor">@android:color/transparent</item>
-    </style>
-
-    <style name="AppTheme.About" parent="Theme.AppCompat.Light.NoActionBar">
-        <item name="windowActionBar">false</item>
-        <item name="colorPrimary">@color/app_primary</item>
-        <item name="colorPrimaryDark">@color/app_primary_dark</item>
-        <item name="colorAccent">@color/app_accent</item>
     </style>
 
 </resources>

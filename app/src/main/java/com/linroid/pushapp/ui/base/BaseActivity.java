@@ -3,10 +3,16 @@ package com.linroid.pushapp.ui.base;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
+import android.support.v4.view.ViewCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
+import android.view.Menu;
 import android.view.MenuItem;
 
+import com.linroid.pushapp.R;
+
+import butterknife.Bind;
 import butterknife.ButterKnife;
 import cn.jpush.android.api.JPushInterface;
 import timber.log.Timber;
@@ -15,21 +21,27 @@ import timber.log.Timber;
  * Created by linroid on 7/23/15.
  */
 public abstract class BaseActivity extends AppCompatActivity {
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(provideContentViewId());
         ButterKnife.bind(this);
-        ActionBar actionBar = getSupportActionBar();
-        Intent parent = NavUtils.getParentActivityIntent(this);
-        if (parent != null) {
-            actionBar.setDisplayHomeAsUpEnabled(true);
-            actionBar.setDisplayShowHomeEnabled(true);
-        }
+
     }
 
     protected abstract int provideContentViewId();
 
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        ActionBar actionBar = getSupportActionBar();
+        Intent parent = NavUtils.getParentActivityIntent(this);
+        if (parent != null && actionBar!=null) {
+            actionBar.setDisplayHomeAsUpEnabled(true);
+            actionBar.setDisplayShowHomeEnabled(true);
+        }
+        return super.onPrepareOptionsMenu(menu);
+    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
