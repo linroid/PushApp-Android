@@ -20,6 +20,7 @@
             app:layout_scrollFlags="scroll|exitUntilCollapsed">
 
             <LinearLayout
+                android:id="@+id/about_header"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/about_header_height"
                 android:background="@drawable/bg_about_header"
@@ -30,6 +31,7 @@
                     android:layout_width="96dp"
                     android:layout_height="96dp"
                     android:layout_marginTop="24dp"
+                    android:background="@android:color/transparent"
                     android:src="@mipmap/icon_high_quality" />
 
                 <TextView

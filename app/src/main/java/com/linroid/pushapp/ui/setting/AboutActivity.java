@@ -1,5 +1,6 @@
 package com.linroid.pushapp.ui.setting;
 
+import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -7,6 +8,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.linroid.pushapp.BuildConfig;
@@ -23,6 +25,8 @@ public class AboutActivity extends AppCompatActivity {
     TextView mVersionTextView;
     @Bind(R.id.collapsing_toolbar)
     CollapsingToolbarLayout mCollapsingToolbarLayout;
+    @Bind(R.id.about_header)
+    LinearLayout headerLL;
 
 
     @Override
@@ -31,7 +35,7 @@ public class AboutActivity extends AppCompatActivity {
         setContentView(R.layout.activity_about);
         ButterKnife.bind(this);
 
-        setUpVersionName();
+        initVersionName();
 
         mCollapsingToolbarLayout.setTitle(getString(R.string.app_name));
 
@@ -43,9 +47,14 @@ public class AboutActivity extends AppCompatActivity {
                 onBackPressed();
             }
         });
+
+        GradientDrawable drawable = (GradientDrawable) headerLL.getBackground();
+        drawable.setGradientRadius(getResources().getDimensionPixelOffset(R.dimen.about_header_bg_radius));
+        headerLL.setBackgroundDrawable(drawable);
     }
 
-    private void setUpVersionName() {
+
+    private void initVersionName() {
         mVersionTextView.setText("Version " + BuildConfig.VERSION_NAME);
     }
 

@@ -14,4 +14,6 @@
     <dimen name="about_open_source_lis_text_size">13sp</dimen>
     <dimen name="about_dependency_block_padding">16dp</dimen>
     <dimen name="about_dependency_block_margin_bottom">8dp</dimen>
+
+    <dimen name="about_header_bg_radius">180dp</dimen>
 </resources>

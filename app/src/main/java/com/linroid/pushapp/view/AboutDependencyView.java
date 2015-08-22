@@ -62,8 +62,6 @@ public class AboutDependencyView extends LinearLayout {
         ButterKnife.bind(this);
 
         setOrientation(VERTICAL);
-        int paddingSize = getResources().getDimensionPixelSize(R.dimen.about_dependency_block_padding);
-        setPadding(paddingSize, paddingSize, paddingSize, paddingSize);
         setBackgroundResource(R.drawable.bg_card_nopic);
 
         nameAndAuthorTx.setText(name + " - " + author);
@@ -77,6 +75,9 @@ public class AboutDependencyView extends LinearLayout {
         LayoutParams params = (LinearLayout.LayoutParams) getLayoutParams();
         params.bottomMargin = getResources().getDimensionPixelOffset(R.dimen.about_dependency_block_margin_bottom);
         setLayoutParams(params);
+
+        int paddingSize = getResources().getDimensionPixelSize(R.dimen.about_dependency_block_padding);
+        setPadding(paddingSize, paddingSize, paddingSize, paddingSize);
     }
 
     private enum License {
