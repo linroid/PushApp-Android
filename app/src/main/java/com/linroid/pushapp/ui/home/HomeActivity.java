@@ -230,9 +230,9 @@ public class HomeActivity extends BaseActivity {
                     @Override
                     public void onNext(final FirVersion version) {
                         if (!(version.getVersion() > BuildConfig.VERSION_CODE)) {
-//                            once.show(getString(R.string.once_version, version.getVersion()), new Once.OnceCallback() {
-//                                @Override
-//                                public void onOnce() {
+                            once.show(getString(R.string.once_version, version.getVersion()), new Once.OnceCallback() {
+                                @Override
+                                public void onOnce() {
                                     Snackbar.make(fab, getString(R.string.msg_new_version, version.getVersionShort()), Snackbar.LENGTH_INDEFINITE)
                                             .setAction(R.string.btn_update_version, new View.OnClickListener() {
                                                 @Override
@@ -241,8 +241,8 @@ public class HomeActivity extends BaseActivity {
                                                 }
                                             })
                                             .show();
-//                                }
-//                            });
+                                }
+                            });
                         }
                     }
                 });
