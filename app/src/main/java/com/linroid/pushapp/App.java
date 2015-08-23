@@ -6,6 +6,7 @@ import android.app.Service;
 import android.content.Context;
 import android.preference.PreferenceManager;
 
+import com.crashlytics.android.Crashlytics;
 import com.facebook.stetho.Stetho;
 import com.linroid.pushapp.module.ApiModule;
 import com.linroid.pushapp.module.AppModule;
@@ -13,6 +14,7 @@ import com.linroid.pushapp.module.DataModule;
 import com.linroid.pushapp.module.FileModule;
 
 import cn.jpush.android.api.JPushInterface;
+import io.fabric.sdk.android.Fabric;
 import timber.log.Timber;
 
 /**
@@ -24,6 +26,7 @@ public class App extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+        Fabric.with(this, new Crashlytics());
         if(BuildConfig.DEBUG) {
             Stetho.initialize(
                     Stetho.newInitializerBuilder(this)

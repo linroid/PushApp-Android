@@ -102,10 +102,6 @@ public class HomeActivity extends BaseActivity {
             int pagerPosition = savedInstanceState.getInt(STATE_PAGER_POSITION);
             pager.setCurrentItem(pagerPosition);
         }
-
-//        if(Build.VERSION.SDK_INT >= 21) {
-//            setTaskDescriptionColor();
-//        }
     }
 
 
@@ -174,13 +170,6 @@ public class HomeActivity extends BaseActivity {
     @Override
     protected int provideContentViewId() {
         return R.layout.activity_home;
-    }
-
-    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-    private void setTaskDescriptionColor() {
-        Bitmap bm = BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher);
-        ActivityManager.TaskDescription taskDesc = new ActivityManager.TaskDescription(getString(R.string.app_name), bm, Color.WHITE);
-        setTaskDescription(taskDesc);
     }
 
     @Override
