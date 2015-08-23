@@ -24,7 +24,7 @@
                 android:id="@+id/about_header"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/about_header_height"
-                android:background="#1C1E22"
+                android:background="@drawable/bg_about_header"
                 android:gravity="center"
                 android:orientation="vertical">
 
@@ -58,9 +58,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
                 android:background="@android:color/transparent"
-                app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
                 android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
-                app:layout_collapseMode="pin" />
+                app:layout_collapseMode="pin"
+                app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
 
         </android.support.design.widget.CollapsingToolbarLayout>
 
@@ -106,7 +106,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="1px"
                 android:layout_marginTop="12dp"
-                android:background="?android:attr/dividerHorizontal"/>
+                android:background="?android:attr/dividerHorizontal" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -117,15 +117,16 @@
                 android:textColor="@color/md_grey_600" />
 
             <RelativeLayout
+                android:id="@+id/about_linroid_wrapper"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@drawable/bg_card_nopic">
+                android:background="@drawable/about_developer_bg_top"
+                android:padding="16dp">
 
                 <ImageView
                     android:id="@+id/ig_avatar_linroid"
                     android:layout_width="@dimen/about_avatar_size"
                     android:layout_height="@dimen/about_avatar_size"
-                    android:layout_margin="16dp"
                     android:src="@mipmap/avatar_linroid" />
 
                 <TextView
@@ -148,12 +149,19 @@
                     android:text="Android主开发 &amp; Web前端 &amp; 服务端"
                     android:textColor="@color/md_grey_600" />
 
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/about_2bab_wrapper"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/about_developer_bg_bottom"
+                android:padding="16dp">
+
                 <ImageView
                     android:id="@+id/ig_avatar_2bab"
                     android:layout_width="@dimen/about_avatar_size"
                     android:layout_height="@dimen/about_avatar_size"
-                    android:layout_below="@id/ig_avatar_linroid"
-                    android:layout_margin="16dp"
                     android:src="@mipmap/avatar_2bab" />
 
                 <TextView
@@ -172,17 +180,16 @@
                     android:layout_height="wrap_content"
                     android:layout_below="@id/tv_2bab"
                     android:layout_toRightOf="@id/ig_avatar_2bab"
-                    android:paddingBottom="16dp"
                     android:text="Android开发 &amp; 设计"
                     android:textColor="@color/md_grey_600" />
-
             </RelativeLayout>
+
 
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1px"
                 android:layout_marginTop="12dp"
-                android:background="?android:attr/dividerHorizontal"/>
+                android:background="?android:attr/dividerHorizontal" />
 
             <TextView
                 android:layout_width="wrap_content"

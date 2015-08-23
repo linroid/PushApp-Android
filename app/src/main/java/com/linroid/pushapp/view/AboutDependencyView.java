@@ -65,7 +65,7 @@ public class AboutDependencyView extends LinearLayout implements View.OnClickLis
         ButterKnife.bind(this);
 
         setOrientation(VERTICAL);
-        setBackgroundResource(R.drawable.bg_card_nopic);
+        setBackgroundResource(R.drawable.about_license_bg);
 
         nameAndAuthorTx.setText(name + " - " + author);
         addressTx.setText(address);
