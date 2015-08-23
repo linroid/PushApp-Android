@@ -16,14 +16,14 @@
 
 package com.linroid.pushapp.ui.setting;
 
+import android.content.Intent;
 import android.graphics.drawable.GradientDrawable;
+import android.net.Uri;
 import android.os.Bundle;
-import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.view.ViewCompat;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -54,9 +54,9 @@ public class AboutActivity extends BaseActivity {
             ViewCompat.setElevation(toolbar, 0);
         }
         initVersionName();
-//        GradientDrawable drawable = (GradientDrawable) headerContainer.getBackground();
-//        drawable.setGradientRadius(getResources().getDimensionPixelOffset(R.dimen.about_header_bg_radius));
-//        headerContainer.setBackgroundDrawable(drawable);
+        GradientDrawable drawable = (GradientDrawable) headerContainer.getBackground();
+        drawable.setGradientRadius(getResources().getDimensionPixelOffset(R.dimen.about_header_bg_radius));
+        headerContainer.setBackgroundDrawable(drawable);
     }
 
     @OnClick(R.id.collapsing_toolbar)
@@ -93,4 +93,19 @@ public class AboutActivity extends BaseActivity {
         }
         return super.onOptionsItemSelected(item);
     }
+
+    @OnClick(R.id.about_linroid_wrapper)
+    void onLinroidClick() {
+        Intent intent = new Intent(Intent.ACTION_VIEW);
+        intent.setData(Uri.parse("http://linroid.com/about/"));
+        startActivity(intent);
+    }
+
+    @OnClick(R.id.about_2bab_wrapper)
+    void on2babClick() {
+        Intent intent = new Intent(Intent.ACTION_VIEW);
+        intent.setData(Uri.parse("http://2bab.me/about/"));
+        startActivity(intent);
+    }
+
 }
