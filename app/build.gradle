@@ -1,12 +1,3 @@
-buildscript {
-    repositories {
-        maven { url 'https://maven.fabric.io/public' }
-    }
-
-    dependencies {
-        classpath 'io.fabric.tools:gradle:1.+'
-    }
-}
 /*
  * Copyright (c) linroid 2015.
  *
@@ -22,6 +13,17 @@ buildscript {
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+buildscript {
+    repositories {
+        maven { url 'https://maven.fabric.io/public' }
+    }
+
+    dependencies {
+        classpath 'io.fabric.tools:gradle:1.19.2'
+    }
+}
+
 
 apply plugin: 'com.android.application'
 apply plugin: 'io.fabric'
