@@ -25,6 +25,7 @@ public abstract class BaseActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Timber.tag(this.getLocalClassName()).d("onCreate");
         setContentView(provideContentViewId());
         ButterKnife.bind(this);
 
@@ -59,32 +60,32 @@ public abstract class BaseActivity extends AppCompatActivity {
     @Override
     protected void onStop() {
         super.onStop();
-        Timber.i("onStop");
+        Timber.tag(this.getLocalClassName()).i("onStop");
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        Timber.i("onDestroy");
+        Timber.tag(this.getLocalClassName()).i("onDestroy");
     }
 
     @Override
     public void onPause() {
         super.onPause();
         JPushInterface.onPause(this);
-        Timber.i("onPause");
+        Timber.tag(this.getLocalClassName()).i("onPause");
     }
 
     @Override
     protected void onResume() {
         super.onResume();
         JPushInterface.onResume(this);
-        Timber.i("onResume");
+        Timber.tag(this.getLocalClassName()).i("onResume");
     }
 
     @Override
     public void onStart() {
         super.onStart();
-        Timber.i("onStart");
+        Timber.tag(this.getLocalClassName()).i("onStart");
     }
 }
