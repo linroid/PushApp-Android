@@ -1,6 +1,11 @@
 package com.linroid.pushapp.ui.base;
 
+import android.annotation.TargetApi;
+import android.app.ActivityManager;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
 import android.support.v4.view.ViewCompat;
@@ -29,6 +34,9 @@ public abstract class BaseActivity extends AppCompatActivity {
         setContentView(provideContentViewId());
         ButterKnife.bind(this);
 
+        if(Build.VERSION.SDK_INT >= 21) {
+            setTaskDescriptionColor();
+        }
     }
 
     protected abstract int provideContentViewId();
@@ -88,4 +96,14 @@ public abstract class BaseActivity extends AppCompatActivity {
         super.onStart();
         Timber.tag(this.getLocalClassName()).i("onStart");
     }
+
+    @SuppressWarnings("deprecation")
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+    private void setTaskDescriptionColor() {
+        Bitmap bm = BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher);
+        ActivityManager.TaskDescription taskDesc = new ActivityManager.TaskDescription(getString(R.string.app_name),
+                bm, getResources().getColor(R.color.task_color));
+        setTaskDescription(taskDesc);
+    }
+
 }
