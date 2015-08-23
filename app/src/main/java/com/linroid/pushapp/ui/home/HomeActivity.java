@@ -16,17 +16,10 @@
 
 package com.linroid.pushapp.ui.home;
 
-import android.annotation.TargetApi;
-import android.app.ActivityManager;
 import android.app.AlertDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Color;
-import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.support.design.widget.FloatingActionButton;
@@ -35,25 +28,31 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.Toolbar;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 
 import com.linroid.pushapp.App;
+import com.linroid.pushapp.BuildConfig;
 import com.linroid.pushapp.Constants;
 import com.linroid.pushapp.R;
+import com.linroid.pushapp.api.FirService;
 import com.linroid.pushapp.model.Account;
+import com.linroid.pushapp.model.FirVersion;
 import com.linroid.pushapp.service.ApkAutoInstallService;
 import com.linroid.pushapp.ui.base.BaseActivity;
 import com.linroid.pushapp.ui.bind.BindActivity;
 import com.linroid.pushapp.ui.setting.SettingActivity;
+import com.linroid.pushapp.util.IntentUtil;
+import com.linroid.pushapp.util.Once;
 
 import javax.inject.Inject;
 
 import butterknife.Bind;
-import butterknife.ButterKnife;
+import rx.Subscriber;
+import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
 import timber.log.Timber;
 
 public class HomeActivity extends BaseActivity {
@@ -72,12 +71,17 @@ public class HomeActivity extends BaseActivity {
     Account auth;
     @Inject
     SharedPreferences preferences;
+    @Inject
+    Once once;
+    @Inject
+    FirService firApi;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         App.from(this).component().inject(this);
         checkBind();
+        checkVersion();
         if (toolbar != null) {
             setSupportActionBar(toolbar);
             ViewCompat.setElevation(toolbar, 0);
@@ -99,7 +103,7 @@ public class HomeActivity extends BaseActivity {
                     }
                 }
 
-                if (position!=2 && fab.isShown()) {
+                if (position != 2 && fab.isShown()) {
                     fab.setVisibility(View.GONE);
                 }
             }
@@ -208,5 +212,40 @@ public class HomeActivity extends BaseActivity {
             new DeviceTokenDialog().show(getSupportFragmentManager(), null);
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    public void checkVersion() {
+        Subscription subscription = firApi.lastVersion(BuildConfig.APPLICATION_ID)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<FirVersion>() {
+                    @Override
+                    public void onCompleted() {
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onNext(final FirVersion version) {
+                        if (!(version.getVersion() > BuildConfig.VERSION_CODE)) {
+//                            once.show(getString(R.string.once_version, version.getVersion()), new Once.OnceCallback() {
+//                                @Override
+//                                public void onOnce() {
+                                    Snackbar.make(fab, getString(R.string.msg_new_version, version.getVersionShort()), Snackbar.LENGTH_INDEFINITE)
+                                            .setAction(R.string.btn_update_version, new View.OnClickListener() {
+                                                @Override
+                                                public void onClick(View v) {
+                                                    startActivity(IntentUtil.openUri(version.getUpdateUrl()));
+                                                }
+                                            })
+                                            .show();
+//                                }
+//                            });
+                        }
+                    }
+                });
+        addSubscription(subscription);
     }
 }

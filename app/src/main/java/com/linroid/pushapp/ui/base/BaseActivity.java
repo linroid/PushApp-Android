@@ -37,6 +37,8 @@ import com.linroid.pushapp.R;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import cn.jpush.android.api.JPushInterface;
+import rx.Subscription;
+import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
 
 
@@ -44,10 +46,11 @@ import timber.log.Timber;
  * Created by linroid on 7/23/15.
  */
 public abstract class BaseActivity extends AppCompatActivity {
-
+    protected CompositeSubscription subscriptions;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        this.subscriptions = new CompositeSubscription();
         Timber.tag(this.getLocalClassName()).d("onCreate");
         setContentView(provideContentViewId());
         ButterKnife.bind(this);
@@ -89,10 +92,19 @@ public abstract class BaseActivity extends AppCompatActivity {
         Timber.tag(this.getLocalClassName()).i("onStop");
     }
 
+    protected void addSubscription(Subscription subscription) {
+        this.subscriptions.add(subscription);
+    }
+    protected void removeSubscription(Subscription subscription) {
+        this.subscriptions.remove(subscription);
+    }
     @Override
     public void onDestroy() {
         super.onDestroy();
         Timber.tag(this.getLocalClassName()).i("onDestroy");
+        if (this.subscriptions.isUnsubscribed()) {
+            subscriptions.unsubscribe();
+        }
     }
 
     @Override

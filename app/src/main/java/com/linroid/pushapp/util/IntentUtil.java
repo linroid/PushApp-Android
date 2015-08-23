@@ -83,4 +83,15 @@ public class IntentUtil {
             return null;
         }
     }
+
+    /**
+     * 选择应用打开指定uri
+     * @param uri 要打开的Uri
+     * @return
+     */
+    public static Intent openUri(String uri) {
+        Intent intent = new Intent(Intent.ACTION_VIEW);
+        intent.setData(Uri.parse(uri));
+        return Intent.createChooser(intent, null);
+    }
 }

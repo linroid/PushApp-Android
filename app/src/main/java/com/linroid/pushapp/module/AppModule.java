@@ -27,6 +27,7 @@ import com.linroid.pushapp.Constants;
 import com.linroid.pushapp.model.Account;
 import com.linroid.pushapp.module.identifier.AccountSavedFile;
 import com.linroid.pushapp.util.BooleanPreference;
+import com.linroid.pushapp.util.Once;
 import com.linroid.pushapp.util.StringPreference;
 import com.squareup.leakcanary.LeakCanary;
 import com.squareup.leakcanary.RefWatcher;
@@ -78,7 +79,7 @@ public class AppModule {
     @Provides
     @Singleton
     SharedPreferences provideSharedPreferences(Context context) {
-        return context.getSharedPreferences(Constants.SP_FILE_NAME, Context.MODE_PRIVATE);
+        return context.getSharedPreferences(Constants.SP_NAME_PUSHAPP, Context.MODE_PRIVATE);
     }
 
     @Provides
@@ -113,7 +114,7 @@ public class AppModule {
     @Singleton
     Account provideAuthorization(@AccountSavedFile File accountFile) {
         Account account = Account.readFromFile(accountFile);
-        if(account == null){
+        if (account == null) {
             account = new Account();
         }
         account.setFile(accountFile);
@@ -124,5 +125,11 @@ public class AppModule {
     @Singleton
     NotificationManager provideNotificationManager(Context context) {
         return (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+    }
+
+    @Provides
+    Once provideOnce(Context context, Resources resources) {
+        SharedPreferences preferences = context.getSharedPreferences(Constants.SP_NAME_PUSHAPP, Context.MODE_PRIVATE);
+        return new Once(resources, preferences);
     }
 }

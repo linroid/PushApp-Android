@@ -64,7 +64,7 @@ public class App extends Application {
         JPushInterface.setDebugMode(BuildConfig.DEBUG);
         JPushInterface.init(this);
 
-        PreferenceManager.setDefaultValues(this, Constants.SP_FILE_NAME, Context.MODE_PRIVATE, R.xml.pref_general, false);
+        PreferenceManager.setDefaultValues(this, Constants.SP_NAME_PUSHAPP, Context.MODE_PRIVATE, R.xml.pref_general, false);
     }
 
     public AppComponent component() {

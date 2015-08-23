@@ -59,6 +59,7 @@ android {
         versionName "${versionMajor}.${versionMinor}.${versionPatch}"
 
         buildConfigField "String", "BUILD_TIME", "\"${buildTime}\""
+        buildConfigField "String", "FIR_API_TOKEN", "\"${props['FIR_API_TOKEN']}\""
         println(new File("./app/nobug.txt").getText("UTF-8"))
         manifestPlaceholders = [JPUSH_CHANNEL: "default", PACKAGE: applicationId]
         if (props) {

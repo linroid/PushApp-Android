@@ -22,7 +22,8 @@ package com.linroid.pushapp;
 public class Constants {
     public static final String AUTH_HEADER = "X-Token";
 
-    public static final String SP_FILE_NAME = "pushapp";
+    public static final String SP_NAME_PUSHAPP  = "pushapp";
+    public static final String SP_NAME_ONCE     = "once";
 
     public static final String SP_TOKEN = "token";
     public static final String SP_AUTO_INSTALL_CONFIRMED = "auto_install_confirmed";

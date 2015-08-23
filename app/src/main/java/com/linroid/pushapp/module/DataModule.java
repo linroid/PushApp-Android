@@ -16,16 +16,13 @@
 
 package com.linroid.pushapp.module;
 
-import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.Application;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.net.Uri;
-import android.widget.Toast;
 
 import com.facebook.stetho.okhttp.StethoInterceptor;
 import com.google.gson.Gson;
@@ -53,7 +50,6 @@ import java.util.concurrent.TimeUnit;
 
 import javax.inject.Singleton;
 
-import butterknife.Bind;
 import dagger.Module;
 import dagger.Provides;
 import hugo.weaving.DebugLog;
@@ -61,7 +57,9 @@ import retrofit.ErrorHandler;
 import retrofit.RequestInterceptor;
 import retrofit.RestAdapter;
 import retrofit.RetrofitError;
+import retrofit.client.Client;
 import retrofit.client.OkClient;
+import retrofit.converter.Converter;
 import retrofit.converter.GsonConverter;
 import timber.log.Timber;
 
@@ -79,7 +77,12 @@ public class DataModule {
         okHttp.setReadTimeout(30, TimeUnit.SECONDS);
         okHttp.setWriteTimeout(30, TimeUnit.SECONDS);
         okHttp.networkInterceptors().add(new StethoInterceptor());
-        return okHttp;
+        return  okHttp;
+    }
+    @Provides
+    @Singleton
+    Client provideClient(OkHttpClient okHttp) {
+        return new OkClient(okHttp);
     }
 
     @Provides
@@ -101,6 +104,11 @@ public class DataModule {
     Gson provideGson() {
         return new Gson();
     }
+    @Provides
+    @Singleton
+    Converter provideConverter(Gson gson) {
+        return new GsonConverter(gson);
+    }
 
     @Provides
     @Singleton
@@ -115,24 +123,30 @@ public class DataModule {
 
     @Provides
     @Singleton
-    RestAdapter provideRestAdapter(Gson gson, OkHttpClient okHttpClient,
-                                   final Account auth,
-                                   ErrorHandler errorHandler) {
+    RestAdapter provideRestAdapter(Converter converter,
+                                   Client client,
+                                   ErrorHandler errorHandler,
+                                   RequestInterceptor interceptor) {
         return new RestAdapter.Builder()
                 .setErrorHandler(errorHandler)
-                .setClient(new OkClient(okHttpClient))
-                .setConverter(new GsonConverter(gson))
+                .setClient(client)
+                .setConverter(converter)
                 .setLogLevel(RestAdapter.LogLevel.BASIC)
                 .setEndpoint(BuildConfig.ENDPOINT)
-                .setRequestInterceptor(new RequestInterceptor() {
-                    @Override
-                    public void intercept(RequestFacade request) {
-                        if (auth.isValid()) {
-                            request.addHeader(Constants.AUTH_HEADER, auth.getToken());
-                        }
-                    }
-                })
+                .setRequestInterceptor(interceptor)
                 .build();
+    }
+
+    @Provides
+    RequestInterceptor provideRequestInterceptor(final Account auth) {
+        return new RequestInterceptor() {
+            @Override
+            public void intercept(RequestFacade request) {
+                if (auth.isValid()) {
+                    request.addHeader(Constants.AUTH_HEADER, auth.getToken());
+                }
+            }
+        };
     }
 
     @Provides
@@ -158,7 +172,7 @@ public class DataModule {
                         message = error.getMessage();
                     } catch (RuntimeException e) {
                         int status = retrofitError.getResponse().getStatus();
-                        if(status/100 == 5) {
+                        if (status / 100 == 5) {
                             message = res.getString(R.string.server_error, status);
                         } else {
                             message = retrofitError.getMessage();
@@ -193,8 +207,8 @@ public class DataModule {
                         Timber.e("Image load failed: %s\n%s", uri, exception.getMessage());
                     }
                 })
-                //30M
-                .memoryCache(new LruCache(am.getMemoryClass()*1024*1024 / 8))
+                        //30M
+                .memoryCache(new LruCache(am.getMemoryClass() * 1024 * 1024 / 8))
                 .build();
     }
 
