@@ -107,7 +107,7 @@ android {
                     host = "pushapp.${hostIp}.xip.io"
                     println("You can open the homepage: http://${host}")
                 } else if (type == release) {
-                    host = "pushapp.linroid.com"
+                    host = "pushapp.xyz"
                 } else {
                     return
                 }

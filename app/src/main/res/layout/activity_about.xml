@@ -162,7 +162,9 @@
                     android:layout_below="@id/tv_linroid"
                     android:layout_toEndOf="@id/ig_avatar_linroid"
                     android:layout_toRightOf="@id/ig_avatar_linroid"
-                    android:text="Android主开发 &amp; Web前端 &amp; 服务端"
+                    android:singleLine="true"
+                    android:ellipsize="end"
+                    android:text="Android主开发 &amp; Web前端 &amp; 服务端 &amp; 设计"
                     android:textColor="@color/md_grey_600" />
 
             </RelativeLayout>
@@ -197,7 +199,8 @@
                     android:layout_below="@id/tv_2bab"
                     android:layout_toRightOf="@id/ig_avatar_2bab"
                     android:text="Android开发 &amp; 设计"
-                    android:textColor="@color/md_grey_600" />
+                    android:textColor="@color/md_grey_600"
+                    tools:ignore="HardcodedText" />
             </RelativeLayout>
 
 
