@@ -19,6 +19,7 @@ package com.linroid.pushapp.util;
 import android.content.Context;
 import android.content.Intent;
 
+import com.linroid.pushapp.BuildConfig;
 import com.linroid.pushapp.R;
 
 /**
@@ -27,7 +28,7 @@ import com.linroid.pushapp.R;
 public class ShareUtils {
 
     public static void share(Context context) {
-        share(context, context.getString(R.string.about_share_text));
+        share(context, context.getString(R.string.about_share_text, BuildConfig.HOST_URL));
     }
 
     public static void share(Context context, String extraText) {

@@ -71,7 +71,7 @@ public class AboutActivity extends BaseActivity {
 
 
     private void initVersionName() {
-        versionTV.setText(getString(R.string.txt_about_version, BuildConfig.VERSION_NAME));
+        versionTV.setText(getString(R.string.about_version, BuildConfig.VERSION_NAME));
     }
 
 

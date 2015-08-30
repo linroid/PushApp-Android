@@ -219,6 +219,9 @@ public class DownloadService extends Service {
     int prevProgress = -1;
 
     private void showNotification(Pack pack, int progress) {
+        if (pack == null) {
+            return;
+        }
         if (prevProgress == progress) {
             return;
         }

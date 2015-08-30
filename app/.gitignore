@@ -2,4 +2,8 @@
 fabric.properties
 app.properties
 *.apk
+/unused.txt
+/seeds.txt
+/mapping.txt
+/class_files.txt
 /signing.properties

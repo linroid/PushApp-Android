@@ -47,15 +47,15 @@ public class SettingFragment extends PreferenceFragment implements Preference.On
     @Inject
     BriteDatabase db;
 
-    @BindString(R.string.pref_about_us)
+//    @BindString(R.string.pref_about_us)
     String aboutUS;
-    @BindString(R.string.pref_auto_install)
+//    @BindString(R.string.pref_auto_install)
     String autoInstall;
-    @BindString(R.string.pref_auto_open)
+//    @BindString(R.string.pref_auto_open)
     String autoOpen;
-    @BindString(R.string.pref_bind_account)
+//    @BindString(R.string.pref_bind_account)
     String bindAccount;
-    @BindString(R.string.pref_accessibility_service)
+//    @BindString(R.string.pref_accessibility_service)
     String accessibilityService;
 
 
@@ -70,6 +70,13 @@ public class SettingFragment extends PreferenceFragment implements Preference.On
         super.onCreate(savedInstanceState);
         addPreferencesFromResource(R.xml.pref_general);
         ButterKnife.bind(this, getActivity());
+
+        //
+        this.aboutUS = getString(R.string.pref_about_us);
+        this.autoInstall = getString(R.string.pref_auto_install);
+        this.autoOpen = getString(R.string.pref_auto_open);
+        this.bindAccount = getString(R.string.pref_bind_account);
+        this.accessibilityService = getString(R.string.pref_accessibility_service);
 
         Preference bindAccountPreference = findPreference(bindAccount);
         bindAccountPreference.setSummary(account.getUser().getNickname());

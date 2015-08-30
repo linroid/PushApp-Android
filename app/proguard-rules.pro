@@ -16,6 +16,16 @@
 #   public *;
 #}
 
+#pushapp
+-keep class com.linroid.pushapp.model.** { *; }
+#stetho
+-keep class com.facebook.stetho.**{ *; }
+-dontwarn com.facebook.stetho.**
+#jpush
+
+-dontwarn cn.jpush.**
+-keep class cn.jpush.** { *; }
+
 #ButterKnife
 -keep class butterknife.** { *; }
 -dontwarn butterknife.internal.**
