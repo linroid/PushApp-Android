@@ -21,7 +21,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.provider.Settings;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
@@ -43,6 +42,7 @@ import com.linroid.pushapp.service.ApkAutoInstallService;
 import com.linroid.pushapp.ui.base.BaseActivity;
 import com.linroid.pushapp.ui.bind.BindActivity;
 import com.linroid.pushapp.ui.setting.SettingActivity;
+import com.linroid.pushapp.util.AndroidUtil;
 import com.linroid.pushapp.util.IntentUtil;
 import com.linroid.pushapp.util.Once;
 
@@ -52,7 +52,6 @@ import butterknife.Bind;
 import rx.Subscriber;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
 import timber.log.Timber;
 
 public class HomeActivity extends BaseActivity {
@@ -131,29 +130,27 @@ public class HomeActivity extends BaseActivity {
         outState.putInt(STATE_PAGER_POSITION, pager.getCurrentItem());
     }
 
-    private void checkAutoInstall() {
-        boolean confirmed = preferences.getBoolean(Constants.SP_AUTO_INSTALL_CONFIRMED, false);
-        if (!confirmed && ApkAutoInstallService.available()) {
+    private void checkAccessibilityService() {
+//        boolean confirmed = preferences.getBoolean(Constants.SP_AUTO_INSTALL_CONFIRMED, false);
+        if (ApkAutoInstallService.available()
+                && !AndroidUtil.isAccessibilitySettingsOn(this, ApkAutoInstallService.class.getCanonicalName())) {
             new AlertDialog.Builder(this).setTitle(R.string.title_auto_install_confirm_dialog)
                     .setMessage(R.string.msg_auto_install_confirm_dialog)
                     .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            SharedPreferences.Editor editor = preferences.edit();
-                            editor.putBoolean(Constants.SP_AUTO_INSTALL_CONFIRMED, true);
-//                            editor.putBoolean(Constants.SP_AUTO_INSTALL, true);
-                            editor.apply();
-
-                            Intent intent = new Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS);
-                            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                            startActivityForResult(intent, 0);
+//                            SharedPreferences.Editor editor = preferences.edit();
+//                            editor.putBoolean(Constants.SP_AUTO_INSTALL_CONFIRMED, true);
+////                            editor.putBoolean(Constants.SP_AUTO_INSTALL, true);
+//                            editor.apply();
                             dialog.cancel();
+                            startActivityForResult(IntentUtil.accessibilitySettings(), 0);
                         }
                     })
                     .setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            preferences.edit().putBoolean(Constants.SP_AUTO_INSTALL_CONFIRMED, true).apply();
+//                            preferences.edit().putBoolean(Constants.SP_AUTO_INSTALL_CONFIRMED, true).apply();
                             Snackbar.make(pager, R.string.msg_auto_install_confirm_cancel, Snackbar.LENGTH_LONG);
                         }
                     }).show();
@@ -174,7 +171,12 @@ public class HomeActivity extends BaseActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        checkAutoInstall();
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        checkAccessibilityService();
     }
 
     @Override

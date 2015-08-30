@@ -94,4 +94,14 @@ public class IntentUtil {
         intent.setData(Uri.parse(uri));
         return Intent.createChooser(intent, null);
     }
+
+    /**
+     * 辅助设置
+     * @return
+     */
+    public static Intent accessibilitySettings() {
+        Intent intent = new Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        return intent;
+    }
 }
