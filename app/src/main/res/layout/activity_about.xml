@@ -164,7 +164,7 @@
                     android:layout_toRightOf="@id/ig_avatar_linroid"
                     android:singleLine="true"
                     android:ellipsize="end"
-                    android:text="Android主开发 &amp; Web前端 &amp; 服务端 &amp; 设计"
+                    android:text="Android主开发 &amp; Web前端 &amp; 服务端"
                     android:textColor="@color/md_grey_600" />
 
             </RelativeLayout>

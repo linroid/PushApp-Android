@@ -2,3 +2,4 @@
 fabric.properties
 app.properties
 *.apk
+/signing.properties

@@ -124,6 +124,7 @@ public class AuthFragment extends RefreshableFragment implements AuthAdapter.OnA
                     @Override
                     public void call(Throwable throwable) {
                         Snackbar.make(fab, throwable.getMessage(), Snackbar.LENGTH_LONG).show();
+                        loaderView.notifyLoadFailed(throwable);
                     }
                 }));
     }

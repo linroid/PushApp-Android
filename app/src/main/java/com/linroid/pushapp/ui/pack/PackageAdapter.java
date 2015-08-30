@@ -145,6 +145,7 @@ public class PackageAdapter extends DataAdapter<Pack, PackageAdapter.PackageHold
                 menu.findItem(R.id.action_install).setVisible(false);
             } else {
                 if (!pack.fileExists()) {
+                    menu.findItem(R.id.action_install).setVisible(false);
                     menu.findItem(R.id.action_download).setVisible(true);
                 } else if (isInstalledPackageName) {
 //                    menu.findItem(R.id.action_replace_install).setVisible(true);
