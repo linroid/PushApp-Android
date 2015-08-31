@@ -155,7 +155,6 @@ public class HomeActivity extends BaseActivity {
                         }
                     }).show();
         }
-        //TODO: 确认并开启，但是服务关了
     }
 
     private void checkBind() {

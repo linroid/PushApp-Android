@@ -20,7 +20,10 @@ import android.content.SharedPreferences;
 import android.content.res.Resources;
 
 /**
- * Created by linroid on 8/23/15.
+ * Created by linroid on 8/23/15. <br/>
+ * 与原作者<a href="https://github.com/drakeet/">drakeet</a>的沟通下获得在Apache License 2.0下开源使用.<br/>
+ * 如果有人需要另外使用此文件，还需遵循原作者协议或与原作者沟通.<br/>
+ * See <a href="https://github.com/drakeet/Meizhi/blob/master/app/src/main/java/me/drakeet/meizhi/util/Once.java">Once.java</a>
  */
 public class Once {
 

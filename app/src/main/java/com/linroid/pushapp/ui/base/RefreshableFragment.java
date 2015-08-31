@@ -19,7 +19,6 @@ package com.linroid.pushapp.ui.base;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -28,7 +27,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.linroid.pushapp.R;
-import com.linroid.pushapp.util.SampleItemDecoration;
+import com.linroid.pushapp.util.SimpleItemDecoration;
 import com.linroid.pushapp.view.ContentLoaderView;
 
 /**
@@ -54,7 +53,7 @@ public abstract class RefreshableFragment extends Fragment
         recyclerView.setLayoutManager(new LinearLayoutManager(recyclerView.getContext()));
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setHasFixedSize(true);
-        recyclerView.addItemDecoration(new SampleItemDecoration(getResources().getDimensionPixelSize(R.dimen.item_divider_space)));
+        recyclerView.addItemDecoration(new SimpleItemDecoration(getResources().getDimensionPixelSize(R.dimen.item_divider_space)));
         loaderView.setAdapter(getAdapter());
         loaderView.setOnRefreshListener(this);
         loaderView.setMoreListener(this);

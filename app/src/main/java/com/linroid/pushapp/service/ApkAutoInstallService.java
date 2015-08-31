@@ -51,10 +51,9 @@ import timber.log.Timber;
 
 /**
  * Created by linroid on 7/27/15.<br/>
- * 免ROOT自动安装Apk
- * 部分代码是通过反编译酷市场得到的-.-
+ * 免ROOT自动安装Apk<br/>
  *
- * @{http://www.infoq.com/cn/articles/android-accessibility-installing}
+ * See <a href="http://www.infoq.com/cn/articles/android-accessibility-installing">使用Android Accessibility实现免Root自动批量安装功能</a>
  */
 @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
 public class ApkAutoInstallService extends AccessibilityService {

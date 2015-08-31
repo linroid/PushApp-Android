@@ -23,10 +23,10 @@ import android.view.View;
 /**
  * Created by linroid on 7/31/15.
  */
-public class SampleItemDecoration extends RecyclerView.ItemDecoration {
+public class SimpleItemDecoration extends RecyclerView.ItemDecoration {
     private int space;
 
-    public SampleItemDecoration(int space) {
+    public SimpleItemDecoration(int space) {
         super();
         this.space = space;
     }
