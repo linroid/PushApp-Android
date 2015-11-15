@@ -66,6 +66,7 @@ public class ApkAutoInstallService extends AccessibilityService {
     private static final String CLASS_NAME_APP_ALERT_DIALOG = "android.app.AlertDialog";
     private static final String CLASS_NAME_LENOVO_SAFECENTER = "com.lenovo.safecenter";
     private static final String CLASS_NAME_PACKAGE_INSTALLER = "com.android.packageinstaller";
+    private static final String CLASS_NAME_GOOGLE_PACKAGE_INSTALLER = "com.google.android.packageinstaller";
     private static final String CLASS_NAME_PACKAGE_INSTALLER_ACTIVITY = "com.android.packageinstaller.PackageInstallerActivity";
     private static final String CLASS_NAME_PACKAGE_INSTALLER_PERMSEDITOR = "com.android.packageinstaller.PackageInstallerPermsEditor";
     private static final String CLASS_NAME_PACKAGE_INSTALLER_PROGRESS = "com.android.packageinstaller.InstallAppProgress";
@@ -176,6 +177,7 @@ public class ApkAutoInstallService extends AccessibilityService {
         return VERSION.SDK_INT >= AVAILABLE_API;
     }
 
+
     /**
      * 处理卸载后的安装
      */
@@ -202,6 +204,7 @@ public class ApkAutoInstallService extends AccessibilityService {
         startActivity(IntentUtil.installApk(pack.getPath()));
     }
 
+    @DebugLog
     @Override
     public void onCreate() {
         super.onCreate();
@@ -244,7 +247,7 @@ public class ApkAutoInstallService extends AccessibilityService {
         String packageName = event.getPackageName().toString();
         String className = event.getClassName().toString();
         String sourceText = event.getSource().getText() == null ? BuildConfig.VERSION_NAME : event.getSource().getText().toString().trim();
-        if (packageName.equals(CLASS_NAME_PACKAGE_INSTALLER)) {
+        if (packageName.equals(CLASS_NAME_PACKAGE_INSTALLER) || packageName.equals(CLASS_NAME_GOOGLE_PACKAGE_INSTALLER)) {
             if (isApplicationInstallEvent(event, className, sourceText)) {
                 // 准备安装
                 onApplicationInstall(event);

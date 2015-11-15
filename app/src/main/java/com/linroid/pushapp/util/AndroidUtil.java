@@ -137,7 +137,7 @@ public class AndroidUtil {
         try {
             info = pm.getApplicationInfo(packageName, 0);
         } catch (PackageManager.NameNotFoundException e) {
-            Timber.e(e, "没有找到 %s");
+            Timber.e(e, "没有找到 %s", packageName);
             return null;
         }
         return new File(info.sourceDir);
