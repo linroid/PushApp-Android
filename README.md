@@ -1,0 +1,3 @@
+# PushApp-Android
+先挖坑...   
+readme会在之后完善，可以先看下介绍:[PushApp的介绍](http://7u2rtn.com1.z0.glb.clouddn.com/pushapp介绍.pdf)
